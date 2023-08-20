@@ -1,0 +1,91 @@
+openapi: 0.0.1
+info:
+  title: Boilerplate
+  description: |-
+    This is a simple API boilerplate.
+  version: 0.0.1
+servers:
+  - url: http://localhost:3002/api/v1
+    description: localhost for devs
+
+security:
+  - bearerAuth: []
+
+paths:
+  /health-check:
+    get:
+      tags:
+        - Health Check
+      description: Returns the status of the API
+      responses:
+        "200":
+          $ref: "#/components/responses/HealthCheckResponse"
+        "406":
+          $ref: "#/components/responses/NotAcceptableError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  
+components:
+   
+  responses:
+    HealthCheckResponse:
+      description: >-
+        OK -- The request is a success; the status of the API will be returned
+        in the response.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                description: Status of the API
+                type: string
+                enum:
+                  - up
+              version:
+                description: Version of the API
+                type: string
+              info:
+                description: Detailed information about the status of the API
+                type: string
+              timestamp:
+                description: Date and time of the request
+                type: string
+              env:
+                description: Environment
+                type: string
+                enum:
+                  - dev
+                  - stg
+                  - prd
+                  - local
+    NotAcceptableError:
+      description: >-
+        Not Acceptable -- The request has invalid Accept header.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Unsupported Accept header. Only application/json is
+                    supported.
+    InternalServerError:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the
+        request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Unknown error occurred

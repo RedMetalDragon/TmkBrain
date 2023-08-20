@@ -1,0 +1,27 @@
+{
+    root: true,
+    parser: "@typescript-eslint/parser",
+    plugins: [
+      "@typescript-eslint"
+    ],
+    extends: [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended",
+      "prettier"
+    ],
+    parserOptions: {
+      tsconfigRootDir: "./",
+      project: ["tsconfig.json"],
+    },
+    ignorePatterns: ["*.js", "tests/*", "jest.config.ts"],
+    rules: {
+      "@typescript-eslint/no-misused-promises": [
+        "error",
+        {
+          checksVoidReturn: false
+        }
+      ],
+      "@typescript-eslint/unbound-method": "off",
+    }
+}
