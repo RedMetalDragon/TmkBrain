@@ -1,0 +1,29 @@
+{
+    "employee_fname": "x",
+    "employee_mname": "x",
+    "employee_lname": "x",
+    "company_name": "Company",
+    "company_logo": "logo:url",
+    "last_punch_in": "2023-10-12 08:00:00am",
+    "last_punch_out": "2023-10-12 05:00:00pm",
+    "total_hours_worked": "8",
+    "remaining_pto_balance": "5",
+    "two_weeks_schedule": {
+        "2023-10-01": {
+            "in": "08:00:00am",
+            "out": "05:00:00pm"
+        },
+        "2023-10-02": {
+            "in": "08:00:00am",
+            "out": "05:00:00pm"
+        },
+        "2023-10-03": {
+            "in": "08:00:00am",
+            "out": "05:00:00pm"
+        },
+        "2023-10-15": {
+            "in": "08:00:00am",
+            "out": "05:00:00pm"
+        }
+    }
+}

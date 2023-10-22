@@ -1,4 +1,4 @@
-openapi: 0.0.1
+openapi: 3.0.1
 info:
   title: Boilerplate
   description: |-
@@ -7,10 +7,6 @@ info:
 servers:
   - url: http://localhost:3002/api/v1
     description: localhost for devs
-
-security:
-  - bearerAuth: []
-
 paths:
   /health-check:
     get:
