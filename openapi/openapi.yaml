@@ -20,7 +20,265 @@ paths:
           $ref: "#/components/responses/NotAcceptableError"
         "500":
           $ref: "#/components/responses/InternalServerError"
+
+  /users/login:
+    post:
+      tags:
+        - Login
+      summary: User Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: User's username or email
+                password:
+                  type: string
+                  description: User's password
+              required:
+                - username
+                - password
+      responses:
+        "200":
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: Access token for authenticated requests
+                  expires_in:
+                    type: integer
+                    description: Duration in seconds for which the token is valid
+                  token_type:
+                    type: string
+                    description: Type of token (e.g., Bearer)
+                  company_logo:
+                    type: string
+                    description: URL for company logo
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message
+                  status:
+                    type: integer
+                    description: HTTP status code
+        "406":
+          $ref: "#/components/responses/NotAcceptableError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   
+  /users/dashboard:
+    get:
+      tags:
+        - Users
+      summary: User Dashboard
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  employee_fname:
+                    type: string
+                    description: First name of the employee
+                  employee_mname:
+                    type: string
+                    description: Middle name of the employee
+                  employee_lname:
+                    type: string
+                    description: Last name of the employee
+                  email_address:
+                    type: string
+                    description: Email address of the user
+                  company_name:
+                    type: string
+                    description: Name of the company
+                  company_logo:
+                    type: string
+                    description: URL for company logo
+                  last_punch_in:
+                    type: string
+                    format: date-time
+                    description: Last punch in time
+                  last_punch_out:
+                    type: string
+                    format: date-time
+                    description: Last punch out time
+                  total_hours_worked:
+                    type: string
+                    description: Total hours worked
+                  remaining_pto_balance:
+                    type: string
+                    description: Remaining PTO balance
+                  two_weeks_schedule:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                          format: date
+                          description: Date of the schedule
+                        in:
+                          type: string
+                          format: time
+                          description: Punch in time
+                        out:
+                          type: string
+                          format: time
+                          description: Punch out time
+        "406":
+          $ref: "#/components/responses/NotAcceptableError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/attendance:
+    get:
+      tags:
+        - Users
+      summary: User Attendance
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      format: date
+                      description: Date of the attendance record
+                    in:
+                      type: string
+                      format: time
+                      description: Punch in time
+                    out:
+                      type: string
+                      format: time
+                      description: Punch out time or null if not available
+        "406":
+          $ref: "#/components/responses/NotAcceptableError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      tags:
+        - Users
+      summary: Record User Attendance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date_timestamp:
+                  type: string
+                  format: date-time
+                  description: Date timestamp in UTC format
+              required:
+                - date_timestamp
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                  status:
+                    type: integer
+                    description: HTTP status code
+        "406":
+          $ref: "#/components/responses/NotAcceptableError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/schedule:
+    get:
+      tags:
+        - Users
+      summary: User Schedule
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      format: date
+                      description: Date of the schedule
+                    in:
+                      type: string
+                      format: time
+                      description: Punch in time
+                    out:
+                      type: string
+                      format: time
+                      description: Punch out time
+        "406":
+          $ref: "#/components/responses/NotAcceptableError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /banners:
+    get:
+      tags:
+        - Banners
+      summary: Get Banners
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  banner_id:
+                    type: integer
+                    description: Unique ID of the banner
+                  banner_image_url:
+                    type: string
+                    description: URL of the banner image
+                  banner_description:
+                    type: string
+                    description: Description of the banner content
+                  banner_title:
+                    type: string
+                    description: Title of the banner
+                  created_date:
+                    type: string
+                    description: Date the banner was created
+        "406":
+          $ref: "#/components/responses/NotAcceptableError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+          
 components:
    
   responses:
