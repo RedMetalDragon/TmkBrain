@@ -7,6 +7,8 @@ import { router } from "./routes";
 import { logger } from "./utils/logger";
 import createApp from "./create-app";
 import startServer from "./start-server";
+import connectDb from "./connect-db";
+import { sigterm } from "./utils/signals";
 
 export const version = pack.version.substr(0, pack.version.indexOf("."));
 export const versionPrefix = `v${version}`;
@@ -24,6 +26,16 @@ logger.info(`pid      : ${process.pid}`);
 logger.info("------------------------------------------------");
 
 const app = createApp(apiPath, router);
-startServer(app, apiPath);
 
+connectDb()
+  /* eslint-disable-next-line  @typescript-eslint/promise-function-async */
+  .then((dbConnection) => {
+    const server = startServer(app, apiPath);
+
+    process.on("SIGTERM", () => sigterm(server, dbConnection));
+  })
+  .catch((error) => {
+    logger.error(error);
+    logger.error("======== App not started ========");
+  });
 export default app;
