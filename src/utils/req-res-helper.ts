@@ -4,10 +4,10 @@ import { HTTP } from "../constants";
 export function getInteger(
   req: Request,
   key: string,
-  allowNegative: boolean = true,
+  allowNegative = true,
 ): number | undefined {
   const param = req.query[key];
-  let value = Array.isArray(param) ? param[0] : param;
+  const value = Array.isArray(param) ? param[0] : param;
   if (typeof value === "string" && /^[-+]?\d+$/u.test(value)) {
     const int = parseInt(value, 10);
     return allowNegative ? int : int >= 0 ? int : undefined;
@@ -17,7 +17,7 @@ export function getInteger(
 
 export function getString(req: Request, key: string): string | undefined {
   const param = req.query[key];
-  let value = Array.isArray(param) ? param[0] : param;
+  const value = Array.isArray(param) ? param[0] : param;
   return typeof value === "string" && value !== "" ? value : undefined;
 }
 

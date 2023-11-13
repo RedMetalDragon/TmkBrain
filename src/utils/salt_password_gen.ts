@@ -1,5 +1,6 @@
+import bcrypt from 'bcrypt';
+
 function generateSaltPassword(){
-    const bcrypt = require('bcrypt');
     const saltRounds = 10;
 
     const userPassword = 'user_password';
