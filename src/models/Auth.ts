@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import connectDb from "../database/connection";
+import { dbConnectCore } from "../database/connection";
 
 interface AuthAttributes {
   AuthID?: number;
@@ -14,7 +14,7 @@ interface AuthAttributes {
   Status: string;
 }
 
-const Auth = connectDb.define('Auth', {
+const Auth = dbConnectCore.define('Auth', {
   AuthID: {
     type: DataTypes.INTEGER,
     primaryKey: true,

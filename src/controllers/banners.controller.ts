@@ -1,14 +1,19 @@
+import { Banner } from "../models/Banner";
+import { Model } from "sequelize";
+
 const BannerController = {
-  getBanners() {
-    return [
-        {
-            banner_id: 1,
-            banner_image_url: "https://images.template.net/wp-content/uploads/2018/01/Employee-Benefits.jpg",
-            banner_description: "Content here",
-            banner_title: "Employee Benefits",
-            created_date: "October 19, 2023"
-        }
-    ];
+  async getBanners():Promise<Model<any, any>[] | null> {
+    return Banner.findAll({
+      limit: 3,
+      order: [['CreatedDate', 'DESC']],
+      attributes: [
+        ['BannerID', 'banner_id'],
+        ['ImageSrc', 'banner_image_url'],
+        ['Content', 'banner_description'],
+        ['Description', 'banner_title'],
+        ['CreatedDate', 'created_date']
+      ]
+    });
   }
 };
 

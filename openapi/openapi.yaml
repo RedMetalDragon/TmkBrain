@@ -111,37 +111,27 @@ paths:
                   company_logo:
                     type: string
                     description: URL for company logo
-                  last_punch_in:
+                  today_worked_hours:
                     type: string
-                    format: date-time
-                    description: Last punch in time
-                  last_punch_out:
+                    description: number of hours worked today
+                  today_scheduled_hours:
                     type: string
-                    format: date-time
-                    description: Last punch out time
-                  total_hours_worked:
+                    description: number of hours scheduled today
+                  today_remaining_hours:
                     type: string
-                    description: Total hours worked
-                  remaining_pto_balance:
+                    description: number of hours remaining today
+                  monthly_scheduled_hours:
                     type: string
-                    description: Remaining PTO balance
-                  two_weeks_schedule:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        date:
-                          type: string
-                          format: date
-                          description: Date of the schedule
-                        in:
-                          type: string
-                          format: time
-                          description: Punch in time
-                        out:
-                          type: string
-                          format: time
-                          description: Punch out time
+                    description: number of hours scheduled for the month
+                  monthly_worked_hours:
+                    type: string
+                    description: number of hours worked for the month
+                  monthly_remaining_hours:
+                    type: string
+                    description: number of hours remaining for the month
+                  monthly_overtime_hours:
+                    type: string
+                    description: number of hours overtime for the month
         "406":
           $ref: "#/components/responses/NotAcceptableError"
         "500":
@@ -241,6 +231,13 @@ paths:
                       type: string
                       format: time
                       description: Punch out time
+                    day:
+                      type: string
+                      description: Day equivalent of the date
+                    hours:
+                      type: string
+                      format: time
+                      description: Hours scheduled for the day
         "406":
           $ref: "#/components/responses/NotAcceptableError"
         "500":

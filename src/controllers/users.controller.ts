@@ -9,32 +9,13 @@ const UsersController = {
         employee_lname: "x",
         company_name: "Company",
         company_logo: "logo:url",
-        last_punch_in: "2023-10-12 08:00:00am",
-        last_punch_out: "2023-10-12 05:00:00pm",
-        total_hours_worked: "8",
-        remaining_pto_balance: "5",
-        two_weeks_schedule: [
-            {
-                date: "2023-10-01",
-                in: "08:00:00am",
-                out: "05:00:00pm"
-            },
-            {
-                date: "2023-10-02",
-                in: "08:00:00am",
-                out: "05:00:00pm"
-            },
-            {
-                date: "2023-10-03",
-                in: "08:00:00am",
-                out: "05:00:00pm"
-            },
-            {
-                date: "2023-10-15",
-                in: "08:00:00am",
-                out: "05:00:00pm"
-            }
-        ]
+        today_worked_hours: "03:00",
+        today_scheduled_hours: "08:00",
+        today_remaining_hours: "05:00",
+        monthly_scheduled_hours: "216 hrs",
+        monthly_worked_hours: "189 hrs",
+        monthly_remaining_hours: "23 hrs",
+        monthly_overtime_hours: "56 hrs"
     };
   },
 
@@ -63,27 +44,37 @@ const UsersController = {
         {
             date: "2023-10-01",
             in: "08:00:00am",
-            out: "05:00:00pm"
+            out: "05:00:00pm",
+            day: "Sunday",
+            hours: "8 hours"
         },
         {
             date: "2023-10-02",
             in: "08:00:00am",
-            out: "05:00:00pm"
+            out: "05:00:00pm",
+            day: "Monday",
+            hours: "8 hours"
         },
         {
             date: "2023-10-03",
             in: "08:00:00am",
-            out: "05:00:00pm"
+            out: "05:00:00pm",
+            day: "Tuesday",
+            hours: "8 hours"
         },
         {
             date: "2023-10-04",
             in: "08:00:00am",
-            out: "05:00:00pm"
+            out: "05:00:00pm",
+            day: "Wednesday",
+            hours: "8 hours"
         },
         {
             date: "2023-10-05",
             in: "08:00:00am",
-            out: "05:00:00pm"
+            out: "05:00:00pm",
+            day: "Thursday",
+            hours: "8 hours"
         }
     ];
   },

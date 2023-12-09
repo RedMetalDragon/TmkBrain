@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import connectDb from "../database/connection";
+import { dbConnectCustomer } from "../database/connection";
 
 interface UserAccountAttributes {
   UserAccountID?: number;
@@ -8,7 +8,7 @@ interface UserAccountAttributes {
   Status?: string;
 }
 
-const UserAccount = connectDb.define('UserAccount', {
+const UserAccount = dbConnectCustomer.define('UserAccount', {
   UserAccountID: {
     type: DataTypes.INTEGER,
     primaryKey: true,

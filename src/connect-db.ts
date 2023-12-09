@@ -1,26 +1,28 @@
 import type { Sequelize } from "sequelize/types";
-import dbConnection from "./database/connection";
+import { dbConnectCore, dbConnectCustomer} from "./database/connection";
 import { logger } from "./utils/logger";
 
 export default async (): Promise<Sequelize> => {
   try {
-    await dbConnection.authenticate({ logging: false });
+    await dbConnectCore.authenticate({ logging: false });
+    await dbConnectCustomer.authenticate({ logging: false });
 
     logger.info("=== Initializing timekeeper models =====");
 
     //initModelsAssets(dbConnection);
 
-    logger.info(`db      : ${dbConnection.getDatabaseName()}`); // TODO if possible, display host too
+    logger.info(`db      : ${dbConnectCore.getDatabaseName()}`); // TODO if possible, display host too
+    logger.info(`db      : ${dbConnectCustomer.getDatabaseName()}`); // TODO if possible, display host too
 
     logger.info("================================================");
 
-    return dbConnection;
+    return dbConnectCore;
   } catch (error) {
     logger.error(error);
 
     try {
-      await dbConnection.close();
-    } catch (closeError) {
+      await dbConnectCore.close();
+     } catch (closeError) {
       let errorMessage = "";
 
       if (closeError instanceof Error) {

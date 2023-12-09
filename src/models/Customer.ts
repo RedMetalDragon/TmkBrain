@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import connectDb from "../database/connection";
+import { dbConnectCore } from "../database/connection";
 
 interface CustomerAttributes {
   CustomerID?: number;
@@ -15,7 +15,7 @@ interface CustomerAttributes {
   CustomerDbName: string;
 }
 
-const Customer = connectDb.define('Customer', {
+const Customer = dbConnectCore.define('Customer', {
   CustomerID: {
     type: DataTypes.INTEGER,
     primaryKey: true,

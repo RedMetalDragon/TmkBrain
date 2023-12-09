@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import connectDb from "../database/connection";
+import { dbConnectCustomer } from "../database/connection";
 
 interface DivisionAttributes {
   DivisionID?: number;
@@ -16,7 +16,7 @@ interface DivisionAttributes {
   Country?: string;
 }
 
-const Division = connectDb.define('Division', {
+const Division = dbConnectCustomer.define('Division', {
   DivisionID: {
     type: DataTypes.INTEGER,
     primaryKey: true,

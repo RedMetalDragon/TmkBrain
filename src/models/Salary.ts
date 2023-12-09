@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import connectDb from "../database/connection";
+import { dbConnectCustomer } from "../database/connection";
 
 interface SalaryAttributes {
   SalaryID?: number;
@@ -8,7 +8,7 @@ interface SalaryAttributes {
   Amount?: number;
 }
 
-const Salary = connectDb.define('Salary', {
+const Salary = dbConnectCustomer.define('Salary', {
   SalaryID: {
     type: DataTypes.INTEGER,
     primaryKey: true,

@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import connectDb from "../database/connection";
+import { dbConnectCustomer } from "../database/connection";
 
 interface JobTitleAttributes {
   JobTitleID?: number;
@@ -9,7 +9,7 @@ interface JobTitleAttributes {
   IsActive?: boolean;
 }
 
-const JobTitle = connectDb.define('JobTitle', {
+const JobTitle = dbConnectCustomer.define('JobTitle', {
   JobTitleID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
