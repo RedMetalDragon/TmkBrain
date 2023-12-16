@@ -23,6 +23,7 @@ interface EmployeeAttributes {
   JobTitleID?: number;
   ManagerID?: number;
   Status?: string;
+  Shift?: string;
 }
 
 const Employee = dbConnectCustomer.define('Employee', {
@@ -91,6 +92,9 @@ const Employee = dbConnectCustomer.define('Employee', {
     type: DataTypes.INTEGER,
   },
   Status: {
+    type: DataTypes.STRING(50),
+  },
+  Shift: {
     type: DataTypes.STRING(50),
   },
 });

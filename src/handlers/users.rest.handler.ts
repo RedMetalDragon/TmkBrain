@@ -60,6 +60,10 @@ const UsersRestHandler = {
   attendance(req: Request, res: Response): void {
     res.status(200).json(UsersController.attendance());
   },
+
+  getUsers(req: Request, res: Response): void {
+    res.status(200).json(UsersController.getUsers());
+  },
 };
 
 export { UsersRestHandler };

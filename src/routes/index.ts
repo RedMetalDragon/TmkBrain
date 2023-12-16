@@ -29,4 +29,7 @@ router.get("/users/schedule", UsersRestHandler.getSchedule);
 // Attendance
 router.get("/users/attendance", UsersRestHandler.getAttendance);
 
+// List of employees
+router.get("/users", UsersRestHandler.getUsers);
+
 export { router };

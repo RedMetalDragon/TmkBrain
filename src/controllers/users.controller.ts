@@ -2,11 +2,46 @@ import { Model } from "sequelize";
 import { Auth } from "../models/Auth";
 
 const UsersController = {
+  getUsers() {
+    return [
+        {
+            profile_picture: "https://png.pngtree.com/png-vector/20220709/ourmid/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_5809521.png",
+            full_name: "John Doe",
+            employee_id: 1,
+            status: "Part-time",
+            department: "IT",
+            shift: "Day",
+            joining_date: "2023-01-01",
+            role: "Employee"
+        },
+        {
+            profile_picture: "https://png.pngtree.com/png-vector/20220709/ourmid/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_5809521.png",
+            full_name: "John Dela Cruz",
+            employee_id: 2,
+            status: "Part-time",
+            department: "HR",
+            shift: "Day",
+            joining_date: "2023-01-01",
+            role: "Employee"
+        },
+        {
+            profile_picture: "https://png.pngtree.com/png-vector/20220709/ourmid/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_5809521.png",
+            full_name: "John Guzman",
+            employee_id: 3,
+            status: "Regular",
+            department: "IT",
+            shift: "Day",
+            joining_date: "2023-01-01",
+            role: "Employee"
+        },
+    ]
+  },
+  
   getDashboardData() {
     return {
-        employee_fname: "x",
-        employee_mname: "x",
-        employee_lname: "x",
+        employee_fname: "John",
+        employee_mname: "Dela",
+        employee_lname: "Cruz",
         company_name: "Company",
         company_logo: "logo:url",
         today_worked_hours: "03:00",

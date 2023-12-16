@@ -80,6 +80,51 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
   
+  /users:
+    get:
+      tags:
+        - Users
+      summary: List of all employee
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    profile_picture:
+                      type: string
+                      description: Image src of the profile picture of the employee
+                    full_name:
+                      type: string
+                      description: Employee's full name
+                    employee-id:
+                      type: number
+                      description: Employee's ID
+                    status:
+                      type: string
+                      description: Employment status of the employee
+                    department:
+                      type: string
+                      description: Employee's department
+                    shift:
+                      type: string
+                      description: Employee's shift / schedule
+                    joining_date:
+                      type: string
+                      format: date
+                      description: Employee's date of employment
+                    role:
+                      type: string
+                      description: Employee's role
+        "406":
+          $ref: "#/components/responses/NotAcceptableError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /users/dashboard:
     get:
       tags:
