@@ -1,8 +1,8 @@
-import { Dialect, Model, Sequelize } from "sequelize";
+import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 import cls from "cls-hooked";
 
-import { allCore, allCustomer, configCore, configCustomer } from "./config";
+import { allCore, allCustomer } from "./config";
 import { logger } from "../utils/logger";
 
 dotenv.config();

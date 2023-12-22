@@ -1,8 +1,11 @@
 import { Model } from "sequelize";
+import { RoleFeature } from "../models/RoleFeature";
 import { Auth } from "../models/Auth";
+import { Feature, FeatureAttributes } from "../models/Feature";
 
 const UsersController = {
-  getUsers() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
+  getUsers(): Record<any, any>[] | null {
     return [
         {
             profile_picture: "https://png.pngtree.com/png-vector/20220709/ourmid/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_5809521.png",
@@ -37,7 +40,8 @@ const UsersController = {
     ]
   },
   
-  getDashboardData() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
+  getDashboardData(): Record<any, any> | null {
     return {
         employee_fname: "John",
         employee_mname: "Dela",
@@ -54,27 +58,35 @@ const UsersController = {
     };
   },
 
-  getAttendance() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
+  getAttendance(): Record<any, any>[] | null {
     return [
         {
             date: "2023-10-01",
             in: "08:00:00am",
-            out: "05:00:00pm"
+            out: "05:00:00pm",
+            day: "Sunday",
+            hours: "8 hours"
         },
         {
             date: "2023-10-02",
             in: "08:00:00am",
-            out: "05:00:00pm"
+            out: "05:00:00pm",
+            day: "Monday",
+            hours: "8 hours"
         },
         {
             date: "2023-10-03",
             in: "08:00:00am",
-            out: null
-        }
+            out: "05:00:00pm",
+            day: "Tuesday",
+            hours: "8 hours"
+        },
     ];
   },
 
-  getSchedule() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
+  getSchedule(): Record<any, any>[] | null {
     return [
         {
             date: "2023-10-01",
@@ -114,13 +126,44 @@ const UsersController = {
     ];
   },
   
-  attendance() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
+  attendance(): Record<any, any> | null {
     return {    
         message: "Successfully recorded punch in / out.",
         status: 200
     }
   },
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
+  async getRole(roleId: number): Promise<Record<any, any>[] | null> {
+    return RoleFeature.findAll({
+        where: {
+            RoleID: roleId,
+            IsEnabled: true,
+        },
+        attributes: [],
+        include: [
+            {
+                model: Feature,
+                attributes: ['FeatureID', 'FeatureName'],
+                where: {
+                    IsActive: true
+                }
+            }
+        ]
+    })
+    .then(roleFeatures => {
+        // Use map to transform the result
+        const transformedResult = roleFeatures.map(roleFeature => ({
+          id: (roleFeature as unknown as FeatureAttributes).Feature.get('FeatureID'),
+          name: (roleFeature as unknown as FeatureAttributes).Feature.get('FeatureName')
+        }));
+      
+        return transformedResult;
+      });
+  },
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
   async authenticate(username: string): Promise<Model<any, any> | null>  {
     return Auth.findOne({
         where: {

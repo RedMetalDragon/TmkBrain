@@ -62,6 +62,17 @@ paths:
                   company_logo:
                     type: string
                     description: URL for company logo
+                  role_features:
+                    type: array
+                    items: 
+                      type: object
+                      properties:
+                        id: 
+                          type: integer
+                          description: feature ID
+                        name:
+                          type: string
+                          description: feature name
         "401":
           description: Unauthorized
           content:
@@ -209,6 +220,13 @@ paths:
                       type: string
                       format: time
                       description: Punch out time or null if not available
+                    day:
+                      type: string
+                      description: Day equivalent of the date
+                    hours:
+                      type: string
+                      format: time
+                      description: Hours scheduled for the day
         "406":
           $ref: "#/components/responses/NotAcceptableError"
         "500":

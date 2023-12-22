@@ -36,13 +36,20 @@ const UsersRestHandler = {
 
       if (bcrypt.compareSync(password, userHashedPassword)) {
         // Passwords match, authentication successful
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const token = jwt.sign({ username: (user! as unknown as AuthAttributes).EmailAddress }, SECRET_KEY, { expiresIn: JWT_EXPIRES_IN.string });
+
+        const userRole = (user as unknown as AuthAttributes).RoleID;
+        const roleFeatures = await UsersController.getRole(userRole);
+
+        console.log(roleFeatures);
 
         res.status(200).json({    
           access_token: token, 
           expires_in: JWT_EXPIRES_IN.numeric,
           token_type: "Bearer",
-          company_logo: "logo:url"
+          company_logo: "logo:url", 
+          role_features: roleFeatures
         });
       } else {
         // Passwords don't match, authentication failed

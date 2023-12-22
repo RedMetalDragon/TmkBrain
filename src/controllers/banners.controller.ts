@@ -2,6 +2,7 @@ import { Banner } from "../models/Banner";
 import { Model } from "sequelize";
 
 const BannerController = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
   async getBanners():Promise<Model<any, any>[] | null> {
     return Banner.findAll({
       limit: 3,

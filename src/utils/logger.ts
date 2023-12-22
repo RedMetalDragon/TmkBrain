@@ -5,6 +5,7 @@ const { combine, timestamp, prettyPrint, colorize, printf } = format;
 
 let loggingOptions: LoggerOptions;
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const isDeployed = ["prd", "stg", "dev"].includes(process.env.NODE_ENV!);
 const NEWLINE_PATTERN = /\n/gmu;
 
