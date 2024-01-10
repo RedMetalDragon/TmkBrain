@@ -5,6 +5,7 @@ import { JWT_EXPIRES_IN, SECRET_KEY } from "../constants";
 import { AuthAttributes } from "../models/Auth";
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
+import { CustomerAttributes } from "../models/Customer";
 
 const UsersRestHandler = {
   getDashboardData(req: Request, res: Response): void {
@@ -40,7 +41,10 @@ const UsersRestHandler = {
         const token = jwt.sign({ username: (user! as unknown as AuthAttributes).EmailAddress }, SECRET_KEY, { expiresIn: JWT_EXPIRES_IN.string });
 
         const userRole = (user as unknown as AuthAttributes).RoleID;
+        const userCustomerID = (user as unknown as AuthAttributes).CustomerID;
+
         const roleFeatures = await UsersController.getRole(userRole);
+        const companyLogo = await UsersController.getCustomerDetails(userCustomerID);
 
         console.log(roleFeatures);
 
@@ -48,7 +52,7 @@ const UsersRestHandler = {
           access_token: token, 
           expires_in: JWT_EXPIRES_IN.numeric,
           token_type: "Bearer",
-          company_logo: "logo:url", 
+          company_logo: (companyLogo as unknown as CustomerAttributes).CustomerLogo, 
           role_features: roleFeatures
         });
       } else {

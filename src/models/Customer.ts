@@ -13,6 +13,7 @@ interface CustomerAttributes {
   ZipCode?: string;
   Country?: string;
   CustomerDbName: string;
+  CustomerLogo: string;
 }
 
 const Customer = dbConnectCore.define('Customer', {
@@ -54,6 +55,10 @@ const Customer = dbConnectCore.define('Customer', {
   CustomerDbName: {
     type: DataTypes.STRING(50),
     allowNull: false,
+  },
+  CustomerLogo: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
   },
 });
 

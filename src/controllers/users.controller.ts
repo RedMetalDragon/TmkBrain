@@ -2,6 +2,7 @@ import { Model } from "sequelize";
 import { RoleFeature } from "../models/RoleFeature";
 import { Auth } from "../models/Auth";
 import { Feature, FeatureAttributes } from "../models/Feature";
+import { Customer } from "../models/Customer";
 
 const UsersController = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
@@ -161,6 +162,16 @@ const UsersController = {
       
         return transformedResult;
       });
+  },
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
+  async getCustomerDetails(customerID: number): Promise<Record<any, any> | null> {
+    return Customer.findOne({
+        where: {
+            CustomerID: customerID,
+        },
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
+    })
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
