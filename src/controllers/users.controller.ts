@@ -146,7 +146,7 @@ const UsersController = {
         include: [
             {
                 model: Feature,
-                attributes: ['FeatureID', 'FeatureName'],
+                attributes: ['FeatureID', 'FeatureName', 'Route', 'IconURL', 'ParentTab'],
                 where: {
                     IsActive: true
                 }
@@ -154,13 +154,43 @@ const UsersController = {
         ]
     })
     .then(roleFeatures => {
-        // Use map to transform the result
-        const transformedResult = roleFeatures.map(roleFeature => ({
-          id: (roleFeature as unknown as FeatureAttributes).Feature.get('FeatureID'),
-          name: (roleFeature as unknown as FeatureAttributes).Feature.get('FeatureName')
-        }));
-      
-        return transformedResult;
+        const resultArray: any[] = []; // eslint-disable-line @typescript-eslint/no-explicit-any
+        const parentMap = {};
+
+        roleFeatures.forEach(roleFeature => {
+            const parent = (roleFeature as unknown as FeatureAttributes).Feature.get('ParentTab');
+            const name = (roleFeature as unknown as FeatureAttributes).Feature.get('FeatureName');
+            const route = (roleFeature as unknown as FeatureAttributes).Feature.get('Route');
+            const icon = (roleFeature as unknown as FeatureAttributes).Feature.get('IconURL');
+
+            // If parent is not null, add the item to the parent's sublists
+            if (parent !== null) {
+              if (!parentMap[parent]) {
+                // If the parent doesn't exist in the map, create it
+                parentMap[parent] = {
+                  name: parent,
+                  icon: icon,
+                  sublists: [],
+                };
+                resultArray.push(parentMap[parent]);
+              }
+        
+              // Add the item to the parent's sublists
+              parentMap[parent].sublists.push({
+                name: name,
+                route: route,
+              });
+            } else {
+              // If parent is null, directly add the item to the result array
+              resultArray.push({
+                name: name,
+                route: route,
+                icon: icon,
+              });
+            }
+          });
+
+        return resultArray;
       });
   },
 
