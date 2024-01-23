@@ -67,12 +67,27 @@ paths:
                     items: 
                       type: object
                       properties:
-                        id: 
-                          type: integer
-                          description: feature ID
                         name:
                           type: string
                           description: feature name
+                        icon:
+                          type: string
+                          description: image URL of the icon
+                        route:
+                          type: string
+                          description: URL going to the page
+                        sublist:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                description: feature name
+                              route:
+                                type: string
+                                description: URL going to the page
+                              
         "401":
           description: Unauthorized
           content:
