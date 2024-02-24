@@ -1,9 +1,9 @@
 import { Router } from "express";
-import {  } from "../handlers/banners.rest.handler";
 import {
   HealthCheckRestHandler,
   BannersRestHandler,
-  UsersRestHandler
+  UsersRestHandler,
+  SchedulesRestHandler
 } from "../handlers";
 
 const router = Router();
@@ -31,5 +31,12 @@ router.get("/users/attendance", UsersRestHandler.getAttendance);
 
 // List of employees
 router.get("/users", UsersRestHandler.getUsers);
+
+// Scheduling and assignment
+router.post("/schedule", SchedulesRestHandler.createSchedule);
+router.get("/schedule", SchedulesRestHandler.listSchedule);
+router.get("/schedule/:schedule_id", SchedulesRestHandler.readSchedule);
+router.delete("/schedule/:schedule_id", SchedulesRestHandler.deleteSchedule);
+router.put("/schedule/:schedule_id", SchedulesRestHandler.updateSchedule);
 
 export { router };
