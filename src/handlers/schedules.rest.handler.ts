@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { convertTo12Hour, convertTo24Hour, validateTime } from "../utils/date-time-validation";
 import createHttpError from "http-errors";
 import { SchedulesController } from "../controllers";
-import { isNumeric } from "./schedules.helper";
+import { isNumeric } from "./helpers";
 
 const SchedulesRestHandler = {
     async createSchedule(req: Request, res: Response, next: NextFunction,): Promise<void> {

@@ -52,7 +52,7 @@ paths:
     get:
       tags:
         - Users
-      summary: List of all employee
+      summary: List of all employees
       responses:
         "200":
           description: Successful response
@@ -64,6 +64,25 @@ paths:
                   type: object
                   allOf:
                     - $ref: '#/components/schemas/Employee' 
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+          
+  /users/{employee_id}:
+    get:
+      tags:
+        - Users
+      summary: Get employee data by ID
+      parameters:
+        - $ref: '#/components/parameters/employee_id'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/Employee' 
         "500":
           $ref: "#/components/responses/InternalServerError"
 
@@ -409,35 +428,65 @@ components:
       description: Numeric schedule_id
       schema:
         type: integer
+    employee_id:
+      name: employee_id
+      in: path
+      required: true
+      description: Numeric employee_id
+      schema:
+        type: integer
     
   schemas:
     Employee:
       properties:
-        profile_picture:
-          type: string
-          description: Image src of the profile picture of the employee
-        full_name:
-          type: string
-          description: Employee's full name
         employee-id:
           type: number
-          description: Employee's ID
-        status:
+        first_name:
           type: string
-          description: Employment status of the employee
-        department:
+        last_name:
           type: string
-          description: Employee's department
-        shift:
+        birthday:
           type: string
-          description: Employee's shift / schedule
+        gender:
+          type: string
+        contact_number:
+          type: string
+        email_address:
+          type: string
+        company_email_address:
+          type: string
+        address_1:
+          type: string
+        address_2:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zip_code:
+          type: string
+        country:
+          type: string
         joining_date:
           type: string
-          format: date
-          description: Employee's date of employment
-        role:
+        status:
           type: string
-          description: Employee's role
+          description: Either regular, probationary, contractual
+        division:
+          type: string
+          description: Company division where the employee is under
+        department:
+          type: string
+        job_title:
+          type: string
+        manager:
+          type: object
+          properties:
+            first_name: 
+              type: string
+            last_name:
+              type: string
+          
         
     Login:
       properties:
@@ -490,6 +539,10 @@ components:
                       route:
                         type: string
                         description: URL going to the page
+        personal_data:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Employee'
 
     Banners:
       properties:

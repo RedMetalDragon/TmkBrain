@@ -1,10 +1,13 @@
 import { DataTypes } from "sequelize";
 import { dbConnectCustomer } from "../database/connection";
+import { Customer } from "./Customer";
+import { Department } from "./Department";
+import { Division } from "./Division";
+import { JobTitle } from "./JobTitle";
 
 interface EmployeeAttributes {
   EmployeeID?: number;
   DivisionID: number;
-  CustomerID: number;
   FirstName?: string;
   LastName?: string;
   DateOfBirth?: Date;
@@ -23,7 +26,10 @@ interface EmployeeAttributes {
   JobTitleID?: number;
   ManagerID?: number;
   Status?: string;
-  Shift?: string;
+  Division: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any 
+  Department: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any 
+  JobTitle: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any 
+  Manager: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any 
 }
 
 const Employee = dbConnectCustomer.define('Employee', {
@@ -33,10 +39,6 @@ const Employee = dbConnectCustomer.define('Employee', {
     autoIncrement: true,
   },
   DivisionID: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  CustomerID: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
@@ -94,9 +96,15 @@ const Employee = dbConnectCustomer.define('Employee', {
   Status: {
     type: DataTypes.STRING(50),
   },
-  Shift: {
-    type: DataTypes.STRING(50),
-  },
+}, {
+  tableName: 'Employee',
+  timestamps: false // Disable auto-generating createdAt and updatedAt columns
 });
+
+// Define association with the Employee model
+Employee.belongsTo(Division, { foreignKey: 'DivisionID', targetKey: 'DivisionID' });
+Employee.belongsTo(Department, { foreignKey: 'DepartmentID', targetKey: 'DepartmentID' });
+Employee.belongsTo(JobTitle, { foreignKey: 'JobTitleID', targetKey: 'JobTitleID' });
+Employee.belongsTo(Employee, { as: 'Manager', foreignKey: 'ManagerID', targetKey: 'EmployeeID' });
 
 export { Employee, EmployeeAttributes };

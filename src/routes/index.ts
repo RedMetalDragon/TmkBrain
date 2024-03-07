@@ -30,7 +30,10 @@ router.get("/users/schedule", UsersRestHandler.getSchedule);
 router.get("/users/attendance", UsersRestHandler.getAttendance);
 
 // List of employees
-router.get("/users", UsersRestHandler.getUsers);
+router.get("/users", UsersRestHandler.getEmployees);
+
+// Employee data
+router.get("/users/:employee_id", UsersRestHandler.getEmployeeData);
 
 // Scheduling and assignment
 router.post("/schedule", SchedulesRestHandler.createSchedule);
