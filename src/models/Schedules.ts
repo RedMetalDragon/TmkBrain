@@ -29,6 +29,6 @@ const Schedule = dbConnectCustomer.define('Schedule', {
 }, {
   tableName: 'Schedule',
   timestamps: false // Disable auto-generating createdAt and updatedAt columns
-});;
+});
 
 export { Schedule, ScheduleAttributes };
