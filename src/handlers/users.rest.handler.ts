@@ -17,10 +17,6 @@ const UsersRestHandler = {
     res.status(200).json(UsersController.getAttendance());
   },
 
-  getSchedule(req: Request, res: Response): void {
-    res.status(200).json(UsersController.getSchedule());
-  },
-
   async login(req: Request, res: Response, next: NextFunction,): Promise<void> {
     try {
       const { username, password } = req.body;

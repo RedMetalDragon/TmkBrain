@@ -23,9 +23,6 @@ router.get("/banners", BannersRestHandler.getBanners);
 // Punch in/out
 router.post("/users/attendance", UsersRestHandler.attendance);
 
-// Schedule
-router.get("/users/schedule", UsersRestHandler.getSchedule);
-
 // Attendance
 router.get("/users/attendance", UsersRestHandler.getAttendance);
 
@@ -41,5 +38,10 @@ router.get("/schedule", SchedulesRestHandler.listSchedule);
 router.get("/schedule/:schedule_id", SchedulesRestHandler.readSchedule);
 router.delete("/schedule/:schedule_id", SchedulesRestHandler.deleteSchedule);
 router.put("/schedule/:schedule_id", SchedulesRestHandler.updateSchedule);
+
+router.post("/employee-schedules", SchedulesRestHandler.assignSchedule);
+router.get("/employee-schedules", SchedulesRestHandler.getEmployeeSchedule);
+router.get("/employee-schedules/:employee_schedule_id", SchedulesRestHandler.getEmployeeScheduleById);
+router.delete("/employee-schedules/:employee_schedule_id", SchedulesRestHandler.deleteEmployeeScheduleById);
 
 export { router };

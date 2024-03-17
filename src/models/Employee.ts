@@ -1,15 +1,16 @@
 import { DataTypes } from "sequelize";
 import { dbConnectCustomer } from "../database/connection";
-import { Customer } from "./Customer";
 import { Department } from "./Department";
 import { Division } from "./Division";
 import { JobTitle } from "./JobTitle";
+import { Schedule } from "./Schedules";
 
 interface EmployeeAttributes {
   EmployeeID?: number;
   DivisionID: number;
   FirstName?: string;
   LastName?: string;
+  MiddleName?: string;
   DateOfBirth?: Date;
   Gender?: string;
   ContactNumber?: string;
@@ -43,6 +44,9 @@ const Employee = dbConnectCustomer.define('Employee', {
     allowNull: false,
   },
   FirstName: {
+    type: DataTypes.STRING(50),
+  },
+  MiddleName: {
     type: DataTypes.STRING(50),
   },
   LastName: {
@@ -106,5 +110,8 @@ Employee.belongsTo(Division, { foreignKey: 'DivisionID', targetKey: 'DivisionID'
 Employee.belongsTo(Department, { foreignKey: 'DepartmentID', targetKey: 'DepartmentID' });
 Employee.belongsTo(JobTitle, { foreignKey: 'JobTitleID', targetKey: 'JobTitleID' });
 Employee.belongsTo(Employee, { as: 'Manager', foreignKey: 'ManagerID', targetKey: 'EmployeeID' });
+
+Employee.belongsToMany(Schedule, {through: 'EmployeeSchedule'});
+Schedule.belongsToMany(Employee, { through: 'EmployeeSchedule'});
 
 export { Employee, EmployeeAttributes };
