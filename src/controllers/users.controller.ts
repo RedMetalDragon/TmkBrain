@@ -28,7 +28,7 @@ const UsersController = {
         {
           model: Employee,
           as: 'Manager',
-          attributes: ['FirstName', 'LastName']
+          attributes: ['FirstName', 'LastName', 'MiddleName']
         },
       ]
     })
@@ -42,6 +42,7 @@ const UsersController = {
         const mappedEmployee = {
           employee_id: (employee as unknown as EmployeeAttributes).EmployeeID,
           first_name: (employee as unknown as EmployeeAttributes).FirstName,
+          middle_name: (employee as unknown as EmployeeAttributes).MiddleName,
           last_name: (employee as unknown as EmployeeAttributes).LastName,
           birthday: (employee as unknown as EmployeeAttributes).DateOfBirth,
           gender: (employee as unknown as EmployeeAttributes).Gender,
@@ -61,6 +62,7 @@ const UsersController = {
           job_title: (employee as unknown as EmployeeAttributes).JobTitle.get("JobTitleName"),
           manager: (employee as unknown as EmployeeAttributes).Manager ? {
             first_name: (employee as unknown as EmployeeAttributes).Manager.get("FirstName"),
+            middle_name: (employee as unknown as EmployeeAttributes).Manager.get("MiddleName"),
             last_name: (employee as unknown as EmployeeAttributes).Manager.get("LastName"),
           } : {},
         };
@@ -72,6 +74,7 @@ const UsersController = {
     });
   },
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
   getEmployeeData(employeeID: number): Promise<Record<any, any> | null> {
     return Employee.findOne({
       where: {
@@ -93,7 +96,7 @@ const UsersController = {
         {
           model: Employee,
           as: 'Manager',
-          attributes: ['FirstName', 'LastName']
+          attributes: ['FirstName', 'LastName', 'MiddleName']
         },
       ]
     })
@@ -105,6 +108,7 @@ const UsersController = {
       const mappedEmployee = {
         employee_id: (employee as unknown as EmployeeAttributes).EmployeeID,
         first_name: (employee as unknown as EmployeeAttributes).FirstName,
+        middle_name: (employee as unknown as EmployeeAttributes).MiddleName,
         last_name: (employee as unknown as EmployeeAttributes).LastName,
         birthday: (employee as unknown as EmployeeAttributes).DateOfBirth,
         gender: (employee as unknown as EmployeeAttributes).Gender,
@@ -124,6 +128,7 @@ const UsersController = {
         job_title: (employee as unknown as EmployeeAttributes).JobTitle.get("JobTitleName"),
         manager: (employee as unknown as EmployeeAttributes).Manager ? {
           first_name: (employee as unknown as EmployeeAttributes).Manager.get("FirstName"),
+          middle_name: (employee as unknown as EmployeeAttributes).Manager.get("MiddleName"),
           last_name: (employee as unknown as EmployeeAttributes).Manager.get("LastName"),
         } : {},
       };
@@ -177,47 +182,6 @@ const UsersController = {
     ];
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
-  getSchedule(): Record<any, any>[] | null {
-    return [
-        {
-            date: "2023-10-01",
-            in: "08:00:00am",
-            out: "05:00:00pm",
-            day: "Sunday",
-            hours: "8 hours"
-        },
-        {
-            date: "2023-10-02",
-            in: "08:00:00am",
-            out: "05:00:00pm",
-            day: "Monday",
-            hours: "8 hours"
-        },
-        {
-            date: "2023-10-03",
-            in: "08:00:00am",
-            out: "05:00:00pm",
-            day: "Tuesday",
-            hours: "8 hours"
-        },
-        {
-            date: "2023-10-04",
-            in: "08:00:00am",
-            out: "05:00:00pm",
-            day: "Wednesday",
-            hours: "8 hours"
-        },
-        {
-            date: "2023-10-05",
-            in: "08:00:00am",
-            out: "05:00:00pm",
-            day: "Thursday",
-            hours: "8 hours"
-        }
-    ];
-  },
-  
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
   attendance(): Record<any, any> | null {
     return {    
