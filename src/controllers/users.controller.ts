@@ -10,8 +10,8 @@ import { JobTitle } from "../models/JobTitle";
 
 const UsersController = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
-  getEmployees(): Promise<Record<any, any>[] | null> {
-    return Employee.findAll({
+  async getEmployees(): Promise<Record<any, any>[] | null> {
+    return await Employee.findAll({
       include: [
         {
           model: Division,
@@ -75,8 +75,8 @@ const UsersController = {
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
-  getEmployeeData(employeeID: number): Promise<Record<any, any> | null> {
-    return Employee.findOne({
+  async getEmployeeData(employeeID: number): Promise<Record<any, any> | null> {
+    return await Employee.findOne({
       where: {
         EmployeeID: employeeID
       },
@@ -192,7 +192,7 @@ const UsersController = {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
   async getRole(roleId: number): Promise<Record<any, any>[] | null> {
-    return RoleFeature.findAll({
+    return await RoleFeature.findAll({
         where: {
             RoleID: roleId,
             IsEnabled: true,
@@ -251,7 +251,7 @@ const UsersController = {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
   async getCustomerDetails(customerID: number): Promise<Record<any, any> | null> {
-    return Customer.findOne({
+    return await Customer.findOne({
         where: {
             CustomerID: customerID,
         },
@@ -261,7 +261,7 @@ const UsersController = {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
   async authenticate(username: string): Promise<Model<any, any> | null>  {
-    return Auth.findOne({
+    return await Auth.findOne({
         where: {
             EmailAddress: username,
         },

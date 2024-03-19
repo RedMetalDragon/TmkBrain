@@ -214,7 +214,7 @@ const SchedulesRestHandler = {
             3. Compare the merged array to the upcoming workday array. Should have no overlapping dates.
             4. If there's an overlapping date, throw an error with the list of overlapping dates.
           */
-          const employeeSchedules = await SchedulesController.getEmployeeSchedule(employee_id);
+          const employeeSchedules = await SchedulesController.getEmployeeSchedule({employee_id});
     
           let mergedWorkdays: string[] = [];
           if (employeeSchedules !== null) {
@@ -232,7 +232,7 @@ const SchedulesRestHandler = {
             );
           }
     
-          // Save schedule assignment in DB - I STOPPED HERE...
+          // Save schedule assignment in DB
           /*
             1. Save in EmployeeSchedule table
             2. Return success/error message
@@ -344,6 +344,149 @@ const SchedulesRestHandler = {
             next (error);
         }
       },
+    
+    async updateEmployeeScheduleById(req: Request, res: Response, next: NextFunction,): Promise<void> {
+        try {
+            const {
+                employee_schedule_id,
+            } = req.params;
+
+            const {
+                employee_id,
+                schedule_id,
+                workdays,
+            } = req.body;
+
+            // Validations: Employee_schedule_id should be existing and valid
+            if (!isNumeric(employee_schedule_id)) {
+                throw new createHttpError.InternalServerError(
+                    `Please provide numeric employee schedule ID.`,
+                );
+            }
+            const employeeScheduleData = await SchedulesController.getAssignedScheduleById(Number(employee_schedule_id));
+        
+            if (employeeScheduleData === null) {
+                throw new createHttpError.InternalServerError(
+                `Employee Schedule ID does not exist in our record.`,
+                );
+            }
+
+            // Validations: Employee id should be existing
+            const employeeData = await UsersController.getEmployeeData(Number(employee_id));
+        
+            if (employeeData === null) {
+                throw new createHttpError.InternalServerError(
+                `Employee ID does not exist in our record.`,
+                );
+            }
+        
+            // Validations: Schedule id should be existing
+            const schedule = await SchedulesController.readSchedule(Number(schedule_id));
+        
+            if (schedule === null) {
+                throw new createHttpError.InternalServerError(
+                `Schedule ID does not exist in our record.`,
+                );
+            }
+        
+            // Validations: Workdays should be an array of valid days. Each day should be unique.
+            if ((workdays as Array<string>).length === 0){
+                throw new createHttpError.InternalServerError(
+                `Workdays can't be an empty array.`,
+                );
+            }
+        
+            if (!validateUniqueDates(workdays)) {
+                throw new createHttpError.InternalServerError(
+                `Dates inside workdays attribute should be valid dates in yyyy-MM-dd format. All dates should be unique.`,
+                );
+            }
+        
+            // Validations: Dates included in the workdays attribute should not exist in the database. There shoule be only 1 schedule assigned for a certain work day.
+            /*
+                1. Get all schedules under the same employee id.
+                2. Merge arrays of all schedules of the employee.
+                3. Compare the merged array to the upcoming workday array. Should have no overlapping dates.
+                4. If there's an overlapping date, throw an error with the list of overlapping dates.
+            */
+            const employeeSchedules = await SchedulesController.getEmployeeSchedule({employee_id, employee_schedule_id: Number(employee_schedule_id)});
+        
+            let mergedWorkdays: string[] = [];
+            if (employeeSchedules !== null) {
+                employeeSchedules.forEach(employeeSchedule => {
+                    const workdaysArray = JSON.parse((employeeSchedule.dataValues as unknown as EmployeeSchedule).workdays);
+        
+                    mergedWorkdays = [...mergedWorkdays, ...workdaysArray];
+                });
+            }
+        
+            const duplicateDates = findDuplicates(workdays, mergedWorkdays);
+            if (duplicateDates.length !== 0) {
+                throw new createHttpError.InternalServerError(
+                `Employee already has an assigned schedule for the following dates: ${duplicateDates.join(', ')}`,
+                );
+            }
+
+            // Save schedule assignment in DB
+            /*
+                1. Update in EmployeeSchedule table
+                2. Return success/error message
+            */
+            const updatedEmployeeSchedule = await SchedulesController.updateEmployeeSchedule({
+                EmployeeID: employee_id,
+                ScheduleID: schedule_id,
+                Workdays: JSON.stringify(workdays),
+            }, Number(employee_schedule_id));
+    
+            if (updatedEmployeeSchedule[0] === 0) {
+                throw new createHttpError.InternalServerError(
+                    `Unable to update the employee schedule.`,
+                );
+            } else {
+                res.status(200).json({
+                    message: "Successfully updated employee schedule.",
+                    status: 200
+                });
+            }                
+        } catch (error) {
+            next (error);
+        }
+      },
+
+      async getEmployeeWeeklySchedule(req: Request, res: Response, next: NextFunction,): Promise<void> {
+        try {
+            const {
+                employee_id
+            } = req.params;
+
+            if (employee_id !== undefined && !isNumeric(employee_id)) {
+                throw new createHttpError.InternalServerError(
+                    `Please provide numeric employee ID.`,
+                );
+            }
+
+            // Validations: Employee id should be existing
+            const employeeData = await UsersController.getEmployeeData(Number(employee_id));
+        
+            if (employeeData === null) {
+                throw new createHttpError.InternalServerError(
+                `Employee ID does not exist in our record.`,
+                );
+            }
+
+            const employeeSchedule = await SchedulesController.getAssignedScheduleByEmployeeId(Number(employee_id));
+
+            // TODO:
+            /*
+            1. Filter by week
+            2. Sort workdays
+            */
+
+            res.status(200).json(employeeSchedule);
+        } catch (error) {
+            next (error);
+        }
+    },
 };
 
 export { SchedulesRestHandler };
