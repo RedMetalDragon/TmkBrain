@@ -270,6 +270,27 @@ paths:
           $ref: "#/components/responses/SuccessResponse"
         "500":
           $ref: "#/components/responses/InternalServerError"
+    
+    put:
+      tags:
+        - Employee Schedule
+      summary: Update Employee Schedule by ID
+      parameters:
+        - $ref: '#/components/parameters/employee_schedule_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/EmployeeSchedule' 
+      responses:
+        "200":
+          $ref: "#/components/responses/SuccessResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    
 
   /banners:
     get:
@@ -577,6 +598,10 @@ components:
             schedule_id: 
               type: number
             schedule_name:
+              type: string
+            time_in:
+              type: string
+            time_out:
               type: string
         workdays:
           type: array
