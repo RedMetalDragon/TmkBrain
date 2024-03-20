@@ -12,3 +12,11 @@ export const JWT_EXPIRES_IN = {
   string: "1d",
   numeric: 86400
 };
+
+export const DEFAULT_SCHEDULE = {
+  schedule: {
+    schedule_name: "Default - Day Shift",
+    time_in: "08:00 am",
+    time_out: "05:00 pm",
+  }
+};

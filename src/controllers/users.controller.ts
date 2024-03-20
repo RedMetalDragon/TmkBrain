@@ -37,7 +37,7 @@ const UsersController = {
         return null;
       }
 
-      const resultArray: any[] = [];
+      const resultArray: Record<string, unknown>[] = [];
       employees.forEach(employee => {
         const mappedEmployee = {
           employee_id: (employee as unknown as EmployeeAttributes).EmployeeID,

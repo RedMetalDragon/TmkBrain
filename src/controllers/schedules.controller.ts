@@ -3,7 +3,6 @@ import { convertTo12Hour } from "../utils/date-time-validation";
 import { Employee } from "../models/Employee";
 import { EmployeeSchedule, EmployeeScheduleAttributes } from "../models/EmployeeSchedules";
 import { Schedule } from "../models/Schedules";
-import { string } from "yaml/dist/schema/common/string";
 
 const SchedulesController = {
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -134,7 +133,7 @@ const SchedulesController = {
                 return null;
             }
 
-            const resultArray: any[] = [];
+            const resultArray: Record<string, unknown>[] = [];
             employeeSchedules.forEach(employeeSchedule => {
                 const mappedEmployeeSchedule = {
                     employee_schedule_id: (employeeSchedule as unknown as EmployeeScheduleAttributes).EmployeeScheduleID,
@@ -204,7 +203,7 @@ const SchedulesController = {
     },
 
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    async getAssignedScheduleByEmployeeId(employee_id: number): Promise<Record<any, any>[] | null> {
+    async getAssignedScheduleByEmployeeId(employee_id: number): Promise<Record<any, any>[]> {
         return await EmployeeSchedule.findAll({
             include: [
                 {
@@ -221,10 +220,6 @@ const SchedulesController = {
             },
         })
         .then(employeeSchedules => {
-            if (employeeSchedules === null) {
-                return null;
-            }
-
             // Group Workday values by schedule_id
             const groupedSchedules = employeeSchedules.reduce((acc: { schedule: { schedule_id: number, schedule_name: string, time_in: string, time_out: string }, workdays: string[] }[], schedule) => {
                 const schedule_id = (schedule as unknown as EmployeeScheduleAttributes).ScheduleID;

@@ -48,6 +48,6 @@ router.put("/employee-schedules/:employee_schedule_id", SchedulesRestHandler.upd
 
 // Get weekly and monthly schedule by ID
 router.get("/employees/:employee_id/weekly-schedule", SchedulesRestHandler.getEmployeeWeeklySchedule);
-// router.get("/employee/:employee_id/monthly-schedule", SchedulesRestHandler.getEmployeeScheduleMonthly);
+router.get("/employees/:employee_id/monthly-schedule", SchedulesRestHandler.getEmployeeMonthlySchedule);
 
 export { router };

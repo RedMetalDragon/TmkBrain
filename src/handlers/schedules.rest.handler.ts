@@ -2,7 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { convertTo12Hour, convertTo24Hour, validateTime } from "../utils/date-time-validation";
 import createHttpError from "http-errors";
 import { SchedulesController, UsersController } from "../controllers";
-import { findDuplicates, isNumeric, validateUniqueDates } from "./helpers";
+import { findDuplicates, getMonthDates, getWeekDates, getWeekdays, getWeekdaysOfMonth, isNumeric, validateUniqueDates } from "./helpers";
+import { DEFAULT_SCHEDULE } from "../constants";
 
 interface EmployeeSchedule {
     employee_id: number;
@@ -453,7 +454,7 @@ const SchedulesRestHandler = {
         }
       },
 
-      async getEmployeeWeeklySchedule(req: Request, res: Response, next: NextFunction,): Promise<void> {
+    async getEmployeeWeeklySchedule(req: Request, res: Response, next: NextFunction,): Promise<void> {
         try {
             const {
                 employee_id
@@ -476,13 +477,84 @@ const SchedulesRestHandler = {
 
             const employeeSchedule = await SchedulesController.getAssignedScheduleByEmployeeId(Number(employee_id));
 
-            // TODO:
-            /*
-            1. Filter by week
-            2. Sort workdays
-            */
+            // If employee schedule is null (meaning, no custom shift assigned yet), return default schedule: Workdays | 8 am to 5 pm
+            if (employeeSchedule.length === 0) {
+                res.status(200).json([{
+                    ...DEFAULT_SCHEDULE,
+                    workdays: getWeekdays(),
+                }]);
+            }
+            else {
+                /*
+                1. Filter by week
+                2. Sort workdays
+                */
+                const weekSchedule = employeeSchedule?.map(item => {
+                    const weekWorkdays = getWeekDates().filter(weekdates => item.workdays.includes(weekdates));    
 
-            res.status(200).json(employeeSchedule);
+                    if (weekWorkdays.length !== 0){
+                        return {
+                            ...item,
+                            workdays: weekWorkdays.sort()
+                        }
+                    }
+                }).filter(Boolean); // Filter out any null or undefined values
+
+                res.status(200).json(weekSchedule);
+            }
+        } catch (error) {
+            next (error);
+        }
+    },
+
+    async getEmployeeMonthlySchedule(req: Request, res: Response, next: NextFunction,): Promise<void> {
+        try {
+            const {
+                employee_id
+            } = req.params;
+
+            if (employee_id !== undefined && !isNumeric(employee_id)) {
+                throw new createHttpError.InternalServerError(
+                    `Please provide numeric employee ID.`,
+                );
+            }
+
+            // Validations: Employee id should be existing
+            const employeeData = await UsersController.getEmployeeData(Number(employee_id));
+        
+            if (employeeData === null) {
+                throw new createHttpError.InternalServerError(
+                `Employee ID does not exist in our record.`,
+                );
+            }
+
+            const employeeSchedule = await SchedulesController.getAssignedScheduleByEmployeeId(Number(employee_id));
+
+            // If employee schedule is null (meaning, no custom shift assigned yet), return default schedule: Workdays | 8 am to 5 pm
+            if (employeeSchedule.length === 0) {
+                res.status(200).json([{
+                    ...DEFAULT_SCHEDULE,
+                    workdays: getWeekdaysOfMonth(),
+                }]);
+            }
+            else {
+                /*
+                1. Filter by month
+                2. Sort workdays
+                */
+                const monthSchedule = employeeSchedule?.map(item => {
+                    const monthWorkdays = getMonthDates().filter(monthDates => item.workdays.includes(monthDates));    
+
+                    if (monthWorkdays.length !== 0){
+                        return {
+                            ...item,
+                            workdays: monthWorkdays.sort()
+                        }
+                    }
+                }).filter(Boolean); // Filter out any null or undefined values
+
+                res.status(200).json(monthSchedule);
+            }
         } catch (error) {
             next (error);
         }

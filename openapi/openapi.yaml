@@ -290,6 +290,49 @@ paths:
           $ref: "#/components/responses/SuccessResponse"
         "500":
           $ref: "#/components/responses/InternalServerError"
+          
+          
+  /employees/:employee_id/weekly-schedule:
+    get:
+      tags:
+        - Employee Schedule
+      summary: Get Employee's Schedule for the Week
+      parameters:
+        - $ref: '#/components/parameters/employee_id'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/EmployeeWeeklyMonthlyScheduleResponse'
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /employees/:employee_id/monthly-schedule:
+    get:
+      tags:
+        - Employee Schedule
+      summary: Get Employee's Schedule for the Month
+      parameters:
+        - $ref: '#/components/parameters/employee_id'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/EmployeeWeeklyMonthlyScheduleResponse'
+        "500":
+          $ref: "#/components/responses/InternalServerError"
     
 
   /banners:
@@ -609,6 +652,25 @@ components:
             type: string
           description: array of workdays in yyyy-MM-dd format (e.g. ["2024-01-01", "2024-01-02"])
           
+    EmployeeWeeklyMonthlyScheduleResponse:
+      properties:
+        schedule:
+          type: object
+          properties:
+            schedule_id: 
+              type: number
+            schedule_name:
+              type: string
+            time_in:
+              type: string
+            time_out:
+              type: string
+        workdays:
+          type: array
+          items:
+            type: string
+          description: array of workdays in yyyy-MM-dd format (e.g. ["2024-01-01", "2024-01-02"])
+    
     Login:
       properties:
         username:
