@@ -24,7 +24,8 @@ node_modules/
 
 # Optional eslint cache
 .eslintcache
-
+yarn.lock
+package-lock.json
 # dotenv environment variables file
 .env
 .env.test
