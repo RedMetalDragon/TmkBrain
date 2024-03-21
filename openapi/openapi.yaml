@@ -177,28 +177,7 @@ paths:
                       description: Hours scheduled for the day
         "500":
           $ref: "#/components/responses/InternalServerError"
-    post:
-      tags:
-        - Users
-      summary: Record User Attendance
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                date_timestamp:
-                  type: string
-                  format: date-time
-                  description: Date timestamp in UTC format
-              required:
-                - date_timestamp
-      responses:
-        "200":
-          $ref: "#/components/responses/SuccessResponse"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
+    
 
   /employee-schedules:
     get:
@@ -334,6 +313,39 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
     
+  /employees/:employee_id/attendance:
+    post:
+      tags:
+        - Employee Logs and Attendance
+      summary: Save Employee Logs
+      parameters:
+        - $ref: '#/components/parameters/employee_id'
+      responses:
+        "200":
+          $ref: "#/components/responses/SuccessResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /employees/:employee_id/logs:      
+    get:
+      tags:
+        - Employee Logs and Attendance
+      summary: Get Employee Logs
+      parameters:
+        - $ref: '#/components/parameters/employee_id'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/EmployeeLogsResponse'
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
   /banners:
     get:
@@ -670,6 +682,14 @@ components:
           items:
             type: string
           description: array of workdays in yyyy-MM-dd format (e.g. ["2024-01-01", "2024-01-02"])
+          
+    EmployeeLogsResponse:
+      properties:
+        employee_log_id:
+          type: number
+        log:
+          type: string
+          description: datetime in UTC
     
     Login:
       properties:

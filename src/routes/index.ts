@@ -21,7 +21,8 @@ router.get("/users/dashboard", UsersRestHandler.getDashboardData);
 router.get("/banners", BannersRestHandler.getBanners);
 
 // Punch in/out
-router.post("/users/attendance", UsersRestHandler.attendance);
+router.post("/employees/:employee_id/attendance", UsersRestHandler.attendance);
+router.get("/employees/:employee_id/logs", UsersRestHandler.getLogs);
 
 // Attendance
 router.get("/users/attendance", UsersRestHandler.getAttendance);
