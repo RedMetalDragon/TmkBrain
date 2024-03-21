@@ -4,7 +4,7 @@ import { Model } from "sequelize";
 const BannerController = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
   async getBanners():Promise<Model<any, any>[] | null> {
-    return Banner.findAll({
+    return await Banner.findAll({
       limit: 3,
       order: [['CreatedDate', 'DESC']],
       attributes: [

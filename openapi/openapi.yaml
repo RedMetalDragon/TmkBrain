@@ -177,34 +177,16 @@ paths:
                       description: Hours scheduled for the day
         "500":
           $ref: "#/components/responses/InternalServerError"
-    post:
-      tags:
-        - Users
-      summary: Record User Attendance
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                date_timestamp:
-                  type: string
-                  format: date-time
-                  description: Date timestamp in UTC format
-              required:
-                - date_timestamp
-      responses:
-        "200":
-          $ref: "#/components/responses/SuccessResponse"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
+    
 
-  /users/schedule:
+  /employee-schedules:
     get:
       tags:
-        - Users
-      summary: User Schedule
+        - Employee Schedule
+      summary: List Employee Schedules
+      parameters:
+        - $ref: '#/components/parameters/employee_id_query'
+        - $ref: '#/components/parameters/schedule_id_query'
       responses:
         "200":
           description: Successful response
@@ -214,26 +196,154 @@ paths:
                 type: array
                 items:
                   type: object
-                  properties:
-                    date:
-                      type: string
-                      format: date
-                      description: Date of the schedule
-                    in:
-                      type: string
-                      format: time
-                      description: Punch in time
-                    out:
-                      type: string
-                      format: time
-                      description: Punch out time
-                    day:
-                      type: string
-                      description: Day equivalent of the date
-                    hours:
-                      type: string
-                      format: time
-                      description: Hours scheduled for the day
+                  allOf:
+                    - $ref: '#/components/schemas/EmployeeScheduleResponse'
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Employee Schedule
+      summary: Assign Employee Schedule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/EmployeeSchedule' 
+      responses:
+        "200":
+          $ref: "#/components/responses/SuccessResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /employee-schedules/{employee_schedule_id}:
+    get:
+      tags:
+        - Employee Schedule
+      summary: Get Employee Schedule by ID
+      parameters:
+        - $ref: '#/components/parameters/employee_schedule_id'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/EmployeeScheduleResponse'
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+          
+    delete:
+      tags:
+        - Employee Schedule
+      summary: Delete Employee Schedule by ID
+      parameters:
+        - $ref: '#/components/parameters/employee_schedule_id'
+      responses:
+        "200":
+          $ref: "#/components/responses/SuccessResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    
+    put:
+      tags:
+        - Employee Schedule
+      summary: Update Employee Schedule by ID
+      parameters:
+        - $ref: '#/components/parameters/employee_schedule_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/EmployeeSchedule' 
+      responses:
+        "200":
+          $ref: "#/components/responses/SuccessResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+          
+          
+  /employees/:employee_id/weekly-schedule:
+    get:
+      tags:
+        - Employee Schedule
+      summary: Get Employee's Schedule for the Week
+      parameters:
+        - $ref: '#/components/parameters/employee_id'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/EmployeeWeeklyMonthlyScheduleResponse'
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /employees/:employee_id/monthly-schedule:
+    get:
+      tags:
+        - Employee Schedule
+      summary: Get Employee's Schedule for the Month
+      parameters:
+        - $ref: '#/components/parameters/employee_id'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/EmployeeWeeklyMonthlyScheduleResponse'
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    
+  /employees/:employee_id/attendance:
+    post:
+      tags:
+        - Employee Logs and Attendance
+      summary: Save Employee Logs
+      parameters:
+        - $ref: '#/components/parameters/employee_id'
+      responses:
+        "200":
+          $ref: "#/components/responses/SuccessResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /employees/:employee_id/logs:      
+    get:
+      tags:
+        - Employee Logs and Attendance
+      summary: Get Employee Logs
+      parameters:
+        - $ref: '#/components/parameters/employee_id'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/EmployeeLogsResponse'
         "500":
           $ref: "#/components/responses/InternalServerError"
 
@@ -435,6 +545,25 @@ components:
       description: Numeric employee_id
       schema:
         type: integer
+    employee_schedule_id:
+      name: employee_schedule_id
+      in: path
+      required: true
+      description: Numeric employee_schedule_id
+      schema:
+        type: integer
+    employee_id_query:
+      name: employee_id
+      in: query
+      required: false
+      schema:
+        type: integer
+    schedule_id_query:
+      name: schedule_id
+      in: query
+      required: false
+      schema:
+        type: integer
     
   schemas:
     Employee:
@@ -442,6 +571,8 @@ components:
         employee-id:
           type: number
         first_name:
+          type: string
+        middle_name:
           type: string
         last_name:
           type: string
@@ -484,10 +615,82 @@ components:
           properties:
             first_name: 
               type: string
+            middle_name: 
+              type: string
             last_name:
               type: string
           
+    EmployeeSchedule:
+      properties:
+        employee_id:
+          type: number
+        schedule_id: 
+          type: number
+        workdays:
+          type: array
+          items:
+            type: string
+          description: array of workdays in yyyy-MM-dd format (e.g. ["2024-01-01", "2024-01-02"])
         
+    EmployeeScheduleResponse:
+      properties:
+        employee_schedule_id:
+          type: number
+        employee:
+          type: object
+          properties:
+            employee_id:
+              type: number
+            employee_fname:
+              type: string
+            employee_mname:
+              type: string
+            employee_lname:
+              type: string
+        schedule:
+          type: object
+          properties:
+            schedule_id: 
+              type: number
+            schedule_name:
+              type: string
+            time_in:
+              type: string
+            time_out:
+              type: string
+        workdays:
+          type: array
+          items:
+            type: string
+          description: array of workdays in yyyy-MM-dd format (e.g. ["2024-01-01", "2024-01-02"])
+          
+    EmployeeWeeklyMonthlyScheduleResponse:
+      properties:
+        schedule:
+          type: object
+          properties:
+            schedule_id: 
+              type: number
+            schedule_name:
+              type: string
+            time_in:
+              type: string
+            time_out:
+              type: string
+        workdays:
+          type: array
+          items:
+            type: string
+          description: array of workdays in yyyy-MM-dd format (e.g. ["2024-01-01", "2024-01-02"])
+          
+    EmployeeLogsResponse:
+      properties:
+        employee_log_id:
+          type: number
+        log:
+          type: string
+          description: datetime in UTC
+    
     Login:
       properties:
         username:

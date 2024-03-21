@@ -7,11 +7,13 @@ import { Employee, EmployeeAttributes } from "../models/Employee";
 import { Division } from "../models/Division";
 import { Department } from "../models/Department";
 import { JobTitle } from "../models/JobTitle";
+import { EmployeeLog } from "../models/EmployeeLog";
+import { getCurrentDateTime } from "../handlers/helpers";
 
 const UsersController = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
-  getEmployees(): Promise<Record<any, any>[] | null> {
-    return Employee.findAll({
+  async getEmployees(): Promise<Record<any, any>[] | null> {
+    return await Employee.findAll({
       include: [
         {
           model: Division,
@@ -28,7 +30,7 @@ const UsersController = {
         {
           model: Employee,
           as: 'Manager',
-          attributes: ['FirstName', 'LastName']
+          attributes: ['FirstName', 'LastName', 'MiddleName']
         },
       ]
     })
@@ -37,11 +39,12 @@ const UsersController = {
         return null;
       }
 
-      const resultArray: any[] = [];
+      const resultArray: Record<string, unknown>[] = [];
       employees.forEach(employee => {
         const mappedEmployee = {
           employee_id: (employee as unknown as EmployeeAttributes).EmployeeID,
           first_name: (employee as unknown as EmployeeAttributes).FirstName,
+          middle_name: (employee as unknown as EmployeeAttributes).MiddleName,
           last_name: (employee as unknown as EmployeeAttributes).LastName,
           birthday: (employee as unknown as EmployeeAttributes).DateOfBirth,
           gender: (employee as unknown as EmployeeAttributes).Gender,
@@ -61,6 +64,7 @@ const UsersController = {
           job_title: (employee as unknown as EmployeeAttributes).JobTitle.get("JobTitleName"),
           manager: (employee as unknown as EmployeeAttributes).Manager ? {
             first_name: (employee as unknown as EmployeeAttributes).Manager.get("FirstName"),
+            middle_name: (employee as unknown as EmployeeAttributes).Manager.get("MiddleName"),
             last_name: (employee as unknown as EmployeeAttributes).Manager.get("LastName"),
           } : {},
         };
@@ -72,8 +76,9 @@ const UsersController = {
     });
   },
 
-  getEmployeeData(employeeID: number): Promise<Record<any, any> | null> {
-    return Employee.findOne({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
+  async getEmployeeData(employeeID: number): Promise<Record<any, any> | null> {
+    return await Employee.findOne({
       where: {
         EmployeeID: employeeID
       },
@@ -93,7 +98,7 @@ const UsersController = {
         {
           model: Employee,
           as: 'Manager',
-          attributes: ['FirstName', 'LastName']
+          attributes: ['FirstName', 'LastName', 'MiddleName']
         },
       ]
     })
@@ -105,6 +110,7 @@ const UsersController = {
       const mappedEmployee = {
         employee_id: (employee as unknown as EmployeeAttributes).EmployeeID,
         first_name: (employee as unknown as EmployeeAttributes).FirstName,
+        middle_name: (employee as unknown as EmployeeAttributes).MiddleName,
         last_name: (employee as unknown as EmployeeAttributes).LastName,
         birthday: (employee as unknown as EmployeeAttributes).DateOfBirth,
         gender: (employee as unknown as EmployeeAttributes).Gender,
@@ -124,6 +130,7 @@ const UsersController = {
         job_title: (employee as unknown as EmployeeAttributes).JobTitle.get("JobTitleName"),
         manager: (employee as unknown as EmployeeAttributes).Manager ? {
           first_name: (employee as unknown as EmployeeAttributes).Manager.get("FirstName"),
+          middle_name: (employee as unknown as EmployeeAttributes).Manager.get("MiddleName"),
           last_name: (employee as unknown as EmployeeAttributes).Manager.get("LastName"),
         } : {},
       };
@@ -178,57 +185,35 @@ const UsersController = {
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
-  getSchedule(): Record<any, any>[] | null {
-    return [
-        {
-            date: "2023-10-01",
-            in: "08:00:00am",
-            out: "05:00:00pm",
-            day: "Sunday",
-            hours: "8 hours"
-        },
-        {
-            date: "2023-10-02",
-            in: "08:00:00am",
-            out: "05:00:00pm",
-            day: "Monday",
-            hours: "8 hours"
-        },
-        {
-            date: "2023-10-03",
-            in: "08:00:00am",
-            out: "05:00:00pm",
-            day: "Tuesday",
-            hours: "8 hours"
-        },
-        {
-            date: "2023-10-04",
-            in: "08:00:00am",
-            out: "05:00:00pm",
-            day: "Wednesday",
-            hours: "8 hours"
-        },
-        {
-            date: "2023-10-05",
-            in: "08:00:00am",
-            out: "05:00:00pm",
-            day: "Thursday",
-            hours: "8 hours"
-        }
-    ];
-  },
-  
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
-  attendance(): Record<any, any> | null {
-    return {    
-        message: "Successfully recorded punch in / out.",
-        status: 200
+  async saveAttendance(employee_id: number): Promise<Model<any, any> | Error> {
+    console.log(getCurrentDateTime());
+
+    try {
+      return await EmployeeLog.create({
+        EmployeeID: employee_id,
+        LogTime: getCurrentDateTime()
+      });
+    } catch (error) {
+      return error as Error;
     }
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
+  async getLogs(employee_id: number): Promise<Model<any, any>[] | null> {
+    return await EmployeeLog.findAll({
+      where: {
+        EmployeeID: employee_id
+      },
+      attributes: [
+        ["EmployeeLogID", "employee_log_id"],
+        ["LogTime", "log"]
+      ]
+    });
+  },
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
   async getRole(roleId: number): Promise<Record<any, any>[] | null> {
-    return RoleFeature.findAll({
+    return await RoleFeature.findAll({
         where: {
             RoleID: roleId,
             IsEnabled: true,
@@ -287,7 +272,7 @@ const UsersController = {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
   async getCustomerDetails(customerID: number): Promise<Record<any, any> | null> {
-    return Customer.findOne({
+    return await Customer.findOne({
         where: {
             CustomerID: customerID,
         },
@@ -297,7 +282,7 @@ const UsersController = {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
   async authenticate(username: string): Promise<Model<any, any> | null>  {
-    return Auth.findOne({
+    return await Auth.findOne({
         where: {
             EmailAddress: username,
         },
