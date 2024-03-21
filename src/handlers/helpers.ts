@@ -116,3 +116,26 @@ export function getWeekdays(): string[] {
 
   return dates;
 }
+
+export function getCurrentDateTime(): string {
+  // Create a new Date object
+  const currentDate = new Date();
+
+  // Get the current date and time components
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1; // Month is zero-based, so we add 1
+  const day = currentDate.getDate();
+  const hours = currentDate.getHours();
+  const minutes = currentDate.getMinutes();
+  const seconds = currentDate.getSeconds();
+
+  // Format the date and time as needed
+  const formattedDateTime = year + "-" + 
+                          (month < 10 ? "0" + month : month) + "-" + 
+                          (day < 10 ? "0" + day : day) + " " + 
+                          (hours < 10 ? "0" + hours : hours) + ":" + 
+                          (minutes < 10 ? "0" + minutes : minutes) + ":" + 
+                          (seconds < 10 ? "0" + seconds : seconds);
+
+  return formattedDateTime;
+};
