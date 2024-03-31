@@ -3,7 +3,8 @@ import {
   HealthCheckRestHandler,
   BannersRestHandler,
   UsersRestHandler,
-  SchedulesRestHandler
+  SchedulesRestHandler,
+  AttendanceRestHandler
 } from "../handlers";
 
 const router = Router();
@@ -23,6 +24,7 @@ router.get("/banners", BannersRestHandler.getBanners);
 // Punch in/out
 router.post("/employees/:employee_id/attendance", UsersRestHandler.attendance);
 router.get("/employees/:employee_id/logs", UsersRestHandler.getLogs);
+router.post("/employees/attendance/compute", AttendanceRestHandler.computeAttendance);
 
 // Attendance
 router.get("/users/attendance", UsersRestHandler.getAttendance);
