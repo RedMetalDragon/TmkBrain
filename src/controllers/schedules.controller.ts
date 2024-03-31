@@ -3,6 +3,8 @@ import { convertTo12Hour } from "../utils/date-time-validation";
 import { Employee } from "../models/Employee";
 import { EmployeeSchedule, EmployeeScheduleAttributes } from "../models/EmployeeSchedules";
 import { Schedule } from "../models/Schedules";
+import { EmployeeLog } from "../models/EmployeeLog";
+import sequelize from "sequelize";
 
 const SchedulesController = {
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -258,6 +260,46 @@ const SchedulesController = {
             }
         });    
     }, 
+
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    async getScheduleForToday(employee_id: number, date: string): Promise<Record<any, any> | null> {
+        return await EmployeeSchedule.findOne({
+            include: [
+                {
+                    model: Schedule,
+                    attributes: ["ScheduleName", "TimeIn", "TimeOut"]
+                }
+            ],
+            where: {
+                EmployeeID: employee_id,
+                Workdays: {
+                    [Op.like]: `%${date}%`
+                  }
+            },
+        });
+    },
+
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    async getTimeInAndOut(date: string, employee_id: number): Promise<Record<any, any> | null> {
+        // Set the start and end of the current date
+        const startDate = new Date(date);
+        startDate.setHours(0, 0, 0, 0); // Set time to the start of the day (00:00:00)
+        const endDate = new Date(date);
+        endDate.setHours(23, 59, 59, 999); // Set time to the end of the day (23:59:59:999)
+
+        return await EmployeeLog.findOne({
+            attributes: [
+                [sequelize.fn('min', sequelize.col('LogTime')), 'time_in'],
+                [sequelize.fn('max', sequelize.col('LogTime')), 'time_out'],
+            ],
+            where: {
+                EmployeeID: employee_id,
+                LogTime: {
+                    [Op.between]: [startDate, endDate]
+                }
+            }
+        });
+    },
 };
 
 export { SchedulesController };
