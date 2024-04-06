@@ -9,8 +9,6 @@ const corsOptions = {
   origin: "*",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
-  preflightContinue: false,
-  credentials: true,
 };
 
 export default function createApp(path: string, router: Router): Application {
@@ -22,6 +20,5 @@ export default function createApp(path: string, router: Router): Application {
   app.use(httpContext.middleware);
   app.use(path, router);
   app.use(problemDetailsResponseMiddleware);
-
   return app;
 }
