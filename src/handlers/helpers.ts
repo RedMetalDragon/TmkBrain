@@ -1,4 +1,13 @@
 import { DateTime } from 'luxon';
+import moment from "moment-timezone";
+import { SchedulesController } from '../controllers';
+
+export function getTimeZone(): string {
+  return moment.tz.guess();
+
+  // To display in local timezone
+  // console.log(`Time in: ${timeInOut!.dataValues.time_in.toLocaleString('en-US', {timeZone: getTimeZone()})}`);
+}
 
 /* eslint-disable-next-line */
 export function isNumeric(input: any): boolean {
@@ -115,4 +124,133 @@ export function getWeekdays(): string[] {
   }
 
   return dates;
+}
+
+export function getCurrentDateTime(): string {
+  // Create a new Date object
+  const currentDate = new Date();
+
+  // Get the current date and time components
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1; // Month is zero-based, so we add 1
+  const day = currentDate.getDate();
+  const hours = currentDate.getHours();
+  const minutes = currentDate.getMinutes();
+  const seconds = currentDate.getSeconds();
+
+  // Format the date and time as needed
+  const formattedDateTime = year + "-" + 
+                          (month < 10 ? "0" + month : month) + "-" + 
+                          (day < 10 ? "0" + day : day) + " " + 
+                          (hours < 10 ? "0" + hours : hours) + ":" + 
+                          (minutes < 10 ? "0" + minutes : minutes) + ":" + 
+                          (seconds < 10 ? "0" + seconds : seconds);
+
+  return formattedDateTime;
+};
+
+export function getCurrentDate(days: number = 0): string {
+  // Create a new Date object
+  const currentDate = new Date();
+
+  // Subtract the specified number of days
+  currentDate.setDate(currentDate.getDate() - days);
+
+  // Extract individual components of the date
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Month is zero-based, so we add 1
+  const day = String(currentDate.getDate()).padStart(2, '0');
+
+  // Format the date as desired
+  const formattedDate = `${year}-${month}-${day}`;
+
+  return formattedDate;
+};
+
+export async function getTimeInAndOut(date: string, employee_id: number): Promise<Record<string, any>> {
+  // Get earliest and latest log for the day
+  const timeInOut = await SchedulesController.getTimeInAndOut(date, employee_id);
+
+  const time_in = timeInOut!.dataValues.time_in;
+  const time_out = timeInOut!.dataValues.time_out;
+
+  let absent = false;
+  let incomplete_log = false;
+
+  // no logs => isAbsent - true 
+  if(time_in === null && time_out === null) {
+      absent = true; 
+  }
+  // 1 log => isIncompleteLog - true
+  else if ((time_in === null && time_out !== null) || (time_in !== null && time_out === null)) {
+      incomplete_log = true;
+  }
+
+  return {
+      time_in,
+      time_out,
+      absent,
+      incomplete_log,
+  };
+}
+
+export async function getTimeInAndOutNightShift(yesterday: string, currentDate: string, employee_id: number): Promise<Record<string, any>> {
+  // Get earliest log from yesterday
+  const timeInOutYesterday = await SchedulesController.getTimeInAndOut(yesterday, employee_id);
+
+  // Get latest log today
+  const timeInOutToday = await SchedulesController.getTimeInAndOut(currentDate, employee_id);
+
+  const time_in = timeInOutYesterday!.dataValues.time_in;
+  const time_out = timeInOutToday!.dataValues.time_out;
+
+  let absent = false;
+  let incomplete_log = false;
+
+  // no logs => isAbsent - true 
+  if(time_in === null && time_out === null) {
+      absent = true; 
+  }
+  // 1 log => isIncompleteLog - true
+  else if ((time_in === null && time_out !== null) || (time_in !== null && time_out === null)) {
+      incomplete_log = true;
+  }
+
+  return {
+      time_in,
+      time_out,
+      absent,
+      incomplete_log,
+  };
+};
+
+export function hoursDifference(timeout: any, timein:  any): number {
+  const timeDifference = timeout - timein;
+  const totalMinutesDifference = timeDifference / (1000 * 60);
+  const hoursDifference = (totalMinutesDifference / 60).toFixed(2);
+
+  return Number(hoursDifference);
+};
+
+export function getScheduledTimeIn(date: string, timein: string): Date {
+  // Parse the timestamp string into a Date object
+  const dateObj = new Date(date);
+
+  // Set the time part from timein
+  const [hours, minutes, seconds] = timein.split(':').map(Number);
+
+  dateObj.setHours(hours);
+  dateObj.setMinutes(minutes);
+  dateObj.setSeconds(seconds);
+
+  // Convert the updated Date object back to a string
+  const updatedTimestamp = dateObj;
+
+  return updatedTimestamp;
+}
+
+export function isWeekend(date: string) {
+  const currentDate = new Date(date);
+  const dayOfWeek = currentDate.getDay(); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
+  return dayOfWeek === 0 || dayOfWeek === 6; // Saturday or Sunday
 }

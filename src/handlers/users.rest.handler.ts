@@ -69,8 +69,67 @@ const UsersRestHandler = {
     }
   },
 
-  attendance(req: Request, res: Response): void {
-    res.status(200).json(UsersController.attendance());
+  async attendance(req: Request, res: Response, next: NextFunction,): Promise<void> {
+    try {
+      const { employee_id } = req.params;
+
+      // Validate if schedule_id is numeric
+      if (!isNumeric(employee_id)){
+        throw new createHttpError.InternalServerError(
+            `Please provide numeric employee ID.`,
+          );
+      }
+    
+      const employeeData = await UsersController.getEmployeeData(Number(employee_id));
+
+      if (employeeData === null) {
+        throw new createHttpError.InternalServerError(
+          `Employee ID does not exist in our record.`,
+        );
+      }
+
+      const log = await UsersController.saveAttendance(Number(employee_id));
+
+      if (log instanceof Error) {
+        throw new createHttpError.InternalServerError(
+            `Unable to save the employee attendance.`,
+        );
+      } else {
+          res.status(200).json({
+              message: "Successfully saved employee attendance.",
+              status: 200
+          });
+      }
+    } catch (error) {
+      next (error);
+    }     
+  },
+
+  async getLogs(req: Request, res: Response, next: NextFunction,): Promise<void> {
+    try {
+      const { employee_id } = req.params;
+
+      // Validate if schedule_id is numeric
+      if (!isNumeric(employee_id)){
+        throw new createHttpError.InternalServerError(
+            `Please provide numeric employee ID.`,
+          );
+      }
+    
+      const employeeData = await UsersController.getEmployeeData(Number(employee_id));
+
+      if (employeeData === null) {
+        throw new createHttpError.InternalServerError(
+          `Employee ID does not exist in our record.`,
+        );
+      }
+
+      const logs = await UsersController.getLogs(Number(employee_id));
+
+      res.status(200).json(logs);
+    } catch (error) {
+      next (error);
+    }     
   },
 
   async getEmployees(req: Request, res: Response, next: NextFunction,): Promise<void> {

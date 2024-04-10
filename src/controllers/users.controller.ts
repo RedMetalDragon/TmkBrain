@@ -7,6 +7,8 @@ import { Employee, EmployeeAttributes } from "../models/Employee";
 import { Division } from "../models/Division";
 import { Department } from "../models/Department";
 import { JobTitle } from "../models/JobTitle";
+import { EmployeeLog } from "../models/EmployeeLog";
+import { getCurrentDateTime } from "../handlers/helpers";
 
 const UsersController = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
@@ -183,11 +185,30 @@ const UsersController = {
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
-  attendance(): Record<any, any> | null {
-    return {    
-        message: "Successfully recorded punch in / out.",
-        status: 200
+  async saveAttendance(employee_id: number): Promise<Model<any, any> | Error> {
+    console.log(getCurrentDateTime());
+
+    try {
+      return await EmployeeLog.create({
+        EmployeeID: employee_id,
+        LogTime: getCurrentDateTime()
+      });
+    } catch (error) {
+      return error as Error;
     }
+  },
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
+  async getLogs(employee_id: number): Promise<Model<any, any>[] | null> {
+    return await EmployeeLog.findAll({
+      where: {
+        EmployeeID: employee_id
+      },
+      attributes: [
+        ["EmployeeLogID", "employee_log_id"],
+        ["LogTime", "log"]
+      ]
+    });
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
