@@ -1,0 +1,41 @@
+# Stage 1: Build and compile dependencies
+FROM node:14-alpine as builder
+
+WORKDIR /app
+
+# Install Python and build tools necessary for node-gyp and bcrypt
+RUN apk add --no-cache python3 make g++ && ln -sf python3 /usr/bin/python
+
+# Copy package.json and package-lock.json to install dependencies
+COPY package*.json ./
+RUN npm install && npm rebuild bcrypt --build-from-source
+
+# Copy the rest of the application source code
+COPY . .
+
+# Assuming you have a build script in package.json that compiles TypeScript to JavaScript
+# and outputs to the 'dist' directory, including any additional steps like copying OpenAPI specs
+RUN npm run build
+
+# Stage 2: Production environment setup
+FROM node:14-alpine
+
+WORKDIR /app
+
+# Copy only the production dependencies
+COPY --from=builder /app/package*.json ./
+RUN npm install --only=production
+
+# Copy compiled JavaScript from the builder stage to the production image
+COPY --from=builder /app/dist ./dist
+
+# If there are other files or directories your application needs at runtime, copy them as well
+# For example, if you have static assets or configuration files outside of /dist:
+# COPY --from=builder /app/public ./public
+# COPY --from=builder /app/config ./config
+
+# No need to reinstall Python or build tools in the production image
+
+EXPOSE 3001
+
+CMD ["node", "dist/src/index.js"]
