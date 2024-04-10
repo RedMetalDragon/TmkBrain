@@ -3,7 +3,7 @@ import { dbConnectCustomer } from "../database/connection";
 
 interface CronHistoryAttributes {
     TrailID: number;
-    Date: String;
+    Date: string;
 }
 
 const CronHistory = dbConnectCustomer.define('CronHistory', {
