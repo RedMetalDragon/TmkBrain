@@ -47,3 +47,4 @@ temp/
 .vscode
 .vscode-test
 yarn.lock
+package-lock.json
