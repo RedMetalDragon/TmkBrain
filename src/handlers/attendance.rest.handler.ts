@@ -63,9 +63,9 @@ const AttendanceRestHandler = {
 
                         // Parse the time strings into Date objects
                         let timeIn = new Date(`2000-01-02T${scheduledTimeIn}`);
-                        let timeOut = new Date(`2000-01-02T${scheduledTimeOut}`);
+                        const timeOut = new Date(`2000-01-02T${scheduledTimeOut}`);
 
-                        let shift: string = "Day";
+                        let shift = "Day";
                         if (timeOut < timeIn) {
                             shift = "Night";
                         }
