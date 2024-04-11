@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import { dbConnectCustomer } from "../database/connection";
+import { Attendance } from "./Attendance";
 import { Department } from "./Department";
 import { Division } from "./Division";
 import { JobTitle } from "./JobTitle";
@@ -111,7 +112,9 @@ Employee.belongsTo(Department, { foreignKey: 'DepartmentID', targetKey: 'Departm
 Employee.belongsTo(JobTitle, { foreignKey: 'JobTitleID', targetKey: 'JobTitleID' });
 Employee.belongsTo(Employee, { as: 'Manager', foreignKey: 'ManagerID', targetKey: 'EmployeeID' });
 
-Employee.belongsToMany(Schedule, {through: 'EmployeeSchedule'});
+Employee.belongsToMany(Schedule, { through: 'EmployeeSchedule'});
 Schedule.belongsToMany(Employee, { through: 'EmployeeSchedule'});
+
+Employee.hasMany(Attendance, { foreignKey: 'EmployeeID'});
 
 export { Employee, EmployeeAttributes };
