@@ -88,16 +88,13 @@ const AttendanceRestHandler = {
                             // If day, get earliest and latest for the day
                             if (shift === 'Day') {
                                 timeInAndOut = await getTimeInAndOut(currentDate, employee.employee_id);
-
                                 scheduledDateTimeIn = getScheduledTimeIn(currentDate, scheduledTimeIn);
                             }
                             // If overnight, get earliest log yesterday and latest log today
                             else {
                                 // Change time in to previous date
                                 timeIn = new Date(`2000-01-01T${scheduledTimeIn}`);
-
                                 timeInAndOut = await getTimeInAndOutNightShift(yesterday, currentDate, employee.employee_id);
-
                                 scheduledDateTimeIn = getScheduledTimeIn(yesterday, scheduledTimeIn);
                             }
 

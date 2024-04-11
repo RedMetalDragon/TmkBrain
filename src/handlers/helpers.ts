@@ -149,7 +149,7 @@ export function getCurrentDateTime(): string {
   return formattedDateTime;
 };
 
-export function getCurrentDate(days: number = 0): string {
+export function getCurrentDate(days = 0): string {
   // Create a new Date object
   const currentDate = new Date();
 
