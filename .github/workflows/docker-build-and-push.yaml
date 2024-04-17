@@ -2,8 +2,8 @@ name: Build and Push Docker image
 
 on:
   push:
-    branches:
-      - 'release/staging*'  # Trigger on pushes to branches matching release/staging*
+    tags:
+      - 'v*'  # Push events to matching v*, i.e. v1.0.0, v20.15.10
   workflow_dispatch:
     inputs:
       branch:
@@ -26,17 +26,35 @@ jobs:
       id: check-condition
       run: |
         echo "Ref: $GITHUB_REF"
-        # Assuming GITHUB_REF could be a branch or a tag based on the event
+        # Assuming GITHUB_REF could be a tag based on the event
         if [[ "$GITHUB_REF" =~ refs/tags/v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
           echo "Valid semantic version tag"
           echo "proceed=true" >> $GITHUB_ENV
         elif [[ "$GITHUB_REF" =~ ^refs/heads/release/staging.* ]]; then
-          echo "Valid branch detected"
-          echo "proceed=true" >> $GITHUB_ENV
+          echo "Valid branch detected but not the tag version"
+          echo "proceed=false" >> $GITHUB_ENV
         else
           echo "Invalid or no semantic version tag"
           echo "proceed=true" >> $GITHUB_ENV
         fi
+    
+    - name: Extract image tag
+      if: env.proceed == 'true'
+      run:  |
+        if [[ "$GITHUB_REF" =~ ^refs/tags/(.+)$ ]]; then
+          TAG=${BASH_REMATCH[1]}
+          echo "Extracted tag: $TAG"
+        else
+          TAG=${GITHUB_SHA}  # Fallback to commit SHA if not a tag
+          echo "Using commit SHA as tag because no version tag is present: $TAG"
+        fi
+        echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
+
+    - name: Bridge workflow
+      if: env.proceed == 'false'
+      run:  |
+        echo "Skipping the workflow"
+        exit 1
 
     - name: Set up QEMU
       if: env.proceed == 'true'
@@ -62,8 +80,8 @@ jobs:
         platforms: linux/amd64,linux/arm64  # Specify the platforms
         push: true
         tags: |
-          marcoguerod/tmkbrain-amd64:${{ github.event.inputs.tag || github.ref_name }}
-          marcoguerod/tmkbrain-arm64:${{ github.event.inputs.tag || github.ref_name }}
+          marcoguerod/tmkbrain-amd64:${{ github.event.inputs.tag || env.IMAGE_TAG }}
+          marcoguerod/tmkbrain-arm64:${{ github.event.inputs.tag || env.IMAGE_TAG }}
 
     - name: Logout from Docker
       if: steps.check-condition.outputs.proceed == 'true'
