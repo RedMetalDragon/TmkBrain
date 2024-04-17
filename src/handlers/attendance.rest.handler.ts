@@ -153,7 +153,7 @@ const AttendanceRestHandler = {
 
                 console.log('Saving cron audit trail ...');
                 await AttendanceController.saveCronHistory({
-                    Date: currentDate,
+                    DateRun: currentDate,
                 })
 
                 res.status(200).json({mesage: "Cron successfully finished."});
