@@ -16,8 +16,6 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/HealthCheckResponse"
-        "406":
-          $ref: "#/components/responses/NotAcceptableError"
         "500":
           $ref: "#/components/responses/InternalServerError"
 
@@ -32,16 +30,9 @@ paths:
           application/json:
             schema:
               type: object
-              properties:
-                username:
-                  type: string
-                  description: User's username or email
-                password:
-                  type: string
-                  description: User's password
-              required:
-                - username
-                - password
+              allOf:
+                - $ref: '#/components/schemas/Login'  
+              
       responses:
         "200":
           description: Successful login
@@ -49,45 +40,11 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  access_token:
-                    type: string
-                    description: Access token for authenticated requests
-                  expires_in:
-                    type: integer
-                    description: Duration in seconds for which the token is valid
-                  token_type:
-                    type: string
-                    description: Type of token (e.g., Bearer)
-                  company_logo:
-                    type: string
-                    description: URL for company logo
-                  role_features:
-                    type: array
-                    items: 
-                      type: object
-                      properties:
-                        id: 
-                          type: integer
-                          description: feature ID
-                        name:
-                          type: string
-                          description: feature name
+                allOf:
+                  - $ref: '#/components/schemas/LoginResponse' 
+                              
         "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    description: Error message
-                  status:
-                    type: integer
-                    description: HTTP status code
-        "406":
-          $ref: "#/components/responses/NotAcceptableError"
+          $ref: "#/components/responses/UnauthorizedError"
         "500":
           $ref: "#/components/responses/InternalServerError"
   
@@ -95,7 +52,7 @@ paths:
     get:
       tags:
         - Users
-      summary: List of all employee
+      summary: List of all employees
       responses:
         "200":
           description: Successful response
@@ -105,34 +62,27 @@ paths:
                 type: array
                 items:
                   type: object
-                  properties:
-                    profile_picture:
-                      type: string
-                      description: Image src of the profile picture of the employee
-                    full_name:
-                      type: string
-                      description: Employee's full name
-                    employee-id:
-                      type: number
-                      description: Employee's ID
-                    status:
-                      type: string
-                      description: Employment status of the employee
-                    department:
-                      type: string
-                      description: Employee's department
-                    shift:
-                      type: string
-                      description: Employee's shift / schedule
-                    joining_date:
-                      type: string
-                      format: date
-                      description: Employee's date of employment
-                    role:
-                      type: string
-                      description: Employee's role
-        "406":
-          $ref: "#/components/responses/NotAcceptableError"
+                  allOf:
+                    - $ref: '#/components/schemas/Employee' 
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+          
+  /users/{employee_id}:
+    get:
+      tags:
+        - Users
+      summary: Get employee data by ID
+      parameters:
+        - $ref: '#/components/parameters/employee_id'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/Employee' 
         "500":
           $ref: "#/components/responses/InternalServerError"
 
@@ -188,8 +138,6 @@ paths:
                   monthly_overtime_hours:
                     type: string
                     description: number of hours overtime for the month
-        "406":
-          $ref: "#/components/responses/NotAcceptableError"
         "500":
           $ref: "#/components/responses/InternalServerError"
 
@@ -227,51 +175,18 @@ paths:
                       type: string
                       format: time
                       description: Hours scheduled for the day
-        "406":
-          $ref: "#/components/responses/NotAcceptableError"
         "500":
           $ref: "#/components/responses/InternalServerError"
-    post:
-      tags:
-        - Users
-      summary: Record User Attendance
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                date_timestamp:
-                  type: string
-                  format: date-time
-                  description: Date timestamp in UTC format
-              required:
-                - date_timestamp
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    description: Success message
-                  status:
-                    type: integer
-                    description: HTTP status code
-        "406":
-          $ref: "#/components/responses/NotAcceptableError"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
+    
 
-  /users/schedule:
+  /employee-schedules:
     get:
       tags:
-        - Users
-      summary: User Schedule
+        - Employee Schedule
+      summary: List Employee Schedules
+      parameters:
+        - $ref: '#/components/parameters/employee_id_query'
+        - $ref: '#/components/parameters/schedule_id_query'
       responses:
         "200":
           description: Successful response
@@ -281,28 +196,154 @@ paths:
                 type: array
                 items:
                   type: object
-                  properties:
-                    date:
-                      type: string
-                      format: date
-                      description: Date of the schedule
-                    in:
-                      type: string
-                      format: time
-                      description: Punch in time
-                    out:
-                      type: string
-                      format: time
-                      description: Punch out time
-                    day:
-                      type: string
-                      description: Day equivalent of the date
-                    hours:
-                      type: string
-                      format: time
-                      description: Hours scheduled for the day
-        "406":
-          $ref: "#/components/responses/NotAcceptableError"
+                  allOf:
+                    - $ref: '#/components/schemas/EmployeeScheduleResponse'
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Employee Schedule
+      summary: Assign Employee Schedule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/EmployeeSchedule' 
+      responses:
+        "200":
+          $ref: "#/components/responses/SuccessResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /employee-schedules/{employee_schedule_id}:
+    get:
+      tags:
+        - Employee Schedule
+      summary: Get Employee Schedule by ID
+      parameters:
+        - $ref: '#/components/parameters/employee_schedule_id'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/EmployeeScheduleResponse'
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+          
+    delete:
+      tags:
+        - Employee Schedule
+      summary: Delete Employee Schedule by ID
+      parameters:
+        - $ref: '#/components/parameters/employee_schedule_id'
+      responses:
+        "200":
+          $ref: "#/components/responses/SuccessResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    
+    put:
+      tags:
+        - Employee Schedule
+      summary: Update Employee Schedule by ID
+      parameters:
+        - $ref: '#/components/parameters/employee_schedule_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/EmployeeSchedule' 
+      responses:
+        "200":
+          $ref: "#/components/responses/SuccessResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+          
+          
+  /employees/:employee_id/weekly-schedule:
+    get:
+      tags:
+        - Employee Schedule
+      summary: Get Employee's Schedule for the Week
+      parameters:
+        - $ref: '#/components/parameters/employee_id'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/EmployeeWeeklyMonthlyScheduleResponse'
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /employees/:employee_id/monthly-schedule:
+    get:
+      tags:
+        - Employee Schedule
+      summary: Get Employee's Schedule for the Month
+      parameters:
+        - $ref: '#/components/parameters/employee_id'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/EmployeeWeeklyMonthlyScheduleResponse'
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    
+  /employees/:employee_id/attendance:
+    post:
+      tags:
+        - Employee Logs and Attendance
+      summary: Save Employee Logs
+      parameters:
+        - $ref: '#/components/parameters/employee_id'
+      responses:
+        "200":
+          $ref: "#/components/responses/SuccessResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /employees/:employee_id/logs:      
+    get:
+      tags:
+        - Employee Logs and Attendance
+      summary: Get Employee Logs
+      parameters:
+        - $ref: '#/components/parameters/employee_id'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/EmployeeLogsResponse'
         "500":
           $ref: "#/components/responses/InternalServerError"
 
@@ -318,30 +359,129 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  banner_id:
-                    type: integer
-                    description: Unique ID of the banner
-                  banner_image_url:
-                    type: string
-                    description: URL of the banner image
-                  banner_description:
-                    type: string
-                    description: Description of the banner content
-                  banner_title:
-                    type: string
-                    description: Title of the banner
-                  created_date:
-                    type: string
-                    description: Date the banner was created
-        "406":
-          $ref: "#/components/responses/NotAcceptableError"
+                allOf:
+                  - $ref: '#/components/schemas/Banners' 
         "500":
           $ref: "#/components/responses/InternalServerError"
-          
+
+  /schedule:
+    get:
+      tags:
+        - Schedule
+      summary: Get Schedule
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/Schedule'            
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Schedule
+      summary: Create Schedule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/CreateUpdateSchedule' 
+      responses:
+        "200":
+          $ref: "#/components/responses/SuccessResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /schedule/{schedule_id}:
+    get:
+      tags:
+        - Schedule
+      summary: Get Schedule by ID
+      parameters:
+        - $ref: '#/components/parameters/schedule_id'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/Schedule'            
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - Schedule
+      summary: Update Schedule
+      parameters:
+        - $ref: '#/components/parameters/schedule_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/CreateUpdateSchedule'  
+      responses:
+        "200":
+          $ref: "#/components/responses/SuccessResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Schedule
+      summary: Delete Schedule
+      parameters:
+        - $ref: '#/components/parameters/schedule_id'
+      responses:
+        "200":
+          $ref: "#/components/responses/SuccessResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
 components:
    
   responses:
+    SuccessResponse:
+      description: Successful response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Success message
+              status:
+                type: integer
+                description: HTTP status code
+
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Unauthorized error message
+              status:
+                type: integer
+                description: HTTP status code
+    
     HealthCheckResponse:
       description: >-
         OK -- The request is a success; the status of the API will be returned
@@ -373,21 +513,7 @@ components:
                   - stg
                   - prd
                   - local
-    NotAcceptableError:
-      description: >-
-        Not Acceptable -- The request has invalid Accept header.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
-                enum:
-                  - Unsupported Accept header. Only application/json is
-                    supported.
+    
     InternalServerError:
       description: >-
         Interval Server Error -- There was a problem with the system itself the
@@ -403,3 +529,269 @@ components:
                 type: string
                 enum:
                   - Unknown error occurred
+
+  parameters:
+    schedule_id:
+      name: schedule_id
+      in: path
+      required: true
+      description: Numeric schedule_id
+      schema:
+        type: integer
+    employee_id:
+      name: employee_id
+      in: path
+      required: true
+      description: Numeric employee_id
+      schema:
+        type: integer
+    employee_schedule_id:
+      name: employee_schedule_id
+      in: path
+      required: true
+      description: Numeric employee_schedule_id
+      schema:
+        type: integer
+    employee_id_query:
+      name: employee_id
+      in: query
+      required: false
+      schema:
+        type: integer
+    schedule_id_query:
+      name: schedule_id
+      in: query
+      required: false
+      schema:
+        type: integer
+    
+  schemas:
+    Employee:
+      properties:
+        employee-id:
+          type: number
+        first_name:
+          type: string
+        middle_name:
+          type: string
+        last_name:
+          type: string
+        birthday:
+          type: string
+        gender:
+          type: string
+        contact_number:
+          type: string
+        email_address:
+          type: string
+        company_email_address:
+          type: string
+        address_1:
+          type: string
+        address_2:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zip_code:
+          type: string
+        country:
+          type: string
+        joining_date:
+          type: string
+        status:
+          type: string
+          description: Either regular, probationary, contractual
+        division:
+          type: string
+          description: Company division where the employee is under
+        department:
+          type: string
+        job_title:
+          type: string
+        manager:
+          type: object
+          properties:
+            first_name: 
+              type: string
+            middle_name: 
+              type: string
+            last_name:
+              type: string
+          
+    EmployeeSchedule:
+      properties:
+        employee_id:
+          type: number
+        schedule_id: 
+          type: number
+        workdays:
+          type: array
+          items:
+            type: string
+          description: array of workdays in yyyy-MM-dd format (e.g. ["2024-01-01", "2024-01-02"])
+        
+    EmployeeScheduleResponse:
+      properties:
+        employee_schedule_id:
+          type: number
+        employee:
+          type: object
+          properties:
+            employee_id:
+              type: number
+            employee_fname:
+              type: string
+            employee_mname:
+              type: string
+            employee_lname:
+              type: string
+        schedule:
+          type: object
+          properties:
+            schedule_id: 
+              type: number
+            schedule_name:
+              type: string
+            time_in:
+              type: string
+            time_out:
+              type: string
+        workdays:
+          type: array
+          items:
+            type: string
+          description: array of workdays in yyyy-MM-dd format (e.g. ["2024-01-01", "2024-01-02"])
+          
+    EmployeeWeeklyMonthlyScheduleResponse:
+      properties:
+        schedule:
+          type: object
+          properties:
+            schedule_id: 
+              type: number
+            schedule_name:
+              type: string
+            time_in:
+              type: string
+            time_out:
+              type: string
+        workdays:
+          type: array
+          items:
+            type: string
+          description: array of workdays in yyyy-MM-dd format (e.g. ["2024-01-01", "2024-01-02"])
+          
+    EmployeeLogsResponse:
+      properties:
+        employee_log_id:
+          type: number
+        log:
+          type: string
+          description: datetime in UTC
+    
+    Login:
+      properties:
+        username:
+          type: string
+          description: User's username or email
+        password:
+          type: string
+          description: User's password
+      required:
+        - username
+        - password
+
+    LoginResponse:
+      properties:
+        access_token:
+          type: string
+          description: Access token for authenticated requests
+        expires_in:
+          type: integer
+          description: Duration in seconds for which the token is valid
+        token_type:
+          type: string
+          description: Type of token (e.g., Bearer)
+        company_logo:
+          type: string
+          description: URL for company logo
+        role_features:
+          type: array
+          items: 
+            type: object
+            properties:
+                name:
+                  type: string
+                  description: feature name
+                icon:
+                  type: string
+                  description: image URL of the icon
+                route:
+                  type: string
+                  description: URL going to the page
+                sublist:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: feature name
+                      route:
+                        type: string
+                        description: URL going to the page
+        personal_data:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Employee'
+
+    Banners:
+      properties:
+        banner_id:
+          type: integer
+          description: Unique ID of the banner
+        banner_image_url:
+          type: string
+          description: URL of the banner image
+        banner_description:
+          type: string
+          description: Description of the banner content
+        banner_title:
+          type: string
+          description: Title of the banner
+        created_date:
+          type: string
+          description: Date the banner was created
+  
+    Schedule:
+      properties:
+        schedule_id:
+          type: number
+          description: ID of the schedule
+        schedule_name:
+          type: string
+          description: Name of the shift (e.g. Day Shift)
+        time_in:
+          type: string
+          description: e.g. 05:00 am (12H format)
+        time_out:
+          type: string  
+          description: e.g. 05:00 pm (12H format)
+          
+    CreateUpdateSchedule:
+      properties:
+        schedule_name:
+          type: string
+          description: Name of the shift (e.g. Day Shift)
+        time_in:
+          type: string
+          description: e.g. 05:00 am (12H format)
+        time_out:
+          type: string  
+          description: e.g. 05:00 pm (12H format)
+      required:
+        - schedule_name
+        - time_in
+        - time_out

@@ -2,7 +2,7 @@ import { ValidationError } from "express-json-validator-middleware";
 import createHttpError from "http-errors";
 
 enum ErrorCodes {
-  UNKNOWN_ERROR = 0,
+  UNKNOWN_ERROR = 500,
   UNAUTHORIZED = 1001,
   NOT_FOUND = 1003,
   NOT_ACCEPTABLE = 1004,

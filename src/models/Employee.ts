@@ -1,12 +1,17 @@
 import { DataTypes } from "sequelize";
 import { dbConnectCustomer } from "../database/connection";
+import { Attendance } from "./Attendance";
+import { Department } from "./Department";
+import { Division } from "./Division";
+import { JobTitle } from "./JobTitle";
+import { Schedule } from "./Schedules";
 
 interface EmployeeAttributes {
   EmployeeID?: number;
   DivisionID: number;
-  CustomerID: number;
   FirstName?: string;
   LastName?: string;
+  MiddleName?: string;
   DateOfBirth?: Date;
   Gender?: string;
   ContactNumber?: string;
@@ -23,7 +28,10 @@ interface EmployeeAttributes {
   JobTitleID?: number;
   ManagerID?: number;
   Status?: string;
-  Shift?: string;
+  Division: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any 
+  Department: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any 
+  JobTitle: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any 
+  Manager: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any 
 }
 
 const Employee = dbConnectCustomer.define('Employee', {
@@ -36,11 +44,10 @@ const Employee = dbConnectCustomer.define('Employee', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  CustomerID: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
   FirstName: {
+    type: DataTypes.STRING(50),
+  },
+  MiddleName: {
     type: DataTypes.STRING(50),
   },
   LastName: {
@@ -94,9 +101,20 @@ const Employee = dbConnectCustomer.define('Employee', {
   Status: {
     type: DataTypes.STRING(50),
   },
-  Shift: {
-    type: DataTypes.STRING(50),
-  },
+}, {
+  tableName: 'Employee',
+  timestamps: false // Disable auto-generating createdAt and updatedAt columns
 });
+
+// Define association with the Employee model
+Employee.belongsTo(Division, { foreignKey: 'DivisionID', targetKey: 'DivisionID' });
+Employee.belongsTo(Department, { foreignKey: 'DepartmentID', targetKey: 'DepartmentID' });
+Employee.belongsTo(JobTitle, { foreignKey: 'JobTitleID', targetKey: 'JobTitleID' });
+Employee.belongsTo(Employee, { as: 'Manager', foreignKey: 'ManagerID', targetKey: 'EmployeeID' });
+
+Employee.belongsToMany(Schedule, { through: 'EmployeeSchedule'});
+Schedule.belongsToMany(Employee, { through: 'EmployeeSchedule'});
+
+Employee.hasMany(Attendance, { foreignKey: 'EmployeeID'});
 
 export { Employee, EmployeeAttributes };
