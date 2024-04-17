@@ -23,7 +23,7 @@ const AttendanceController = {
     async checkCronHistory(date: string): Promise<Record<any, any> | null> {
         return await CronHistory.findOne({
             where: {
-                Date: sequelize.literal(`'${date}'`)
+                DateRun: date,
             }
         });
     },

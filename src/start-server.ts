@@ -4,7 +4,6 @@ import { logger } from "./utils/logger";
 import { parse } from "yaml";
 import { serve, setup } from "swagger-ui-express";
 import { readFileSync } from "fs";
-import 'dotenv/config';
 
 export type Server = http.Server;
 

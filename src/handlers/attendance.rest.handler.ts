@@ -26,7 +26,7 @@ const AttendanceRestHandler = {
             Check attendance table if current date has been computed already 
             */
             const cronHistory = await AttendanceController.checkCronHistory(currentDate);
-
+            
             if (cronHistory !== null) {
                 console.log(`Cron already finished for ${currentDate}`);
                 res.status(200).json({mesage: `Cron already finished for ${currentDate}.`});
@@ -78,9 +78,9 @@ const AttendanceRestHandler = {
 
                             // Parse the time strings into Date objects
                             let timeIn = new Date(`2000-01-02T${scheduledTimeIn}`);
-                            let timeOut = new Date(`2000-01-02T${scheduledTimeOut}`);
+                            const timeOut = new Date(`2000-01-02T${scheduledTimeOut}`);
 
-                            let shift: string = "Day";
+                            let shift = "Day";
                             if (timeOut < timeIn) {
                                 shift = "Night";
                             }
@@ -88,13 +88,16 @@ const AttendanceRestHandler = {
                             // If day, get earliest and latest for the day
                             if (shift === 'Day') {
                                 timeInAndOut = await getTimeInAndOut(currentDate, employee.employee_id);
+
                                 scheduledDateTimeIn = getScheduledTimeIn(currentDate, scheduledTimeIn);
                             }
                             // If overnight, get earliest log yesterday and latest log today
                             else {
                                 // Change time in to previous date
                                 timeIn = new Date(`2000-01-01T${scheduledTimeIn}`);
+
                                 timeInAndOut = await getTimeInAndOutNightShift(yesterday, currentDate, employee.employee_id);
+
                                 scheduledDateTimeIn = getScheduledTimeIn(yesterday, scheduledTimeIn);
                             }
 
@@ -153,7 +156,7 @@ const AttendanceRestHandler = {
 
                 console.log('Saving cron audit trail ...');
                 await AttendanceController.saveCronHistory({
-                    Date: currentDate,
+                    DateRun: currentDate,
                 })
 
                 res.status(200).json({mesage: "Cron successfully finished."});
