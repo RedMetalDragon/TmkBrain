@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         ref: ${{ github.event.inputs.branch || github.ref }}
     
@@ -29,10 +29,10 @@ jobs:
         # Assuming GITHUB_REF could be a branch or a tag based on the event
         if [[ "$GITHUB_REF" =~ refs/tags/v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
           echo "Valid semantic version tag"
-          echo "::set-output name=proceed::true"
+          echo "{proceed}={true}" >> $GITHUB_OUTPUT
         else
           echo "Invalid or no semantic version tag"
-          echo "::set-output name=proceed::false"
+          echo "{proceed}={false}" >> $GITHUB_OUTPUT
         fi
 
     - name: Set up QEMU
