@@ -6,6 +6,8 @@ export const HTTP = {
   PUT: "PUT",
 };
 
+export const UNDEFINED_STRING = 'undefined';
+
 export const SECRET_KEY = 'TMK_SECRET';
 
 export const JWT_EXPIRES_IN = {
