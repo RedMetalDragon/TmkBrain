@@ -141,43 +141,6 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /users/attendance:
-    get:
-      tags:
-        - Users
-      summary: User Attendance
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    date:
-                      type: string
-                      format: date
-                      description: Date of the attendance record
-                    in:
-                      type: string
-                      format: time
-                      description: Punch in time
-                    out:
-                      type: string
-                      format: time
-                      description: Punch out time or null if not available
-                    day:
-                      type: string
-                      description: Day equivalent of the date
-                    hours:
-                      type: string
-                      format: time
-                      description: Hours scheduled for the day
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-    
 
   /employee-schedules:
     get:
@@ -344,6 +307,29 @@ paths:
                   type: object
                   allOf:
                     - $ref: '#/components/schemas/EmployeeLogsResponse'
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+          
+  /employees/attendance:      
+    get:
+      tags:
+        - Employee Logs and Attendance
+      summary: Get Employee Attendance
+      parameters:
+        - $ref: '#/components/parameters/employee_id_query'
+        - $ref: '#/components/parameters/from_date_query'
+        - $ref: '#/components/parameters/to_date_query'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/EmployeeAttendanceResponse'
         "500":
           $ref: "#/components/responses/InternalServerError"
 
@@ -564,6 +550,18 @@ components:
       required: false
       schema:
         type: integer
+    from_date_query:
+      name: from
+      in: query
+      required: false
+      schema:
+        type: string
+    to_date_query:
+      name: to
+      in: query
+      required: false
+      schema:
+        type: string
     
   schemas:
     Employee:
@@ -690,6 +688,40 @@ components:
         log:
           type: string
           description: datetime in UTC
+          
+    EmployeeAttendanceResponse:
+      properties:
+        id: 
+          type: number
+        date: 
+          type: string
+        time_in: 
+          type: string
+        time_out: 
+          type: string
+        hours_rendered: 
+          type: number
+        tardiness: 
+          type: number
+        overtime: 
+          type: number
+        undertime: 
+          type: number
+        is_absent: 
+          type: boolean
+        is_incomplete_log:
+          type: boolean
+        employee: 
+          type: object
+          properties:
+            employee_id:
+              type: number
+            first_name: 
+              type: string
+            middle_name: 
+              type: string
+            last_name: 
+              type: string
     
     Login:
       properties:

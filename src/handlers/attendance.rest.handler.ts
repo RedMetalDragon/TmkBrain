@@ -1,10 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { AttendanceController } from "../controllers/attendance.controller";
-import { DEFAULT_SCHEDULE } from "../constants";
 import { SchedulesController, UsersController } from "../controllers";
-import { getCurrentDate, getScheduledTimeIn, getTimeInAndOut, getTimeInAndOutNightShift, getTimeZone, hoursDifference, isWeekend } from "./helpers";
-import { exit } from "process";
-import { exitOnError } from "winston";
+import { getCurrentDate, getScheduledTimeIn, getTimeInAndOut, getTimeInAndOutNightShift, hoursDifference, isWeekend } from "./helpers";
 
 interface TimeInAndOut {
     time_in: string;
@@ -33,7 +30,7 @@ const AttendanceRestHandler = {
             } 
             else {
                 // Loop through all employees
-                for (const employee of employees!) {
+                for (const employee of employees!) { /* eslint-disable-line  @typescript-eslint/no-non-null-assertion */
                     
                     console.log(`Employee ID: ${employee.employee_id} ----------`);
                     
@@ -46,10 +43,7 @@ const AttendanceRestHandler = {
 
                     // If employee schedule is null, use default schedule
                     if (employeeSchedule.length === 0) {
-                        const schedule = DEFAULT_SCHEDULE;
-
                         // Default schedule is day shift for Monday to Friday (8am to 5pm)
-                        
                         // Check if current date is a workday
                         if (isWeekend(currentDate)){
                             console.log(`No schedule for employee id ${employee.employee_id} for ${currentDate}. Default schedule used. Today is a weekend.`);
@@ -73,8 +67,8 @@ const AttendanceRestHandler = {
                         }
                         else {
                             // Get shift (if day or overnight)
-                            const scheduledTimeIn = schedule!.dataValues.Schedule.TimeIn;
-                            const scheduledTimeOut = schedule!.dataValues.Schedule.TimeOut;
+                            const scheduledTimeIn = schedule!.dataValues.Schedule.TimeIn; /* eslint-disable-line  @typescript-eslint/no-non-null-assertion */
+                            const scheduledTimeOut = schedule!.dataValues.Schedule.TimeOut; /* eslint-disable-line  @typescript-eslint/no-non-null-assertion */
 
                             // Parse the time strings into Date objects
                             let timeIn = new Date(`2000-01-02T${scheduledTimeIn}`);
@@ -103,9 +97,11 @@ const AttendanceRestHandler = {
                     }
 
                     // To get hours rendered => out - in
-                    const renderedHours = hoursDifference((timeInAndOut as any).time_out, (timeInAndOut as any).time_in);
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const renderedHours = hoursDifference((timeInAndOut as any).time_out, (timeInAndOut as any).time_in); 
 
                     // To get tardiness => actual in - scheduled in
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     let tardiness = hoursDifference((timeInAndOut as any).time_in, new Date(scheduledDateTimeIn));
                     
                     if (tardiness < 0){

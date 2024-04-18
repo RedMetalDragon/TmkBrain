@@ -64,6 +64,7 @@ const SchedulesController = {
     async getEmployeeSchedule({employee_id, employee_schedule_id}: {employee_id: number, employee_schedule_id?: number}): Promise<Model<any, any>[] | null> {
         let where = {}
         
+        /* eslint-disable-next-line  @typescript-eslint/no-non-null-assertion */
         if(!isNaN(employee_schedule_id!)){
             where = {
                 ...where,
@@ -234,7 +235,7 @@ const SchedulesController = {
                 if (existingScheduleIndex === -1) {
                 acc.push({
                     schedule: {
-                        schedule_id: schedule_id!,
+                        schedule_id: schedule_id!, /* eslint-disable-line  @typescript-eslint/no-non-null-assertion */
                         schedule_name,
                         time_in,
                         time_out,

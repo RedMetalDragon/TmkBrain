@@ -115,6 +115,7 @@ Employee.belongsTo(Employee, { as: 'Manager', foreignKey: 'ManagerID', targetKey
 Employee.belongsToMany(Schedule, { through: 'EmployeeSchedule'});
 Schedule.belongsToMany(Employee, { through: 'EmployeeSchedule'});
 
-Employee.hasMany(Attendance, { foreignKey: 'EmployeeID'});
+Employee.hasMany(Attendance, { foreignKey: 'EmployeeID', as: 'attendace' });
+Attendance.belongsTo(Employee, { foreignKey: 'EmployeeID', targetKey: 'EmployeeID', as: 'employee' });
 
 export { Employee, EmployeeAttributes };
