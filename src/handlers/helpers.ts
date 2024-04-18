@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+
 import { DateTime } from 'luxon';
 import moment from "moment-timezone";
 import { SchedulesController } from '../controllers';
@@ -249,7 +253,7 @@ export function getScheduledTimeIn(date: string, timein: string): Date {
   return updatedTimestamp;
 }
 
-export function isWeekend(date: string) {
+export function isWeekend(date: string): boolean {
   const currentDate = new Date(date);
   const dayOfWeek = currentDate.getDay(); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
   return dayOfWeek === 0 || dayOfWeek === 6; // Saturday or Sunday

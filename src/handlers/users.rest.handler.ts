@@ -6,15 +6,47 @@ import { AuthAttributes } from "../models/Auth";
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
 import { CustomerAttributes } from "../models/Customer";
-import { isNumeric } from "./helpers";
+import { isNumeric, isValidDate } from "./helpers";
+import { AttendanceController } from "../controllers/attendance.controller";
 
 const UsersRestHandler = {
   getDashboardData(req: Request, res: Response): void {
     res.status(200).json(UsersController.getDashboardData());
   },
 
-  getAttendance(req: Request, res: Response): void {
-    res.status(200).json(UsersController.getAttendance());
+  async getAttendance(req: Request, res: Response, next: NextFunction,): Promise<void> {
+    try {
+      const { employee_id, from, to } = req.query;
+
+      if (employee_id !== undefined && Number.isNaN(Number(employee_id))) {
+        throw new createHttpError.InternalServerError(
+          `Please provide valid 'employee_id'.`,
+        );
+      }
+
+      if (from !== undefined && !isValidDate(String(from))) {
+        throw new createHttpError.InternalServerError(
+          `Please provide valid 'from' date in yyyy-MM-dd format.`,
+        );
+      }
+
+      if (to !== undefined && !isValidDate(String(to))) {
+        throw new createHttpError.InternalServerError(
+          `Please provide valid 'to' date in yyyy-MM-dd format.`,
+        );
+      }
+
+
+      const attendance = await AttendanceController.getAttendance({
+        employeeId: Number(employee_id),
+        from: String(from),
+        to: String(to),
+      });
+
+      res.status(200).json(attendance); 
+    } catch (error) {
+      next (error);
+    }
   },
 
   async login(req: Request, res: Response, next: NextFunction,): Promise<void> {

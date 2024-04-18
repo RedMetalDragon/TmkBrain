@@ -45,5 +45,6 @@ export const dbConnectCustomer = new Sequelize(
     logging: (sql) => {
       logger.debug(`Query: ${sql}}`);
     },
+    timezone: '+08:00', //Manila -- should be configureable based on customer timezone
   },
 );

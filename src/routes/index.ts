@@ -27,7 +27,7 @@ router.get("/employees/:employee_id/logs", UsersRestHandler.getLogs);
 router.post("/employees/attendance/compute", AttendanceRestHandler.computeAttendance);
 
 // Attendance
-router.get("/users/attendance", UsersRestHandler.getAttendance);
+router.get("/employees/attendance", UsersRestHandler.getAttendance);
 
 // List of employees
 router.get("/users", UsersRestHandler.getEmployees);
