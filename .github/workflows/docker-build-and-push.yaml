@@ -1,4 +1,4 @@
-name: Build and Push Docker image
+name: Build and Push Docker image using staging environment
 
 on:
   push:
@@ -16,6 +16,7 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    environment: staging
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
