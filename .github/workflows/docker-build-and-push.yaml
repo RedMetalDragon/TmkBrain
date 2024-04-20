@@ -32,7 +32,7 @@ jobs:
           echo "Valid semantic version tag"
           echo "proceed=true" >> $GITHUB_ENV
         elif [[ "$GITHUB_REF" =~ ^refs/heads/release/staging.* ]]; then
-          echo "Valid branch detected but not the tag version"
+          echo "Valid branch detected but not the tag version, check it"
           echo "proceed=false" >> $GITHUB_ENV
         else
           echo "Invalid or no semantic version tag"
