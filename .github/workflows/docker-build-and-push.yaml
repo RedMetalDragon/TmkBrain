@@ -46,10 +46,18 @@ jobs:
           TAG=${BASH_REMATCH[1]}
           echo "Extracted tag: $TAG"
         else
-          TAG=${GITHUB_SHA}  # Fallback to commit SHA if not a tag
-          echo "Using commit SHA as tag because no version tag is present: $TAG"
+          #TAG=${GITHUB_SHA}  # Fallback to commit SHA if not a tag
+          echo "No tag found"
+          exit 1
         fi
         echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
+        echo "${{ github.ref }}" > tmk_brain_latest_image_tag.txt
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: tmk_brain_latest_image_tag
+        path: tmk_brain_latest_image_tag.txt
 
     - name: Bridge workflow
       if: env.proceed == 'false'
