@@ -16,7 +16,7 @@ interface CustomerAttributes {
   CustomerLogo: string;
 }
 
-const Customer = dbConnectCore.define('Customer', {
+const Customer = dbConnectCore.define("Customer", {
   CustomerID: {
     type: DataTypes.INTEGER,
     primaryKey: true,

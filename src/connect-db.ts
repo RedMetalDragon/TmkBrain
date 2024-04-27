@@ -1,5 +1,5 @@
 import type { Sequelize } from "sequelize/types";
-import { dbConnectCore, dbConnectCustomer} from "./database/connection";
+import { dbConnectCore, dbConnectCustomer } from "./database/connection";
 import { logger } from "./utils/logger";
 
 export default async (): Promise<Sequelize> => {
@@ -22,7 +22,7 @@ export default async (): Promise<Sequelize> => {
 
     try {
       await dbConnectCore.close();
-     } catch (closeError) {
+    } catch (closeError) {
       let errorMessage = "";
 
       if (closeError instanceof Error) {

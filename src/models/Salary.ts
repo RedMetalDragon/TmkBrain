@@ -8,7 +8,7 @@ interface SalaryAttributes {
   Amount?: number;
 }
 
-const Salary = dbConnectCustomer.define('Salary', {
+const Salary = dbConnectCustomer.define("Salary", {
   SalaryID: {
     type: DataTypes.INTEGER,
     primaryKey: true,

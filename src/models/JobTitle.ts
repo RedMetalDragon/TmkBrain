@@ -9,7 +9,7 @@ interface JobTitleAttributes {
   IsActive?: boolean;
 }
 
-const JobTitle = dbConnectCustomer.define('JobTitle', {
+const JobTitle = dbConnectCustomer.define("JobTitle", {
   JobTitleID: {
     type: DataTypes.INTEGER,
     primaryKey: true,

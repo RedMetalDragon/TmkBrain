@@ -10,36 +10,39 @@ interface RoleFeatureAttributes {
   IsEnabled: boolean;
 }
 
-const RoleFeature = dbConnectCore.define('RoleFeature', {
-    RoleFeatureID: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
+const RoleFeature = dbConnectCore.define("RoleFeature", {
+  RoleFeatureID: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  RoleID: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: Role,
+      key: "RoleID",
     },
-    RoleID: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: Role,
-        key: 'RoleID', 
-      },
+  },
+  FeatureID: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: Feature,
+      key: "FeatureID",
     },
-    FeatureID: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: Feature,
-        key: 'FeatureID', 
-      },
-    },
-    IsEnabled: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
+  },
+  IsEnabled: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
 });
 
 // Define association with the Role model
-RoleFeature.belongsTo(Role, { foreignKey: 'RoleID', targetKey: 'RoleID' });
-RoleFeature.belongsTo(Feature, { foreignKey: 'FeatureID', targetKey: 'FeatureID' });
+RoleFeature.belongsTo(Role, { foreignKey: "RoleID", targetKey: "RoleID" });
+RoleFeature.belongsTo(Feature, {
+  foreignKey: "FeatureID",
+  targetKey: "FeatureID",
+});
 
 export { RoleFeature, RoleFeatureAttributes };

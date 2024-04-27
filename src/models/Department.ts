@@ -8,7 +8,7 @@ interface DepartmentAttributes {
   DivisionID: number;
 }
 
-const Department = dbConnectCustomer.define('Department', {
+const Department = dbConnectCustomer.define("Department", {
   DepartmentID: {
     type: DataTypes.INTEGER,
     primaryKey: true,

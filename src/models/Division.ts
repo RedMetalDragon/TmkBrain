@@ -16,7 +16,7 @@ interface DivisionAttributes {
   Country?: string;
 }
 
-const Division = dbConnectCustomer.define('Division', {
+const Division = dbConnectCustomer.define("Division", {
   DivisionID: {
     type: DataTypes.INTEGER,
     primaryKey: true,

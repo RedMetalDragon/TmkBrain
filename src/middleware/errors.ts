@@ -12,7 +12,7 @@ enum ErrorCodes {
 }
 
 export const defaultOccurrenceDetails: (
-  error: ValidationError,
+  error: ValidationError
 ) => Record<string, unknown> = (error: ValidationError) => {
   return error.message ? { message: error.message } : {};
 };

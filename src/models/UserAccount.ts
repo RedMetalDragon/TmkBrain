@@ -8,7 +8,7 @@ interface UserAccountAttributes {
   Status?: string;
 }
 
-const UserAccount = dbConnectCustomer.define('UserAccount', {
+const UserAccount = dbConnectCustomer.define("UserAccount", {
   UserAccountID: {
     type: DataTypes.INTEGER,
     primaryKey: true,

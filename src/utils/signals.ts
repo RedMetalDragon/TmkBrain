@@ -17,7 +17,7 @@ function sigtermHelper(server: Server, dbConnection: Sequelize): void {
     ?.close()
     .catch((error: ErrorOrNull) =>
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      logger.error(`Received error closing db connection: ${error!.message}`),
+      logger.error(`Received error closing db connection: ${error!.message}`)
     );
 
   server.getConnections((error: ErrorOrNull, count: number) => {

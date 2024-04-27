@@ -16,7 +16,7 @@ interface AuthAttributes {
   RoleID: number;
 }
 
-const Auth = dbConnectCore.define('Auth', {
+const Auth = dbConnectCore.define("Auth", {
   AuthID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -59,12 +59,12 @@ const Auth = dbConnectCore.define('Auth', {
     allowNull: false,
     references: {
       model: Role,
-      key: 'RoleID', 
+      key: "RoleID",
     },
   },
 });
 
 // Define association with the Role model
-Auth.belongsTo(Role, { foreignKey: 'RoleID', targetKey: 'RoleID' });
+Auth.belongsTo(Role, { foreignKey: "RoleID", targetKey: "RoleID" });
 
 export { Auth, AuthAttributes };

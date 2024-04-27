@@ -22,14 +22,14 @@ export const dbConnectCore = new Sequelize(
   confCore?.password as string,
   {
     host: confCore?.host as string,
-    dialect: 'mysql',
+    dialect: "mysql",
     define: {
       freezeTableName: true,
     },
     logging: (sql) => {
       logger.debug(`Query: ${sql}}`);
     },
-  },
+  }
 );
 
 export const dbConnectCustomer = new Sequelize(
@@ -38,13 +38,13 @@ export const dbConnectCustomer = new Sequelize(
   confCustomer?.password as string,
   {
     host: confCustomer?.host as string,
-    dialect: 'mysql',
+    dialect: "mysql",
     define: {
       freezeTableName: true,
     },
     logging: (sql) => {
       logger.debug(`Query: ${sql}}`);
     },
-    timezone: '+08:00', //Manila -- should be configureable based on customer timezone
-  },
+    timezone: "+08:00", //Manila -- should be configureable based on customer timezone
+  }
 );
