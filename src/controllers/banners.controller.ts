@@ -1,4 +1,4 @@
-import { Banner } from "../models/Banner";
+import { Banner } from "../models/old/Banner";
 import { Model } from "sequelize";
 
 const BannerController = {

@@ -1,13 +1,13 @@
 import { Model } from "sequelize";
-import { RoleFeature } from "../models/RoleFeature";
-import { Auth } from "../models/Auth";
-import { Feature, FeatureAttributes } from "../models/Feature";
-import { Customer } from "../models/Customer";
-import { Employee, EmployeeAttributes } from "../models/Employee";
-import { Division } from "../models/Division";
-import { Department } from "../models/Department";
-import { JobTitle } from "../models/JobTitle";
-import { EmployeeLog } from "../models/EmployeeLog";
+import { RoleFeature } from "../models/old/RoleFeature";
+import { Auth } from "../models/old/Auth";
+import { Feature, FeatureAttributes } from "../models/old/Feature";
+import { Customer } from "../models/old/Customer";
+import { Employee, EmployeeAttributes } from "../models/old/Employee";
+import { Division } from "../models/old/Division";
+import { Department } from "../models/old/Department";
+import { JobTitle } from "../models/old/JobTitle";
+import { EmployeeLog } from "../models/old/EmployeeLog";
 import { getCurrentDateTime } from "../handlers/helpers";
 
 const UsersController = {

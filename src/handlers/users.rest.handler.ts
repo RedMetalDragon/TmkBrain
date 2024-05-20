@@ -2,10 +2,10 @@ import { NextFunction, Request, Response } from "express";
 import { UsersController } from "../controllers";
 import jwt from "jsonwebtoken";
 import { JWT_EXPIRES_IN, SECRET_KEY } from "../constants";
-import { AuthAttributes } from "../models/Auth";
+import { AuthAttributes } from "../models/old/Auth";
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
-import { CustomerAttributes } from "../models/Customer";
+import { CustomerAttributes } from "../models/old/Customer";
 import { isNumeric, isValidDate } from "./helpers";
 import { AttendanceController } from "../controllers/attendance.controller";
 

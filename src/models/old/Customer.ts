@@ -1,7 +1,5 @@
 import { DataTypes } from "sequelize";
-import { dbConnect } from "../database/connection";
-import { Payment } from "./Payment";
-import { CustomerPlan } from "./CustomerPlan";
+import { dbConnect } from "../../database/connection";
 
 interface CustomerAttributes {
   CustomerID?: number;
@@ -14,8 +12,8 @@ interface CustomerAttributes {
   State?: string;
   ZipCode?: string;
   Country?: string;
+  CustomerDbName: string;
   CustomerLogo: string;
-  CustomerStripeID: string;
 }
 
 const Customer = dbConnect.define("Customer", {
@@ -54,20 +52,14 @@ const Customer = dbConnect.define("Customer", {
   Country: {
     type: DataTypes.STRING(100),
   },
+  CustomerDbName: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+  },
   CustomerLogo: {
     type: DataTypes.STRING(255),
     allowNull: true,
   },
-  CustomerStripeID: {
-    type: DataTypes.STRING(255),
-    allowNull: true,
-  },
-});
-
-Customer.hasMany(Payment, { foreignKey: "CustomerID", as: "payments" });
-Customer.hasOne(CustomerPlan, {
-  foreignKey: "CustomerID",
-  as: "subscribed_plan",
 });
 
 export { Customer, CustomerAttributes };

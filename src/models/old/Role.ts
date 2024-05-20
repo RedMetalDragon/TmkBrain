@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { dbConnectCore } from "../database/connection";
+import { dbConnect } from "../../database/connection";
 
 interface RoleAttributes {
   RoleID?: number;
@@ -7,7 +7,7 @@ interface RoleAttributes {
   Description?: string;
 }
 
-const Role = dbConnectCore.define("Role", {
+const Role = dbConnect.define("Role", {
   RoleID: {
     type: DataTypes.INTEGER,
     primaryKey: true,

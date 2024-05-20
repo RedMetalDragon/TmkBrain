@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { dbConnectCustomer } from "../database/connection";
+import { dbConnect } from "../../database/connection";
 import { Employee } from "./Employee";
 
 interface AttendanceAttributes {
@@ -16,7 +16,7 @@ interface AttendanceAttributes {
   IsIncompleteLog: boolean;
 }
 
-const Attendance = dbConnectCustomer.define(
+const Attendance = dbConnect.define(
   "Attendance",
   {
     AttendanceID: {

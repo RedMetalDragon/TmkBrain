@@ -1,16 +1,19 @@
 import { DataTypes } from "sequelize";
-import { dbConnect } from "../database/connection";
+import { dbConnect } from "../../database/connection";
+import { Role } from "./Role";
 
 interface AuthAttributes {
   AuthID?: number;
+  UserID: number;
   CustomerID: number;
-  Email: string;
+  EmailAddress: string;
   Salt: string;
   PasswordHash?: string;
   PasswordResetToken?: string;
   PasswordResetTokenExpiration?: Date;
   KeepLoggedIn?: boolean;
   Status: string;
+  RoleID: number;
 }
 
 const Auth = dbConnect.define("Auth", {
@@ -19,11 +22,15 @@ const Auth = dbConnect.define("Auth", {
     primaryKey: true,
     autoIncrement: true,
   },
+  UserID: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   CustomerID: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  Email: {
+  EmailAddress: {
     type: DataTypes.STRING(255),
     allowNull: false,
   },
@@ -47,6 +54,17 @@ const Auth = dbConnect.define("Auth", {
     type: DataTypes.STRING(50),
     allowNull: false,
   },
+  RoleID: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: Role,
+      key: "RoleID",
+    },
+  },
 });
+
+// Define association with the Role model
+Auth.belongsTo(Role, { foreignKey: "RoleID", targetKey: "RoleID" });
 
 export { Auth, AuthAttributes };

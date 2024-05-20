@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { dbConnectCustomer } from "../database/connection";
+import { dbConnect } from "../../database/connection";
 import { Employee } from "./Employee";
 import { Schedule } from "./Schedules";
 
@@ -12,7 +12,7 @@ interface EmployeeScheduleAttributes {
   Schedule: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
-const EmployeeSchedule = dbConnectCustomer.define(
+const EmployeeSchedule = dbConnect.define(
   "EmployeeSchedule",
   {
     EmployeeScheduleID: {

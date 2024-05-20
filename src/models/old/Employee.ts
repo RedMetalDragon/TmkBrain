@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { dbConnectCustomer } from "../database/connection";
+import { dbConnect } from "../../database/connection";
 import { Attendance } from "./Attendance";
 import { Department } from "./Department";
 import { Division } from "./Division";
@@ -34,7 +34,7 @@ interface EmployeeAttributes {
   Manager: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
-const Employee = dbConnectCustomer.define(
+const Employee = dbConnect.define(
   "Employee",
   {
     EmployeeID: {

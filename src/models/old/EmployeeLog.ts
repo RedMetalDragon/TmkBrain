@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { dbConnectCustomer } from "../database/connection";
+import { dbConnect } from "../../database/connection";
 import { Employee } from "./Employee";
 
 interface EmployeeLogAttributes {
@@ -9,7 +9,7 @@ interface EmployeeLogAttributes {
   Location?: string;
 }
 
-const EmployeeLog = dbConnectCustomer.define(
+const EmployeeLog = dbConnect.define(
   "EmployeeLog",
   {
     EmployeeLogID: {

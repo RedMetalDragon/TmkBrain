@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { dbConnectCustomer } from "../database/connection";
+import { dbConnect } from "../../database/connection";
 
 interface SalaryAttributes {
   SalaryID?: number;
@@ -8,7 +8,7 @@ interface SalaryAttributes {
   Amount?: number;
 }
 
-const Salary = dbConnectCustomer.define("Salary", {
+const Salary = dbConnect.define("Salary", {
   SalaryID: {
     type: DataTypes.INTEGER,
     primaryKey: true,

@@ -1,12 +1,12 @@
 import { Model, Op } from "sequelize";
 import { convertTo12Hour } from "../utils/date-time-validation";
-import { Employee } from "../models/Employee";
+import { Employee } from "../models/old/Employee";
 import {
   EmployeeSchedule,
   EmployeeScheduleAttributes,
-} from "../models/EmployeeSchedules";
-import { Schedule } from "../models/Schedules";
-import { EmployeeLog } from "../models/EmployeeLog";
+} from "../models/old/EmployeeSchedules";
+import { Schedule } from "../models/old/Schedules";
+import { EmployeeLog } from "../models/old/EmployeeLog";
 import sequelize from "sequelize";
 
 const SchedulesController = {

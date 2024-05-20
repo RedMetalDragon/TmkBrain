@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { dbConnectCustomer } from "../database/connection";
+import { dbConnect } from "../../database/connection";
 
 interface ScheduleAttributes {
   ScheduleID?: number;
@@ -8,7 +8,7 @@ interface ScheduleAttributes {
   TimeOut: string;
 }
 
-const Schedule = dbConnectCustomer.define(
+const Schedule = dbConnect.define(
   "Schedule",
   {
     ScheduleID: {

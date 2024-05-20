@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { dbConnectCustomer } from "../database/connection";
+import { dbConnect } from "../../database/connection";
 
 interface BannerAttributes {
   BannerID: number;
@@ -9,7 +9,7 @@ interface BannerAttributes {
   CreatedDate: Date;
 }
 
-const Banner = dbConnectCustomer.define("Banners", {
+const Banner = dbConnect.define("Banners", {
   BannerID: {
     type: DataTypes.INTEGER,
     primaryKey: true,

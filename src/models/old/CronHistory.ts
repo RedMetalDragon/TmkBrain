@@ -1,12 +1,12 @@
 import { DataTypes } from "sequelize";
-import { dbConnectCustomer } from "../database/connection";
+import { dbConnect } from "../../database/connection";
 
 interface CronHistoryAttributes {
   TrailID: number;
   DateRun: string;
 }
 
-const CronHistory = dbConnectCustomer.define(
+const CronHistory = dbConnect.define(
   "CronHistory",
   {
     TrailID: {

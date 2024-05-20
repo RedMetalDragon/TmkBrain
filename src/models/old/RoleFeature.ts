@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { dbConnectCore } from "../database/connection";
+import { dbConnect } from "../../database/connection";
 import { Feature } from "./Feature";
 import { Role } from "./Role";
 
@@ -10,7 +10,7 @@ interface RoleFeatureAttributes {
   IsEnabled: boolean;
 }
 
-const RoleFeature = dbConnectCore.define("RoleFeature", {
+const RoleFeature = dbConnect.define("RoleFeature", {
   RoleFeatureID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
