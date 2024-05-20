@@ -3,42 +3,140 @@ import { RoleFeature } from "../models/RoleFeature";
 import { Auth } from "../models/Auth";
 import { Feature, FeatureAttributes } from "../models/Feature";
 import { Customer } from "../models/Customer";
+import { Employee, EmployeeAttributes } from "../models/Employee";
+import { Division } from "../models/Division";
+import { Department } from "../models/Department";
+import { JobTitle } from "../models/JobTitle";
+import { EmployeeLog } from "../models/EmployeeLog";
+import { getCurrentDateTime } from "../handlers/helpers";
 
 const UsersController = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
-  getUsers(): Record<any, any>[] | null {
-    return [
+  async getEmployees(): Promise<Record<any, any>[] | null> {
+    return await Employee.findAll({
+      include: [
         {
-            profile_picture: "https://png.pngtree.com/png-vector/20220709/ourmid/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_5809521.png",
-            full_name: "John Doe",
-            employee_id: 1,
-            status: "Part-time",
-            department: "IT",
-            shift: "Day",
-            joining_date: "2023-01-01",
-            role: "Employee"
+          model: Division,
+          attributes: ['DivisionName']
         },
         {
-            profile_picture: "https://png.pngtree.com/png-vector/20220709/ourmid/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_5809521.png",
-            full_name: "John Dela Cruz",
-            employee_id: 2,
-            status: "Part-time",
-            department: "HR",
-            shift: "Day",
-            joining_date: "2023-01-01",
-            role: "Employee"
+          model: Department,
+          attributes: ['DepartmentName']
         },
         {
-            profile_picture: "https://png.pngtree.com/png-vector/20220709/ourmid/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_5809521.png",
-            full_name: "John Guzman",
-            employee_id: 3,
-            status: "Regular",
-            department: "IT",
-            shift: "Day",
-            joining_date: "2023-01-01",
-            role: "Employee"
+          model: JobTitle,
+          attributes: ['JobTitleName']
         },
-    ]
+        {
+          model: Employee,
+          as: 'Manager',
+          attributes: ['FirstName', 'LastName', 'MiddleName']
+        },
+      ]
+    })
+    .then(employees => {
+      if (employees === null) {
+        return null;
+      }
+
+      const resultArray: Record<string, unknown>[] = [];
+      employees.forEach(employee => {
+        const mappedEmployee = {
+          employee_id: (employee as unknown as EmployeeAttributes).EmployeeID,
+          first_name: (employee as unknown as EmployeeAttributes).FirstName,
+          middle_name: (employee as unknown as EmployeeAttributes).MiddleName,
+          last_name: (employee as unknown as EmployeeAttributes).LastName,
+          birthday: (employee as unknown as EmployeeAttributes).DateOfBirth,
+          gender: (employee as unknown as EmployeeAttributes).Gender,
+          contact_number: (employee as unknown as EmployeeAttributes).ContactNumber,
+          email_address: (employee as unknown as EmployeeAttributes).Email,
+          company_email_address: (employee as unknown as EmployeeAttributes).CompanyEmail,
+          address_1: (employee as unknown as EmployeeAttributes).Address1,
+          address_2: (employee as unknown as EmployeeAttributes).Address2,
+          city: (employee as unknown as EmployeeAttributes).City,
+          state: (employee as unknown as EmployeeAttributes).State,
+          zip_code: (employee as unknown as EmployeeAttributes).ZipCode,
+          country: (employee as unknown as EmployeeAttributes).Country,
+          joining_date: (employee as unknown as EmployeeAttributes).JoiningDate,
+          status: (employee as unknown as EmployeeAttributes).Status,
+          division: (employee as unknown as EmployeeAttributes).Division.get("DivisionName"),
+          department: (employee as unknown as EmployeeAttributes).Department.get("DepartmentName"),
+          job_title: (employee as unknown as EmployeeAttributes).JobTitle.get("JobTitleName"),
+          manager: (employee as unknown as EmployeeAttributes).Manager ? {
+            first_name: (employee as unknown as EmployeeAttributes).Manager.get("FirstName"),
+            middle_name: (employee as unknown as EmployeeAttributes).Manager.get("MiddleName"),
+            last_name: (employee as unknown as EmployeeAttributes).Manager.get("LastName"),
+          } : {},
+        };
+
+        resultArray.push(mappedEmployee);
+      })
+
+      return resultArray;
+    });
+  },
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
+  async getEmployeeData(employeeID: number): Promise<Record<any, any> | null> {
+    return await Employee.findOne({
+      where: {
+        EmployeeID: employeeID
+      },
+      include: [
+        {
+          model: Division,
+          attributes: ['DivisionName']
+        },
+        {
+          model: Department,
+          attributes: ['DepartmentName']
+        },
+        {
+          model: JobTitle,
+          attributes: ['JobTitleName']
+        },
+        {
+          model: Employee,
+          as: 'Manager',
+          attributes: ['FirstName', 'LastName', 'MiddleName']
+        },
+      ]
+    })
+    .then(employee => {
+      if (employee === null) {
+        return null;
+      }
+
+      const mappedEmployee = {
+        employee_id: (employee as unknown as EmployeeAttributes).EmployeeID,
+        first_name: (employee as unknown as EmployeeAttributes).FirstName,
+        middle_name: (employee as unknown as EmployeeAttributes).MiddleName,
+        last_name: (employee as unknown as EmployeeAttributes).LastName,
+        birthday: (employee as unknown as EmployeeAttributes).DateOfBirth,
+        gender: (employee as unknown as EmployeeAttributes).Gender,
+        contact_number: (employee as unknown as EmployeeAttributes).ContactNumber,
+        email_address: (employee as unknown as EmployeeAttributes).Email,
+        company_email_address: (employee as unknown as EmployeeAttributes).CompanyEmail,
+        address_1: (employee as unknown as EmployeeAttributes).Address1,
+        address_2: (employee as unknown as EmployeeAttributes).Address2,
+        city: (employee as unknown as EmployeeAttributes).City,
+        state: (employee as unknown as EmployeeAttributes).State,
+        zip_code: (employee as unknown as EmployeeAttributes).ZipCode,
+        country: (employee as unknown as EmployeeAttributes).Country,
+        joining_date: (employee as unknown as EmployeeAttributes).JoiningDate,
+        status: (employee as unknown as EmployeeAttributes).Status,
+        division: (employee as unknown as EmployeeAttributes).Division.get("DivisionName"),
+        department: (employee as unknown as EmployeeAttributes).Department.get("DepartmentName"),
+        job_title: (employee as unknown as EmployeeAttributes).JobTitle.get("JobTitleName"),
+        manager: (employee as unknown as EmployeeAttributes).Manager ? {
+          first_name: (employee as unknown as EmployeeAttributes).Manager.get("FirstName"),
+          middle_name: (employee as unknown as EmployeeAttributes).Manager.get("MiddleName"),
+          last_name: (employee as unknown as EmployeeAttributes).Manager.get("LastName"),
+        } : {},
+      };
+
+      return mappedEmployee;
+    });
   },
   
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
@@ -87,57 +185,35 @@ const UsersController = {
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
-  getSchedule(): Record<any, any>[] | null {
-    return [
-        {
-            date: "2023-10-01",
-            in: "08:00:00am",
-            out: "05:00:00pm",
-            day: "Sunday",
-            hours: "8 hours"
-        },
-        {
-            date: "2023-10-02",
-            in: "08:00:00am",
-            out: "05:00:00pm",
-            day: "Monday",
-            hours: "8 hours"
-        },
-        {
-            date: "2023-10-03",
-            in: "08:00:00am",
-            out: "05:00:00pm",
-            day: "Tuesday",
-            hours: "8 hours"
-        },
-        {
-            date: "2023-10-04",
-            in: "08:00:00am",
-            out: "05:00:00pm",
-            day: "Wednesday",
-            hours: "8 hours"
-        },
-        {
-            date: "2023-10-05",
-            in: "08:00:00am",
-            out: "05:00:00pm",
-            day: "Thursday",
-            hours: "8 hours"
-        }
-    ];
-  },
-  
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
-  attendance(): Record<any, any> | null {
-    return {    
-        message: "Successfully recorded punch in / out.",
-        status: 200
+  async saveAttendance(employee_id: number): Promise<Model<any, any> | Error> {
+    console.log(getCurrentDateTime());
+
+    try {
+      return await EmployeeLog.create({
+        EmployeeID: employee_id,
+        LogTime: getCurrentDateTime()
+      });
+    } catch (error) {
+      return error as Error;
     }
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
+  async getLogs(employee_id: number): Promise<Model<any, any>[] | null> {
+    return await EmployeeLog.findAll({
+      where: {
+        EmployeeID: employee_id
+      },
+      attributes: [
+        ["EmployeeLogID", "employee_log_id"],
+        ["LogTime", "log"]
+      ]
+    });
+  },
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
   async getRole(roleId: number): Promise<Record<any, any>[] | null> {
-    return RoleFeature.findAll({
+    return await RoleFeature.findAll({
         where: {
             RoleID: roleId,
             IsEnabled: true,
@@ -146,7 +222,7 @@ const UsersController = {
         include: [
             {
                 model: Feature,
-                attributes: ['FeatureID', 'FeatureName'],
+                attributes: ['FeatureID', 'FeatureName', 'Route', 'IconURL', 'ParentTab'],
                 where: {
                     IsActive: true
                 }
@@ -154,19 +230,49 @@ const UsersController = {
         ]
     })
     .then(roleFeatures => {
-        // Use map to transform the result
-        const transformedResult = roleFeatures.map(roleFeature => ({
-          id: (roleFeature as unknown as FeatureAttributes).Feature.get('FeatureID'),
-          name: (roleFeature as unknown as FeatureAttributes).Feature.get('FeatureName')
-        }));
-      
-        return transformedResult;
+        const resultArray: any[] = []; // eslint-disable-line @typescript-eslint/no-explicit-any
+        const parentMap = {};
+
+        roleFeatures.forEach(roleFeature => {
+            const parent = (roleFeature as unknown as FeatureAttributes).Feature.get('ParentTab');
+            const name = (roleFeature as unknown as FeatureAttributes).Feature.get('FeatureName');
+            const route = (roleFeature as unknown as FeatureAttributes).Feature.get('Route');
+            const icon = (roleFeature as unknown as FeatureAttributes).Feature.get('IconURL');
+
+            // If parent is not null, add the item to the parent's sublists
+            if (parent !== null) {
+              if (!parentMap[parent]) {
+                // If the parent doesn't exist in the map, create it
+                parentMap[parent] = {
+                  name: parent,
+                  icon: icon,
+                  sublists: [],
+                };
+                resultArray.push(parentMap[parent]);
+              }
+        
+              // Add the item to the parent's sublists
+              parentMap[parent].sublists.push({
+                name: name,
+                route: route,
+              });
+            } else {
+              // If parent is null, directly add the item to the result array
+              resultArray.push({
+                name: name,
+                route: route,
+                icon: icon,
+              });
+            }
+          });
+
+        return resultArray;
       });
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
   async getCustomerDetails(customerID: number): Promise<Record<any, any> | null> {
-    return Customer.findOne({
+    return await Customer.findOne({
         where: {
             CustomerID: customerID,
         },
@@ -176,7 +282,7 @@ const UsersController = {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
   async authenticate(username: string): Promise<Model<any, any> | null>  {
-    return Auth.findOne({
+    return await Auth.findOne({
         where: {
             EmailAddress: username,
         },

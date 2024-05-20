@@ -1,0 +1,42 @@
+name: Deploy Docker Compose
+
+on:
+  pull_request:
+    branches:
+      - release/staging
+    types:
+      - closed
+  
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: tmk_brain_latest_image_tag
+          path: tmk_brain_latest_image_tag.txt
+      
+      - name: Read image tags
+        run: |
+          TMKBRAIN_TAG=$(cat tmk_brain_latest_image_tag.txt)
+          echo "TMKBRAIN_TAG=${TMKBRAIN_TAG}"
+          echo "TMKBRAIN_TAG=${TMKBRAIN_TAG}" >> $GITHUB_ENV
+
+      - name: Deploy Docker Compose via SSH
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << EOF
+            cd /home/ec2-user/TmkPalantir
+            ./run-docker-compose-brain.bash ${TMKBRAIN_TAG}
+          EOF

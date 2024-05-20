@@ -9,6 +9,9 @@ interface FeatureAttributes {
   Price: number;
   CreationDate: Date;
   Feature: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any 
+  Route: string;
+  IconURL: string;
+  ParentTab: string;
 }
 
 const Feature = dbConnectCore.define('Feature', {
@@ -33,6 +36,18 @@ const Feature = dbConnectCore.define('Feature', {
     },
     CreationDate: {
       type: DataTypes.DATE,
+    },
+    Route: {
+      type: DataTypes.STRING(200),
+      allowNull: true,
+    },
+    IconURL: {
+      type: DataTypes.STRING(200),
+      allowNull: true,
+    },
+    ParentTab: {
+      type: DataTypes.STRING(200),
+      allowNull: true,
     },
 });
 
