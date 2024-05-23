@@ -1,20 +1,21 @@
 import { DataTypes } from "sequelize";
-import { dbConnectCustomer } from "../database/connection";
+import { dbConnect } from "../../database/connection";
 
-interface DepartmentAttributes {
-  DepartmentID?: number;
-  DepartmentName: string;
+interface JobTitleAttributes {
+  JobTitleID?: number;
+  JobTitleName: string;
   Description?: string;
   DivisionID: number;
+  IsActive?: boolean;
 }
 
-const Department = dbConnectCustomer.define('Department', {
-  DepartmentID: {
+const JobTitle = dbConnect.define("JobTitle", {
+  JobTitleID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  DepartmentName: {
+  JobTitleName: {
     type: DataTypes.STRING(100),
     allowNull: false,
   },
@@ -25,6 +26,9 @@ const Department = dbConnectCustomer.define('Department', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  IsActive: {
+    type: DataTypes.BOOLEAN,
+  },
 });
 
-export { Department, DepartmentAttributes };
+export { JobTitle, JobTitleAttributes };

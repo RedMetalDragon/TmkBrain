@@ -1,54 +1,51 @@
 import { DataTypes } from "sequelize";
-import { dbConnectCore } from "../database/connection";
+import { dbConnect } from "../database/connection";
+import { Plan } from "./Plan";
 
 interface FeatureAttributes {
-  FeatureID: number;
+  FeatureID?: number;
   FeatureName: string;
-  Description: string;
+  FeatureDescription: string;
+  PlanID: number;
   IsActive: boolean;
-  Price: number;
-  CreationDate: Date;
-  Feature: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any 
-  Route: string;
-  IconURL: string;
-  ParentTab: string;
 }
 
-const Feature = dbConnectCore.define('Feature', {
+const Feature = dbConnect.define(
+  "Feature",
+  {
     FeatureID: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
     FeatureName: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(255),
       allowNull: false,
     },
-    Description: {
-      type: DataTypes.STRING(100),
+    FeatureDescription: {
+      type: DataTypes.STRING(255),
       allowNull: false,
+    },
+    PlanID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: Plan,
+        key: "PlanID",
+      },
     },
     IsActive: {
       type: DataTypes.BOOLEAN,
-    },
-    Price: {
-      type: DataTypes.DECIMAL(10, 2),
-    },
-    CreationDate: {
-      type: DataTypes.DATE,
-    },
-    Route: {
-      type: DataTypes.STRING(200),
       allowNull: true,
+      defaultValue: true,
     },
-    IconURL: {
-      type: DataTypes.STRING(200),
-      allowNull: true,
-    },
-    ParentTab: {
-      type: DataTypes.STRING(200),
-      allowNull: true,
-    },
-});
+  },
+  {
+    tableName: "Feature",
+    timestamps: false, // Disable auto-generating createdAt and updatedAt columns
+  }
+);
 
-export { Feature, FeatureAttributes };
+Feature.belongsTo(Plan, { foreignKey: "PlanID", as: "plan" });
+
+export { FeatureAttributes, Feature };

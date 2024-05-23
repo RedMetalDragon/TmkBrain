@@ -48,3 +48,4 @@ temp/
 .vscode-test
 yarn.lock
 package-lock.json
+package.json.local
