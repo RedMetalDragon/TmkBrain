@@ -12,6 +12,11 @@ const router = Router();
 // Health Check
 router.get("/health-check", HealthCheckRestHandler.healthCheck);
 
+// Email Validator for Payment Service
+router.post("/users/validate-email", UsersRestHandler.validateEmail);
+
+// TODO: refactor below endpoints ...
+
 // Login
 router.post("/users/login", UsersRestHandler.login);
 

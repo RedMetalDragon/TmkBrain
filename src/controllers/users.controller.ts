@@ -10,8 +10,8 @@ import { JobTitle } from "../models/old/JobTitle";
 import { EmployeeLog } from "../models/old/EmployeeLog";
 import { getCurrentDateTime } from "../handlers/helpers";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const UsersController = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getEmployees(): Promise<Record<any, any>[] | null> {
     return await Employee.findAll({
       include: [
@@ -91,7 +91,6 @@ const UsersController = {
     });
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getEmployeeData(employeeID: number): Promise<Record<any, any> | null> {
     return await Employee.findOne({
       where: {
@@ -169,7 +168,6 @@ const UsersController = {
     });
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getDashboardData(): Record<any, any> | null {
     return {
       employee_fname: "John",
@@ -187,7 +185,6 @@ const UsersController = {
     };
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getAttendance(): Record<any, any>[] | null {
     return [
       {
@@ -214,7 +211,6 @@ const UsersController = {
     ];
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async saveAttendance(employee_id: number): Promise<Model<any, any> | Error> {
     console.log(getCurrentDateTime());
 
@@ -228,7 +224,6 @@ const UsersController = {
     }
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getLogs(employee_id: number): Promise<Model<any, any>[] | null> {
     return await EmployeeLog.findAll({
       where: {
@@ -241,7 +236,6 @@ const UsersController = {
     });
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getRole(roleId: number): Promise<Record<any, any>[] | null> {
     return await RoleFeature.findAll({
       where: {
@@ -313,7 +307,6 @@ const UsersController = {
     });
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getCustomerDetails(
     customerID: number
   ): Promise<Record<any, any> | null> {
@@ -325,7 +318,6 @@ const UsersController = {
     });
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async authenticate(username: string): Promise<Model<any, any> | null> {
     return await Auth.findOne({
       where: {

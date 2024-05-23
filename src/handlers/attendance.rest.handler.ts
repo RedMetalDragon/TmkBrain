@@ -17,6 +17,7 @@ interface TimeInAndOut {
   incomplete_log: boolean;
 }
 
+/* eslint-disable  @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-explicit-any */
 const AttendanceRestHandler = {
   async computeAttendance(
     req: Request,
@@ -30,9 +31,7 @@ const AttendanceRestHandler = {
 
       console.log(`Cron processing: Attendance for ${currentDate}`);
 
-      /*
-            Check attendance table if current date has been computed already 
-            */
+      /* Check attendance table if current date has been computed already */
       const cronHistory = await AttendanceController.checkCronHistory(
         currentDate
       );
@@ -45,8 +44,6 @@ const AttendanceRestHandler = {
       } else {
         // Loop through all employees
         for (const employee of employees!) {
-          /* eslint-disable-line  @typescript-eslint/no-non-null-assertion */
-
           console.log(`Employee ID: ${employee.employee_id} ----------`);
 
           // Check first if employee has an assigned custom shift
@@ -96,10 +93,10 @@ const AttendanceRestHandler = {
               // Get shift (if day or overnight)
               const scheduledTimeIn =
                 schedule!.dataValues.Schedule
-                  .TimeIn; /* eslint-disable-line  @typescript-eslint/no-non-null-assertion */
+                  .TimeIn; 
               const scheduledTimeOut =
                 schedule!.dataValues.Schedule
-                  .TimeOut; /* eslint-disable-line  @typescript-eslint/no-non-null-assertion */
+                  .TimeOut; 
 
               // Parse the time strings into Date objects
               let timeIn = new Date(`2000-01-02T${scheduledTimeIn}`);
@@ -141,14 +138,12 @@ const AttendanceRestHandler = {
           }
 
           // To get hours rendered => out - in
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const renderedHours = hoursDifference(
             (timeInAndOut as any).time_out,
             (timeInAndOut as any).time_in
           );
 
           // To get tardiness => actual in - scheduled in
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           let tardiness = hoursDifference(
             (timeInAndOut as any).time_in,
             new Date(scheduledDateTimeIn)
@@ -159,10 +154,10 @@ const AttendanceRestHandler = {
           }
 
           /* 
-                    To get undertime and overtime => total scheduled hrs - actual hrs rendered
-                        - If positive, undertime (e.g. 9hrs - 8hrs = 1hr undertime)
-                        - If negative, overtime (e.g. 9hrs - 10hrs = 1hr overtime)
-                    */
+          To get undertime and overtime => total scheduled hrs - actual hrs rendered
+          - If positive, undertime (e.g. 9hrs - 8hrs = 1hr undertime)
+          - If negative, overtime (e.g. 9hrs - 10hrs = 1hr overtime)
+          */
           const scheduledVsRendered = scheduledHours - renderedHours;
 
           let overtime = 0;

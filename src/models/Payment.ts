@@ -9,30 +9,35 @@ interface PaymentAttributes {
   PaymentAmount: number;
 }
 
-const Payment = dbConnect.define("Payment", {
-  PaymentID: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  CustomerID: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: Customer,
-      key: "CustomerID",
+const Payment = dbConnect.define(
+  "Payment",
+  {
+    PaymentID: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    CustomerID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: Customer,
+        key: "CustomerID",
+      },
+    },
+    PaymentDate: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    PaymentAmount: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
   },
-  PaymentDate: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
-  PaymentAmount: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-});
-
-Payment.belongsTo(Customer, { foreignKey: "CustomerID", as: "paid_by" });
+  {
+    tableName: "Payment",
+    timestamps: false, // Disable auto-generating createdAt and updatedAt columns
+  }
+);
 
 export { PaymentAttributes, Payment };
