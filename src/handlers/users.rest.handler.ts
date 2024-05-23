@@ -8,8 +8,32 @@ import bcrypt from "bcrypt";
 import { CustomerAttributes } from "../models/old/Customer";
 import { isNumeric, isValidDate } from "./helpers";
 import { AttendanceController } from "../controllers/attendance.controller";
+import { UsersService } from "../services/users.service";
 
 const UsersRestHandler = {
+  async validateEmail(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { email_address } = req.body;
+
+      const emailAddressExist = await UsersService.doesEmailAddressExist(
+        email_address
+      );
+
+      res.status(200).json({
+        email_address,
+        existing: emailAddressExist,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  // TODO: refactor below functions ...
+
   getDashboardData(req: Request, res: Response): void {
     res.status(200).json(UsersController.getDashboardData());
   },
@@ -70,12 +94,13 @@ const UsersRestHandler = {
 
       if (bcrypt.compareSync(password, userHashedPassword)) {
         // Passwords match, authentication successful
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        /* eslint-disable @typescript-eslint/no-non-null-assertion */
         const token = jwt.sign(
           { username: (user! as unknown as AuthAttributes).EmailAddress },
           SECRET_KEY,
           { expiresIn: JWT_EXPIRES_IN.string }
         );
+        /* eslint-enable @typescript-eslint/no-non-null-assertion */
 
         const userRole = (user as unknown as AuthAttributes).RoleID;
         const userID = (user as unknown as AuthAttributes).UserID;

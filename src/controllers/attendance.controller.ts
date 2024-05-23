@@ -4,8 +4,8 @@ import { Attendance } from "../models/old/Attendance";
 import { Employee } from "../models/old/Employee";
 import { UNDEFINED_STRING } from "../constants";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const AttendanceController = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async saveAttendance(
     attendance: Record<string, unknown>
   ): Promise<Model<any, any> | Error> {
@@ -25,8 +25,6 @@ const AttendanceController = {
     from?: string;
     to?: string;
   }): Promise<Model<any, any>[] | null> {
-    // eslint-disable-line @typescript-eslint/no-explicit-any
-
     const where: {
       EmployeeID?: number;
       Date?:
@@ -86,7 +84,6 @@ const AttendanceController = {
     });
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async saveCronHistory(
     cron: Record<string, unknown>
   ): Promise<Model<any, any> | Error> {
@@ -97,7 +94,6 @@ const AttendanceController = {
     }
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async checkCronHistory(date: string): Promise<Record<any, any> | null> {
     return await CronHistory.findOne({
       where: {

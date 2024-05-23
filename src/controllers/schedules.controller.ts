@@ -9,8 +9,8 @@ import { Schedule } from "../models/old/Schedules";
 import { EmployeeLog } from "../models/old/EmployeeLog";
 import sequelize from "sequelize";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const SchedulesController = {
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async createSchedule(
     schedule: Record<string, unknown>
   ): Promise<Model<any, any> | Error> {
@@ -32,7 +32,6 @@ const SchedulesController = {
     });
   },
 
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async listSchedule(): Promise<Model<any, any>[] | null> {
     return await Schedule.findAll({
       attributes: [
@@ -44,7 +43,6 @@ const SchedulesController = {
     });
   },
 
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async readSchedule(schedule_id: number): Promise<Model<any, any> | null> {
     return await Schedule.findOne({
       where: {
@@ -59,7 +57,6 @@ const SchedulesController = {
     });
   },
 
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async deleteSchedule(schedule_id: number): Promise<number> {
     return await Schedule.destroy({
       where: {
@@ -68,7 +65,6 @@ const SchedulesController = {
     });
   },
 
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async getEmployeeSchedule({
     employee_id,
     employee_schedule_id,
@@ -102,7 +98,6 @@ const SchedulesController = {
     });
   },
 
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async createEmployeeSchedule(
     employee_schedule: Record<string, unknown>
   ): Promise<Model<any, any> | Error> {
@@ -113,7 +108,6 @@ const SchedulesController = {
     }
   },
 
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async updateEmployeeSchedule(
     employee_schedule: Record<string, unknown>,
     employee_schedule_id: number
@@ -125,7 +119,6 @@ const SchedulesController = {
     });
   },
 
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async getAssignedSchedule({
     employee_id,
     schedule_id,
@@ -210,7 +203,6 @@ const SchedulesController = {
     });
   },
 
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async getAssignedScheduleById(
     employee_schedule_id: number
   ): Promise<Record<any, any> | null> {
@@ -278,7 +270,6 @@ const SchedulesController = {
     });
   },
 
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async getAssignedScheduleByEmployeeId(
     employee_id: number
   ): Promise<Record<any, any>[]> {
@@ -359,7 +350,6 @@ const SchedulesController = {
     });
   },
 
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async deleteAssignedScheduleById(
     employee_schedule_id: number
   ): Promise<number> {
@@ -370,7 +360,6 @@ const SchedulesController = {
     });
   },
 
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async getScheduleForToday(
     employee_id: number,
     date: string
@@ -391,7 +380,6 @@ const SchedulesController = {
     });
   },
 
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async getTimeInAndOut(
     date: string,
     employee_id: number
