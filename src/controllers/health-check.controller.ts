@@ -7,6 +7,8 @@ interface HealthCheckResponse {
   timestamp: string;
   env: string;
 }
+/* The `HealthCheckController` object contains a method `healthCheck` that returns a
+`HealthCheckResponse` object. Here's a breakdown of what the method is doing: */
 
 const HealthCheckController = {
   healthCheck(): HealthCheckResponse {
