@@ -15,10 +15,13 @@ router.get("/health-check", HealthCheckRestHandler.healthCheck);
 // Email Validator for Payment Service
 router.post("/users/validate-email", UsersRestHandler.validateEmail);
 
-// TODO: refactor below endpoints ...
+// Creation of customer account
+router.post("/users/register", UsersRestHandler.createCustomerAccount);
 
 // Login
 router.post("/users/login", UsersRestHandler.login);
+
+// TODO: refactor below endpoints ...
 
 // Dashboard
 router.get("/users/dashboard", UsersRestHandler.getDashboardData);

@@ -38,16 +38,21 @@ const Auth = dbConnect.define(
     },
     PasswordResetToken: {
       type: DataTypes.STRING(255),
+      allowNull: true,
     },
     PasswordResetTokenExpiration: {
       type: DataTypes.DATE,
+      allowNull: true,
     },
     KeepLoggedIn: {
       type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
     },
     Status: {
       type: DataTypes.STRING(50),
-      allowNull: false,
+      allowNull: true,
+      defaultValue: "Active",
     },
   },
   {

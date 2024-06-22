@@ -1,7 +1,5 @@
 import { DataTypes } from "sequelize";
 import { dbConnect } from "../database/connection";
-import { CustomerPlan } from "./CustomerPlan";
-import { Feature } from "./Feature";
 
 interface PlanAttributes {
   PlanID?: number;
@@ -47,12 +45,5 @@ const Plan = dbConnect.define(
     timestamps: false, // Disable auto-generating createdAt and updatedAt columns
   }
 );
-
-Plan.hasMany(CustomerPlan, {
-  foreignKey: "PlanID",
-  as: "customers_subscribed",
-});
-
-Plan.hasMany(Feature, { foreignKey: "PlanID", as: "features" });
 
 export { PlanAttributes, Plan };

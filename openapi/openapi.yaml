@@ -24,6 +24,14 @@ paths:
       tags:
         - Users
       description: Checks if the email is already existing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ValidateEmail'
       responses:
         "200": 
           description: Successful response
@@ -41,9 +49,107 @@ paths:
                     enum: 
                     - true
                     - false
-                    
+  
+  /users/register:
+    post:
+      tags:
+        - Users
+      description: Register customer account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/CreateCustomerAccount'
+      responses:
+        "200": 
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum: 
+                    - Successfully created customer account.
+        "500":
+          $ref: "#/components/responses/ErrorRegister"
+
+  /users/login:
+    post:
+      tags:
+        - Users
+      description: Customer login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/Login'
+      responses:
+        "200": 
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  expires_in:
+                    type: number
+                    description: in seconds
+                  token_type:
+                    type: string
+                    enum: 
+                    - Bearer
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/ErrorLogin"
+
 components:
-   
+  schemas:
+    CreateCustomerAccount:
+      required: [email_address, customer_stripe_id, plan_id, password, name, contact_number, address, paid_amount]
+      properties:
+        email_address:
+          type: string
+        customer_stripe_id:
+          type: string
+        plan_id:
+          type: number
+          description: The plan the customer subscribed to
+        password:
+          type: string
+        name:
+          type: string
+        contact_number:
+          type: string
+        address:
+          type: string
+        paid_amount:
+          type: number
+    
+    Login:
+      required: [email_address, password]
+      properties:
+        email_address: 
+          type: string
+        password:
+          type: string
+    
+    ValidateEmail:
+      required: [email_address]
+      properties:
+        email_address:
+          type: string
+
   responses:
     SuccessResponse:
       description: Successful response
@@ -66,12 +172,14 @@ components:
           schema:
             type: object
             properties:
+              code:
+                enum: 
+                - 1001
+                type: number
               message:
                 type: string
-                description: Unauthorized error message
-              status:
-                type: integer
-                description: HTTP status code
+                enum:
+                  - Wrong email or password.
     
     HealthCheckResponse:
       description: >-
@@ -120,3 +228,40 @@ components:
                 type: string
                 enum:
                   - Unknown error occurred
+
+    ErrorLogin:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the
+        request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
+                  - Email address does not exist in our records.
+
+    ErrorRegister:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the
+        request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
+                  - Email address already exists.
+                  - Customer Stripe ID already exists.
+                  - Plan ID does not exist.
+                  - Unable to save customer account.
