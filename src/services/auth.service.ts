@@ -1,16 +1,16 @@
-import { Model, WhereOptions } from "sequelize";
+import { Model, Transaction } from "sequelize";
 import { Auth, AuthAttributes } from "../models/Auth";
 import { LoginBody } from "../handlers";
-import { UsersService } from "./users.service";
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { SECRET_KEY, JWT_EXPIRES_IN } from "../constants";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const AuthService = {
   async saveAuth(
     auth: Record<string, unknown>,
-    transaction
+    transaction: Transaction
   ): Promise<Model<any, any> | Error> {
     try {
       return await Auth.create(auth, { transaction });

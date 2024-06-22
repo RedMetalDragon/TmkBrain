@@ -1,11 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { UsersController } from "../controllers";
 
-import { JWT_EXPIRES_IN, SECRET_KEY } from "../constants";
-import { AuthAttributes } from "../models/old/Auth";
+import { JWT_EXPIRES_IN } from "../constants";
 import createHttpError from "http-errors";
-import bcrypt from "bcrypt";
-import { CustomerAttributes } from "../models/old/Customer";
 import { isNumeric, isValidDate } from "./helpers";
 import { AttendanceController } from "../controllers/attendance.controller";
 import { UsersService } from "../services/users.service";
@@ -150,7 +147,7 @@ const UsersRestHandler = {
 
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { email_address, password }: LoginBody = req.body;
+      const { email_address }: LoginBody = req.body;
 
       // Validating inputs
       const { error } = LoginBodySchema.validate(req.body);

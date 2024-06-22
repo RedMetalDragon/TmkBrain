@@ -1,7 +1,5 @@
 import { DataTypes } from "sequelize";
 import { dbConnect } from "../database/connection";
-import { CustomerPlan } from "./CustomerPlan";
-import { Feature } from "./Feature";
 
 interface PlanAttributes {
   PlanID?: number;

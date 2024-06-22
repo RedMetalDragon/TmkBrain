@@ -1,7 +1,8 @@
-import { Model, WhereOptions } from "sequelize";
+import { Model, Transaction, WhereOptions } from "sequelize";
 import { Plan } from "../models/Plan";
 import { CustomerPlan } from "../models/CustomerPlan";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const PlanService = {
   async getPlan({ planId }: { planId?: number }): Promise<Model<any, any>[]> {
     let where: WhereOptions = {};
@@ -23,7 +24,7 @@ const PlanService = {
 
   async saveCustomerPlan(
     customerPlan: Record<string, unknown>,
-    transaction
+    transaction: Transaction
   ): Promise<Model<any, any> | Error> {
     try {
       return await CustomerPlan.create(customerPlan, { transaction });

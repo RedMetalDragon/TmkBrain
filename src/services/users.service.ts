@@ -1,4 +1,4 @@
-import { Model, WhereOptions } from "sequelize";
+import { Model, Transaction } from "sequelize";
 import { Customer, CustomerAttributes } from "../models/Customer";
 import { dbConnect } from "../database/connection";
 import { PaymentService } from "./payment.service";
@@ -6,6 +6,7 @@ import { PlanService } from "./plans.service";
 import { AuthService } from "./auth.service";
 import { CreateCustomerBody } from "../handlers";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const UsersService = {
   async createCustomerTransaction(
     customerData: CreateCustomerBody,
@@ -57,7 +58,7 @@ const UsersService = {
 
   async saveCustomer(
     customer: Record<string, unknown>,
-    transaction
+    transaction: Transaction
   ): Promise<Model<any, any> | Error> {
     try {
       return await Customer.create(customer, { transaction });
