@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { UsersController } from "../controllers";
-import jwt from "jsonwebtoken";
+
 import { JWT_EXPIRES_IN, SECRET_KEY } from "../constants";
 import { AuthAttributes } from "../models/old/Auth";
 import createHttpError from "http-errors";
@@ -12,6 +12,7 @@ import { UsersService } from "../services/users.service";
 import { PlanService } from "../services/plans.service";
 import { generateSaltPassword } from "../utils/salt_password_gen";
 import Joi from "joi";
+import { AuthService } from "../services/auth.service";
 
 type ValidateEmailBody = {
   email_address: string;
@@ -28,6 +29,11 @@ export type CreateCustomerBody = {
   plan_id: number;
 };
 
+export type LoginBody = {
+  email_address: string;
+  password: string;
+};
+
 // Schema validations
 const CreateCustomerBodySchema = Joi.object({
   name: Joi.string().required(),
@@ -38,6 +44,11 @@ const CreateCustomerBodySchema = Joi.object({
   password: Joi.string().required(),
   paid_amount: Joi.number().required(),
   plan_id: Joi.number().required(),
+});
+
+const LoginBodySchema = Joi.object({
+  email_address: Joi.string().email().required(),
+  password: Joi.string().required(),
 });
 
 const UsersRestHandler = {
@@ -137,6 +148,32 @@ const UsersRestHandler = {
     }
   },
 
+  async login(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { email_address, password }: LoginBody = req.body;
+
+      // Validating inputs
+      const { error } = LoginBodySchema.validate(req.body);
+
+      if (error) {
+        throw new createHttpError.InternalServerError(
+          `Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.`
+        );
+      }
+
+      await AuthService.authenticate(req.body);
+      const jwt = await AuthService.generateJWT(email_address);
+
+      res.status(200).json({
+        access_token: jwt,
+        expires_in: JWT_EXPIRES_IN.numeric,
+        token_type: "Bearer",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
   // TODO: refactor below functions ...
 
   getDashboardData(req: Request, res: Response): void {
@@ -176,66 +213,6 @@ const UsersRestHandler = {
       });
 
       res.status(200).json(attendance);
-    } catch (error) {
-      next(error);
-    }
-  },
-
-  async login(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const { username, password } = req.body;
-
-      // Get salt from Auth table based on email_address
-      const user = await UsersController.authenticate(username);
-
-      if (user === null) {
-        throw new createHttpError.InternalServerError(
-          `Username does not exist in our records.`
-        );
-      }
-
-      const userHashedPassword = (user as unknown as AuthAttributes)
-        .PasswordHash;
-
-      if (bcrypt.compareSync(password, userHashedPassword)) {
-        // Passwords match, authentication successful
-        /* eslint-disable @typescript-eslint/no-non-null-assertion */
-        const token = jwt.sign(
-          { username: (user! as unknown as AuthAttributes).EmailAddress },
-          SECRET_KEY,
-          { expiresIn: JWT_EXPIRES_IN.string }
-        );
-        /* eslint-enable @typescript-eslint/no-non-null-assertion */
-
-        const userRole = (user as unknown as AuthAttributes).RoleID;
-        const userID = (user as unknown as AuthAttributes).UserID;
-        const userCustomerID = (user as unknown as AuthAttributes).CustomerID;
-
-        const roleFeatures = await UsersController.getRole(userRole);
-        const companyLogo = await UsersController.getCustomerDetails(
-          userCustomerID
-        );
-
-        const personalData = await UsersController.getEmployeeData(userID);
-
-        console.log(roleFeatures);
-
-        res.status(200).json({
-          access_token: token,
-          expires_in: JWT_EXPIRES_IN.numeric,
-          token_type: "Bearer",
-          company_logo: (companyLogo as unknown as CustomerAttributes)
-            .CustomerLogo,
-          role_features: roleFeatures,
-          personal_data: personalData,
-        });
-      } else {
-        // Passwords don't match, authentication failed
-        res.status(401).json({
-          message: "Wrong email or password.",
-          status: 401,
-        });
-      }
     } catch (error) {
       next(error);
     }

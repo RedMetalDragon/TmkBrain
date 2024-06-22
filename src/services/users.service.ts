@@ -1,4 +1,4 @@
-import { Model } from "sequelize";
+import { Model, WhereOptions } from "sequelize";
 import { Customer, CustomerAttributes } from "../models/Customer";
 import { dbConnect } from "../database/connection";
 import { PaymentService } from "./payment.service";

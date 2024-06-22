@@ -35,6 +35,15 @@ export const defaultProblem = {
 
 export const problemTypes = [
   {
+    matchErrorClass: createHttpError.Unauthorized,
+    details: {
+      code: ErrorCodes.UNAUTHORIZED,
+      message: "Authorization error",
+      status: 401,
+    },
+    occurrenceDetails: defaultOccurrenceDetails,
+  },
+  {
     matchErrorClass: createHttpError.NotFound,
     details: {
       code: ErrorCodes.NOT_FOUND,
