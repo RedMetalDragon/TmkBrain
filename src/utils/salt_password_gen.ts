@@ -1,14 +1,12 @@
 import bcrypt from "bcrypt";
 
-function generateSaltPassword() {
+export function generateSaltPassword(password: string): [string, string] {
   const saltRounds = 10;
 
-  const userPassword = "user_password";
   const salt = bcrypt.genSaltSync(saltRounds);
-  const hashedPassword = bcrypt.hashSync(userPassword, salt);
-
   console.log(salt);
+  const hashedPassword = bcrypt.hashSync(password, salt);
   console.log(hashedPassword);
-}
 
-generateSaltPassword();
+  return [salt, hashedPassword];
+}

@@ -15,6 +15,9 @@ router.get("/health-check", HealthCheckRestHandler.healthCheck);
 // Email Validator for Payment Service
 router.post("/users/validate-email", UsersRestHandler.validateEmail);
 
+// Creation of customer account
+router.post("/users/register", UsersRestHandler.createCustomerAccount);
+
 // TODO: refactor below endpoints ...
 
 // Login

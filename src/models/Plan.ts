@@ -48,11 +48,4 @@ const Plan = dbConnect.define(
   }
 );
 
-Plan.hasMany(CustomerPlan, {
-  foreignKey: "PlanID",
-  as: "customers_subscribed",
-});
-
-Plan.hasMany(Feature, { foreignKey: "PlanID", as: "features" });
-
 export { PlanAttributes, Plan };

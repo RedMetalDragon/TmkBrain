@@ -91,12 +91,8 @@ const AttendanceRestHandler = {
               continue;
             } else {
               // Get shift (if day or overnight)
-              const scheduledTimeIn =
-                schedule!.dataValues.Schedule
-                  .TimeIn; 
-              const scheduledTimeOut =
-                schedule!.dataValues.Schedule
-                  .TimeOut; 
+              const scheduledTimeIn = schedule!.dataValues.Schedule.TimeIn;
+              const scheduledTimeOut = schedule!.dataValues.Schedule.TimeOut;
 
               // Parse the time strings into Date objects
               let timeIn = new Date(`2000-01-02T${scheduledTimeIn}`);

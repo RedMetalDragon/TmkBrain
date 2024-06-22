@@ -43,11 +43,11 @@ const CustomerPlan = dbConnect.define(
     },
     ActivationDate: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
     },
     ExpirationDate: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
     },
   },
   {
@@ -63,5 +63,10 @@ Customer.hasOne(CustomerPlan, {
   as: "subscribed_plan",
 });
 CustomerPlan.belongsTo(Customer, { foreignKey: "CustomerID", as: "customer" });
+
+Plan.hasMany(CustomerPlan, {
+  foreignKey: "PlanID",
+  as: "customers_subscribed",
+});
 
 export { CustomerPlanAttributes, CustomerPlan };

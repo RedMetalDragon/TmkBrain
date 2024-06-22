@@ -9,6 +9,36 @@ import { CustomerAttributes } from "../models/old/Customer";
 import { isNumeric, isValidDate } from "./helpers";
 import { AttendanceController } from "../controllers/attendance.controller";
 import { UsersService } from "../services/users.service";
+import { PlanService } from "../services/plans.service";
+import { generateSaltPassword } from "../utils/salt_password_gen";
+import Joi from "joi";
+
+type ValidateEmailBody = {
+  email_address: string;
+};
+
+export type CreateCustomerBody = {
+  name: string;
+  contact_number: string;
+  email_address: string;
+  address: string;
+  customer_stripe_id: string;
+  password: string;
+  paid_amount: number;
+  plan_id: number;
+};
+
+// Schema validations
+const CreateCustomerBodySchema = Joi.object({
+  name: Joi.string().required(),
+  contact_number: Joi.string().required(),
+  email_address: Joi.string().email().required(),
+  address: Joi.string().required(),
+  customer_stripe_id: Joi.string().required(),
+  password: Joi.string().required(),
+  paid_amount: Joi.number().required(),
+  plan_id: Joi.number().required(),
+});
 
 const UsersRestHandler = {
   async validateEmail(
@@ -17,7 +47,7 @@ const UsersRestHandler = {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { email_address } = req.body;
+      const { email_address }: ValidateEmailBody = req.body;
 
       const emailAddressExist = await UsersService.doesEmailAddressExist(
         email_address
@@ -27,6 +57,81 @@ const UsersRestHandler = {
         email_address,
         existing: emailAddressExist,
       });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async createCustomerAccount(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const {
+        email_address,
+        customer_stripe_id,
+        plan_id,
+        password,
+      }: CreateCustomerBody = req.body;
+
+      // Validating inputs
+      const { error } = CreateCustomerBodySchema.validate(req.body);
+
+      if (error) {
+        throw new createHttpError.InternalServerError(
+          `Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.`
+        );
+      }
+
+      const emailAddressExist = await UsersService.doesEmailAddressExist(
+        email_address
+      );
+      if (emailAddressExist) {
+        throw new createHttpError.InternalServerError(
+          `Email address already exists.`
+        );
+      }
+
+      const customerStripeIdExist =
+        await UsersService.doesCustomerStripeIdExist(customer_stripe_id);
+      if (customerStripeIdExist) {
+        throw new createHttpError.InternalServerError(
+          `Customer Stripe ID already exists.`
+        );
+      }
+
+      const plans = await PlanService.getPlan({ planId: plan_id });
+      if (plans.length === 0) {
+        throw new createHttpError.InternalServerError(
+          `Plan ID does not exist.`
+        );
+      }
+
+      // Processing inputs
+      // Hashing customer password
+      const [salt, hashedPassword] = generateSaltPassword(password);
+
+      // Saving info in database
+      if (
+        (await UsersService.createCustomerTransaction(
+          req.body,
+          salt,
+          hashedPassword
+        )) === true
+      ) {
+        res.status(200).json({
+          message: "Successfully created customer account.",
+        });
+      } else {
+        throw new createHttpError.InternalServerError(
+          `Unable to save customer account.`
+        );
+      }
+
+      /*
+      TODO: sending email notification via another service.
+      */
     } catch (error) {
       next(error);
     }

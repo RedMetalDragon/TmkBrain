@@ -48,4 +48,6 @@ const Feature = dbConnect.define(
 
 Feature.belongsTo(Plan, { foreignKey: "PlanID", as: "plan" });
 
+Plan.hasMany(Feature, { foreignKey: "PlanID", as: "features" });
+
 export { FeatureAttributes, Feature };

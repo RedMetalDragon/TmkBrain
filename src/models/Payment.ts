@@ -27,7 +27,7 @@ const Payment = dbConnect.define(
     },
     PaymentDate: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
     },
     PaymentAmount: {
       type: DataTypes.INTEGER,
