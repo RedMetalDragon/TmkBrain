@@ -24,6 +24,14 @@ paths:
       tags:
         - Users
       description: Checks if the email is already existing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ValidateEmail'
       responses:
         "200": 
           description: Successful response
@@ -41,9 +49,71 @@ paths:
                     enum: 
                     - true
                     - false
-                    
+  
+  /users/register:
+    post:
+      tags:
+        - Users
+      description: Register customer account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/CreateCustomerAccount'
+      responses:
+        "200": 
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum: 
+                    - Successfully created customer account.
+        "500":
+          $ref: "#/components/responses/ErrorRegister"
+
 components:
-   
+  schemas:
+    CreateCustomerAccount:
+      properties:
+        email_address:
+          type: string
+          required: true
+        customer_stripe_id:
+          type: string
+          required: true
+        plan_id:
+          type: number
+          required: true
+          description: The plan the customer subscribed to
+        password:
+          type: string
+          required: true
+        name:
+          type: string
+          required: true
+        contact_number:
+          type: string
+          required: true
+        address:
+          type: string
+          required: true
+        paid_amount:
+          type: number
+          required: true
+    
+    ValidateEmail:
+      properties:
+        email_address:
+          type: string
+          required: true
+
   responses:
     SuccessResponse:
       description: Successful response
@@ -120,3 +190,23 @@ components:
                 type: string
                 enum:
                   - Unknown error occurred
+
+    ErrorRegister:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the
+        request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
+                  - Email address already exists.
+                  - Customer Stripe ID already exists.
+                  - Plan ID does not exist.
+                  - Unable to save customer account.
