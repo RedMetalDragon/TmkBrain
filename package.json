@@ -8,8 +8,8 @@
     "scripts": {
         "bootstrap": "npm install && npm run set-hooks",
         "prebuild": "npx eslint . --ext .js,.ts",
-        "build": "rd /s /q dist && tsc && npm run copy:openapi",
-        "copy:openapi": "xcopy .\\openapi\\* .\\dist\\ /E /Y",
+        "build": "rm -rf dist && tsc && npm run copy:openapi",
+        "copy:openapi": "cp ./openapi/* ./dist/",
         "dev": "nodemon --inspect=5858 -e ts, --exec node -r ts-node/register ./src/index.ts",
         "lint": "npx eslint . --ext .js,.ts",
         "format": "prettier --write \"**/*.ts\"",
@@ -39,6 +39,7 @@
         "guid-typescript": "^1.0.9",
         "helmet": "^4.6.0",
         "http-errors": "^1.7.2",
+        "joi": "^17.13.3",
         "jsonwebtoken": "^9.0.2",
         "jwks-rsa": "^2.0.5",
         "luxon": "^3.4.4",
