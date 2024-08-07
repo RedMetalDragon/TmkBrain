@@ -1,31 +1,31 @@
 import { DataTypes } from "sequelize";
 import { dbConnect } from "../database/connection";
-import { Customer } from "./Customer";
+import { Employee } from "./Employee";
 import { Plan } from "./Plan";
 
-interface CustomerPlanAttributes {
-  CustomerPlanID?: number;
-  CustomerID: number;
+interface CompanyPlanAttributes {
+  CompanyPlanID?: number;
+  EmployeeID: number;
   PlanID: number;
   IsActive: boolean;
   ActivationDate: string;
   ExpirationDate: string;
 }
 
-const CustomerPlan = dbConnect.define(
-  "CustomerPlan",
+const CompanyPlan = dbConnect.define(
+  "CompanyPlan",
   {
-    CustomerPlanID: {
+    CompanyPlanID: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    CustomerID: {
+    EmployeeID: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: Customer,
-        key: "CustomerID",
+        model: Employee,
+        key: "EmployeeID",
       },
     },
     PlanID: {
@@ -51,22 +51,22 @@ const CustomerPlan = dbConnect.define(
     },
   },
   {
-    tableName: "CustomerPlan",
+    tableName: "CompanyPlan",
     timestamps: false, // Disable auto-generating createdAt and updatedAt columns
   }
 );
 
-CustomerPlan.belongsTo(Plan, { foreignKey: "PlanID", as: "plan" });
+CompanyPlan.belongsTo(Plan, { foreignKey: "PlanID", as: "plan" });
 
-Customer.hasOne(CustomerPlan, {
+Employee.hasOne(CompanyPlan, {
   foreignKey: "CustomerID",
   as: "subscribed_plan",
 });
-CustomerPlan.belongsTo(Customer, { foreignKey: "CustomerID", as: "customer" });
+CompanyPlan.belongsTo(Employee, { foreignKey: "EmployeeID", as: "customer" });
 
-Plan.hasMany(CustomerPlan, {
+Plan.hasMany(CompanyPlan, {
   foreignKey: "PlanID",
   as: "customers_subscribed",
 });
 
-export { CustomerPlanAttributes, CustomerPlan };
+export { CompanyPlanAttributes, CompanyPlan };

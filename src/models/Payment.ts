@@ -1,10 +1,10 @@
 import { DataTypes } from "sequelize";
 import { dbConnect } from "../database/connection";
-import { Customer } from "./Customer";
+import { Employee } from "./Employee";
 
 interface PaymentAttributes {
   PaymentID?: number;
-  CustomerID: number;
+  EmployeeID: number;
   PaymentDate: string;
   PaymentAmount: number;
 }
@@ -17,12 +17,12 @@ const Payment = dbConnect.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    CustomerID: {
+    EmployeeID: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: Customer,
-        key: "CustomerID",
+        model: Employee,
+        key: "EmployeeID",
       },
     },
     PaymentDate: {
