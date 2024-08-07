@@ -116,20 +116,22 @@ paths:
 components:
   schemas:
     CreateCustomerAccount:
-      required: [email_address, customer_stripe_id, plan_id, password, name, contact_number, address, paid_amount]
+      required: [email_address, stripe_id, plan_id, password, first_name, last_name, middle_name, address, paid_amount]
       properties:
         email_address:
           type: string
-        customer_stripe_id:
+        stripe_id:
           type: string
         plan_id:
           type: number
           description: The plan the customer subscribed to
         password:
           type: string
-        name:
+        first_name:
           type: string
-        contact_number:
+        middle_name:
+          type: string
+        last_name:
           type: string
         address:
           type: string

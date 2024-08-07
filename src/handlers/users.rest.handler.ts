@@ -16,11 +16,12 @@ type ValidateEmailBody = {
 };
 
 export type CreateCustomerBody = {
-  name: string;
-  contact_number: string;
+  first_name: string;
+  last_name: string;
+  middle_name: string;
   email_address: string;
   address: string;
-  customer_stripe_id: string;
+  stripe_id: string;
   password: string;
   paid_amount: number;
   plan_id: number;
@@ -33,11 +34,12 @@ export type LoginBody = {
 
 // Schema validations
 const CreateCustomerBodySchema = Joi.object({
-  name: Joi.string().required(),
-  contact_number: Joi.string().required(),
+  first_name: Joi.string().required(),
+  last_name: Joi.string().required(),
+  middle_name: Joi.string().required(),
   email_address: Joi.string().email().required(),
   address: Joi.string().required(),
-  customer_stripe_id: Joi.string().required(),
+  stripe_id: Joi.string().required(),
   password: Joi.string().required(),
   paid_amount: Joi.number().required(),
   plan_id: Joi.number().required(),
@@ -78,7 +80,7 @@ const UsersRestHandler = {
     try {
       const {
         email_address,
-        customer_stripe_id,
+        stripe_id,
         plan_id,
         password,
       }: CreateCustomerBody = req.body;
@@ -102,10 +104,10 @@ const UsersRestHandler = {
       }
 
       const customerStripeIdExist =
-        await UsersService.doesCustomerStripeIdExist(customer_stripe_id);
+        await UsersService.doesCustomerStripeIdExist(stripe_id);
       if (customerStripeIdExist) {
         throw new createHttpError.InternalServerError(
-          `Customer Stripe ID already exists.`
+          `Stripe ID already exists.`
         );
       }
 
