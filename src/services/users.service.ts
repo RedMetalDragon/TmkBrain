@@ -1,5 +1,5 @@
 import { Model, Transaction } from "sequelize";
-import { Customer, CustomerAttributes } from "../models/Customer";
+import { Employee, EmployeeAttributes } from "../models/Employee";
 import { dbConnect } from "../database/connection";
 import { PaymentService } from "./payment.service";
 import { PlanService } from "./plans.service";
@@ -25,7 +25,7 @@ const UsersService = {
       };
 
       const customer = await this.saveCustomer(createCustomer, transaction);
-      const customerId = (customer as unknown as CustomerAttributes).CustomerID;
+      const customerId = (customer as unknown as EmployeeAttributes).EmployeeID;
 
       const createPayment = {
         CustomerID: customerId,
@@ -61,14 +61,14 @@ const UsersService = {
     transaction: Transaction
   ): Promise<Model<any, any> | Error> {
     try {
-      return await Customer.create(customer, { transaction });
+      return await Employee.create(customer, { transaction });
     } catch (error) {
       return error as Error;
     }
   },
 
   async doesEmailAddressExist(emailAddress: string): Promise<boolean> {
-    const user = await Customer.findOne({
+    const user = await Employee.findOne({
       where: {
         Email: emailAddress,
       },
@@ -78,7 +78,7 @@ const UsersService = {
   },
 
   async doesCustomerStripeIdExist(customerStripeId: string): Promise<boolean> {
-    const user = await Customer.findOne({
+    const user = await Employee.findOne({
       where: {
         CustomerStripeID: customerStripeId,
       },

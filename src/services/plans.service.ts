@@ -1,6 +1,6 @@
 import { Model, Transaction, WhereOptions } from "sequelize";
 import { Plan } from "../models/Plan";
-import { CustomerPlan } from "../models/CustomerPlan";
+import { CompanyPlan } from "../models/CustomerPlan";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const PlanService = {
@@ -27,7 +27,7 @@ const PlanService = {
     transaction: Transaction
   ): Promise<Model<any, any> | Error> {
     try {
-      return await CustomerPlan.create(customerPlan, { transaction });
+      return await CompanyPlan.create(customerPlan, { transaction });
     } catch (error) {
       return error as Error;
     }

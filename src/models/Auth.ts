@@ -21,7 +21,7 @@ const Auth = dbConnect.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    CustomerID: {
+    EmployeeID: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
