@@ -77,6 +77,34 @@ paths:
                     - Successfully created customer account.
         "500":
           $ref: "#/components/responses/ErrorRegister"
+          
+  /users/enroll:
+    post:
+      tags:
+        - Users
+      description: Enroll employee account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/EnrollEmployeeAccount'
+      responses:
+        "200": 
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum: 
+                    - Successfully enrolled employee account.
+        "500":
+          $ref: "#/components/responses/ErrorRegister"
 
   /users/login:
     post:
@@ -152,6 +180,21 @@ components:
           type: string
         paid_amount:
           type: number
+          
+    EnrollEmployeeAccount:
+      required: [email_address, first_name, last_name, middle_name, birthday]
+      properties:
+        email_address:
+          type: string
+        first_name:
+          type: string
+        middle_name:
+          type: string
+        last_name:
+          type: string
+        birthday:
+          type: string
+          description: should be in YYYY-MM-DD format
     
     Login:
       required: [email_address, password]
@@ -302,3 +345,4 @@ components:
                   - Customer Stripe ID already exists.
                   - Plan ID does not exist.
                   - Unable to save customer account.
+                  - Unable to enroll employee account.
