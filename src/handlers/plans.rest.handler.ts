@@ -18,7 +18,7 @@ const PlansRestHandler = {
             plan_id: (plan as unknown as PlanAttributes).PlanID,
             plan_name: (plan as unknown as PlanAttributes).PlanName,
             description: (plan as unknown as PlanAttributes).Description,
-            price: (plan as unknown as PlanAttributes).Price, 
+            price: (plan as unknown as PlanAttributes).Price,
             //eslint-disable-next-line @typescript-eslint/no-explicit-any
             features: (plan as any).features.map((feature) => {
               return {

@@ -6,10 +6,13 @@ import createHttpError from "http-errors";
 import { isNumeric, isValidDate } from "./helpers";
 import { AttendanceController } from "../controllers/attendance.controller";
 import { UsersService } from "../services/users.service";
-import { PlanService } from "../services/plans.service";
-import { generateSaltPassword } from "../utils/salt_password_gen";
+import {
+  generateSaltPassword,
+  generateStrongPassword,
+} from "../utils/salt_password_gen";
 import Joi from "joi";
 import { AuthService } from "../services/auth.service";
+import { ValidationService } from "../services/validation.service";
 
 type ValidateEmailBody = {
   email_address: string;
@@ -25,6 +28,14 @@ export type CreateCustomerBody = {
   password: string;
   paid_amount: number;
   plan_id: number;
+};
+
+export type EnrollEmployeeBody = {
+  first_name: string;
+  last_name: string;
+  middle_name: string;
+  email_address: string;
+  birthday: string;
 };
 
 export type LoginBody = {
@@ -43,6 +54,20 @@ const CreateCustomerBodySchema = Joi.object({
   password: Joi.string().required(),
   paid_amount: Joi.number().required(),
   plan_id: Joi.number().required(),
+});
+
+const EnrollEmployeeBodySchema = Joi.object({
+  first_name: Joi.string().required(),
+  last_name: Joi.string().required(),
+  middle_name: Joi.string().required(),
+  email_address: Joi.string().email().required(),
+  birthday: Joi.string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .required()
+    .messages({
+      "string.pattern.base": "Birthday must be in YYYY-MM-DD format.",
+      "any.required": "Birthday is a required field.",
+    }),
 });
 
 const LoginBodySchema = Joi.object({
@@ -90,33 +115,13 @@ const UsersRestHandler = {
 
       if (error) {
         throw new createHttpError.InternalServerError(
-          `Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.`
+          `Please check request schema. Please refer to the openAPI documentation for the right endpoint usage. - ${error}`
         );
       }
 
-      const emailAddressExist = await UsersService.doesEmailAddressExist(
-        email_address
-      );
-      if (emailAddressExist) {
-        throw new createHttpError.InternalServerError(
-          `Email address already exists.`
-        );
-      }
-
-      const customerStripeIdExist =
-        await UsersService.doesCustomerStripeIdExist(stripe_id);
-      if (customerStripeIdExist) {
-        throw new createHttpError.InternalServerError(
-          `Stripe ID already exists.`
-        );
-      }
-
-      const plans = await PlanService.getPlan({ planId: plan_id });
-      if (plans.length === 0) {
-        throw new createHttpError.InternalServerError(
-          `Plan ID does not exist.`
-        );
-      }
+      await ValidationService.validateEmailAddress(email_address);
+      await ValidationService.validateStripeId(stripe_id);
+      await ValidationService.validatePlan(plan_id);
 
       // Processing inputs
       // Hashing customer password
@@ -136,6 +141,57 @@ const UsersRestHandler = {
       } else {
         throw new createHttpError.InternalServerError(
           `Unable to save customer account.`
+        );
+      }
+
+      /*
+      TODO: sending email notification via another service.
+      */
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async enrollEmployeeAccount(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { email_address }: EnrollEmployeeBody = req.body;
+
+      // Validating inputs
+      const { error } = EnrollEmployeeBodySchema.validate(req.body);
+
+      if (error) {
+        throw new createHttpError.InternalServerError(
+          `Please check request schema. Please refer to the openAPI documentation for the right endpoint usage. - ${error}`
+        );
+      }
+
+      await ValidationService.validateEmailAddress(email_address);
+
+      // Processing inputs
+      // Generate temporary password
+      const randomPassword = generateStrongPassword();
+
+      // Hash customer password
+      const [salt, hashedPassword] = generateSaltPassword(randomPassword);
+
+      // Save info in database
+      if (
+        (await UsersService.enrollEmployeeTransaction(
+          req.body,
+          salt,
+          hashedPassword
+        )) === true
+      ) {
+        res.status(200).json({
+          message: "Successfully enrolled employee account.",
+        });
+      } else {
+        throw new createHttpError.InternalServerError(
+          `Unable to enroll employee account.`
         );
       }
 

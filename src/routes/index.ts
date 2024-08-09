@@ -19,6 +19,9 @@ router.post("/users/validate-email", UsersRestHandler.validateEmail);
 // Creation of customer account
 router.post("/users/register", UsersRestHandler.createCustomerAccount);
 
+// Enrollment of employee account
+router.post("/users/enroll", UsersRestHandler.enrollEmployeeAccount);
+
 // Login
 router.post("/users/login", UsersRestHandler.login);
 
