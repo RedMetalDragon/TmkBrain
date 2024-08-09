@@ -6,6 +6,7 @@ import {
   SchedulesRestHandler,
   AttendanceRestHandler,
 } from "../handlers";
+import { PlansRestHandler } from "../handlers/plans.rest.handler";
 
 const router = Router();
 
@@ -20,6 +21,9 @@ router.post("/users/register", UsersRestHandler.createCustomerAccount);
 
 // Login
 router.post("/users/login", UsersRestHandler.login);
+
+// Get plans
+router.get("/plans", PlansRestHandler.getPlans);
 
 // TODO: refactor below endpoints ...
 
