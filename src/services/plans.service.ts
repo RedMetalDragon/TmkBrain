@@ -1,6 +1,7 @@
 import { Model, Transaction, WhereOptions } from "sequelize";
 import { Plan } from "../models/Plan";
 import { CompanyPlan } from "../models/CustomerPlan";
+import { Feature } from "../models/Feature";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const PlanService = {
@@ -17,6 +18,15 @@ const PlanService = {
         ...where,
         IsActive: true,
       },
+      include: [
+        {
+          model: Feature,
+          as: "features",
+          where: {
+            IsActive: true,
+          },
+        },
+      ],
     });
 
     return plans;

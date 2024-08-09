@@ -113,6 +113,21 @@ paths:
         "500":
           $ref: "#/components/responses/ErrorLogin"
 
+  /plans:
+    get:
+      tags:
+        - Plans
+      description: Returns the plans available for subscription
+      responses:
+        "200": 
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/Plans'
+          
 components:
   schemas:
     CreateCustomerAccount:
@@ -145,6 +160,26 @@ components:
           type: string
         password:
           type: string
+    
+    Plans:
+      properties:
+        plan_id:
+          type: number
+        plan_name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        features:
+          type: object
+          properties:
+            feature_id:
+              type: number
+            feature_name:
+              type: string
+            description:
+              type: string
     
     ValidateEmail:
       required: [email_address]

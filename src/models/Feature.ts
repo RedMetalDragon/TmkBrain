@@ -5,7 +5,7 @@ import { Plan } from "./Plan";
 interface FeatureAttributes {
   FeatureID?: number;
   FeatureName: string;
-  FeatureDescription: string;
+  Description: string;
   PlanID: number;
   IsActive: boolean;
 }
@@ -22,7 +22,7 @@ const Feature = dbConnect.define(
       type: DataTypes.STRING(255),
       allowNull: false,
     },
-    FeatureDescription: {
+    Description: {
       type: DataTypes.STRING(255),
       allowNull: false,
     },
