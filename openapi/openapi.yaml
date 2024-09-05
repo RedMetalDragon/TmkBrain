@@ -1,0 +1,348 @@
+openapi: 3.0.1
+info:
+  title: Boilerplate
+  description: |-
+    This is a simple API boilerplate.
+  version: 0.0.1
+servers:
+  - url: http://localhost:3001/api/v1
+    description: localhost for devs
+paths:
+  /health-check:
+    get:
+      tags:
+        - Health Check
+      description: Returns the status of the API
+      responses:
+        "200":
+          $ref: "#/components/responses/HealthCheckResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+          
+  /users/validate-email:
+    post:
+      tags:
+        - Users
+      description: Checks if the email is already existing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ValidateEmail'
+      responses:
+        "200": 
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email_addess:
+                    type: string
+                    enum: 
+                    - emailaddress@gmail.com
+                  existing:
+                    type: boolean
+                    enum: 
+                    - true
+                    - false
+  
+  /users/register:
+    post:
+      tags:
+        - Users
+      description: Register customer account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/CreateCustomerAccount'
+      responses:
+        "200": 
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum: 
+                    - Successfully created customer account.
+        "500":
+          $ref: "#/components/responses/ErrorRegister"
+          
+  /users/enroll:
+    post:
+      tags:
+        - Users
+      description: Enroll employee account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/EnrollEmployeeAccount'
+      responses:
+        "200": 
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum: 
+                    - Successfully enrolled employee account.
+        "500":
+          $ref: "#/components/responses/ErrorRegister"
+
+  /users/login:
+    post:
+      tags:
+        - Users
+      description: Customer login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/Login'
+      responses:
+        "200": 
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  expires_in:
+                    type: number
+                    description: in seconds
+                  token_type:
+                    type: string
+                    enum: 
+                    - Bearer
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/ErrorLogin"
+
+  /plans:
+    get:
+      tags:
+        - Plans
+      description: Returns the plans available for subscription
+      responses:
+        "200": 
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/Plans'
+          
+components:
+  schemas:
+    CreateCustomerAccount:
+      required: [email_address, stripe_id, plan_id, password, first_name, last_name, middle_name, address, paid_amount]
+      properties:
+        email_address:
+          type: string
+        stripe_id:
+          type: string
+        plan_id:
+          type: number
+          description: The plan the customer subscribed to
+        password:
+          type: string
+        first_name:
+          type: string
+        middle_name:
+          type: string
+        last_name:
+          type: string
+        address:
+          type: string
+        paid_amount:
+          type: number
+          
+    EnrollEmployeeAccount:
+      required: [email_address, first_name, last_name, middle_name, birthday]
+      properties:
+        email_address:
+          type: string
+        first_name:
+          type: string
+        middle_name:
+          type: string
+        last_name:
+          type: string
+        birthday:
+          type: string
+          description: should be in YYYY-MM-DD format
+    
+    Login:
+      required: [email_address, password]
+      properties:
+        email_address: 
+          type: string
+        password:
+          type: string
+    
+    Plans:
+      properties:
+        plan_id:
+          type: number
+        plan_name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        features:
+          type: object
+          properties:
+            feature_id:
+              type: number
+            feature_name:
+              type: string
+            description:
+              type: string
+    
+    ValidateEmail:
+      required: [email_address]
+      properties:
+        email_address:
+          type: string
+
+  responses:
+    SuccessResponse:
+      description: Successful response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Success message
+              status:
+                type: integer
+                description: HTTP status code
+
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                enum: 
+                - 1001
+                type: number
+              message:
+                type: string
+                enum:
+                  - Wrong email or password.
+    
+    HealthCheckResponse:
+      description: >-
+        OK -- The request is a success; the status of the API will be returned
+        in the response.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                description: Status of the API
+                type: string
+                enum:
+                  - up
+              version:
+                description: Version of the API
+                type: string
+              info:
+                description: Detailed information about the status of the API
+                type: string
+              timestamp:
+                description: Date and time of the request
+                type: string
+              env:
+                description: Environment
+                type: string
+                enum:
+                  - dev
+                  - stg
+                  - prd
+                  - local
+    
+    InternalServerError:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the
+        request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Unknown error occurred
+
+    ErrorLogin:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the
+        request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
+                  - Email address does not exist in our records.
+
+    ErrorRegister:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the
+        request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
+                  - Email address already exists.
+                  - Customer Stripe ID already exists.
+                  - Plan ID does not exist.
+                  - Unable to save customer account.
+                  - Unable to enroll employee account.
