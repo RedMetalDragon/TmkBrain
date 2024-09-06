@@ -19,7 +19,7 @@ const HealthCheckController = {
     return {
       status: "up",
       version,
-      info: "Service is healthy, all good",
+      info: "Service is healthy",
       timestamp,
       env,
     };
