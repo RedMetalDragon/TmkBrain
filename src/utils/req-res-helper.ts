@@ -4,7 +4,7 @@ import { HTTP } from "../constants";
 export function getInteger(
   req: Request,
   key: string,
-  allowNegative = true,
+  allowNegative = true
 ): number | undefined {
   const param = req.query[key];
   const value = Array.isArray(param) ? param[0] : param;
@@ -22,7 +22,7 @@ export function getString(req: Request, key: string): string | undefined {
 }
 
 export function renderRequestLog(
-  req: Request & { startMillis?: number },
+  req: Request & { startMillis?: number }
 ): string {
   const now = new Date();
   req.startMillis = now.getTime();
@@ -36,7 +36,7 @@ export function renderRequestLog(
       req.path
     } ${now.toISOString()} - ${JSON.stringify(ip)} [${
       req.headers["X-Request-ID"] as string
-    }]`,
+    }]`
   );
 
   if (req.method === HTTP.GET) {
@@ -52,7 +52,7 @@ export function renderResponseLog(
   req: Request & { startMillis?: number },
   resBody: Record<string, unknown> | Array<Record<string, unknown>>,
   resHttpStatus: number,
-  error?: Error,
+  error?: Error
 ): string {
   const logBuilder: string[] = [];
 
@@ -67,7 +67,7 @@ export function renderResponseLog(
       req.path
     } ${resHttpStatus} - ${processingTime} ms [${
       req.headers["X-Request-ID"] as string
-    }]`,
+    }]`
   );
 
   if (req.method === HTTP.GET && Array.isArray(resBody)) {

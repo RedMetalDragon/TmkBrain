@@ -17,7 +17,7 @@ if (isDeployed) {
         (message as string)
           ? (message as string).replace(NEWLINE_PATTERN, SPACE_CHARACTER)
           : message
-      }`,
+      }`
     /* eslint-disable @typescript-eslint/restrict-template-expressions */
   );
 
@@ -31,7 +31,7 @@ if (isDeployed) {
   const myFormat = printf(
     ({ level, message, timestamp: ts }) =>
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      `${ts as string} [${level}]: ${message}`,
+      `${ts as string} [${level}]: ${message}`
   );
 
   loggingOptions = {

@@ -12,7 +12,7 @@ enum ErrorCodes {
 }
 
 export const defaultOccurrenceDetails: (
-  error: ValidationError,
+  error: ValidationError
 ) => Record<string, unknown> = (error: ValidationError) => {
   return error.message ? { message: error.message } : {};
 };
@@ -34,6 +34,15 @@ export const defaultProblem = {
 };
 
 export const problemTypes = [
+  {
+    matchErrorClass: createHttpError.Unauthorized,
+    details: {
+      code: ErrorCodes.UNAUTHORIZED,
+      message: "Authorization error",
+      status: 401,
+    },
+    occurrenceDetails: defaultOccurrenceDetails,
+  },
   {
     matchErrorClass: createHttpError.NotFound,
     details: {

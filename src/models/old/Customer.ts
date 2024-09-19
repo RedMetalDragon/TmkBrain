@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { dbConnectCore } from "../database/connection";
+import { dbConnect } from "../../database/connection";
 
 interface CustomerAttributes {
   CustomerID?: number;
@@ -16,7 +16,7 @@ interface CustomerAttributes {
   CustomerLogo: string;
 }
 
-const Customer = dbConnectCore.define('Customer', {
+const Customer = dbConnect.define("Customer", {
   CustomerID: {
     type: DataTypes.INTEGER,
     primaryKey: true,

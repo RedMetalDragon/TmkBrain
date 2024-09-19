@@ -8,7 +8,13 @@ import { problemDetailsResponseMiddleware } from "./middleware/problem-details-r
 const corsOptions = {
   origin: "*",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "Accept",
+    "Origin",
+  ],
 };
 
 export default function createApp(path: string, router: Router): Application {
