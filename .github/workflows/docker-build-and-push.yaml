@@ -89,8 +89,7 @@ jobs:
         platforms: linux/amd64,linux/arm64  # Specify the platforms
         push: true
         tags: |
-          marcoguerod/tmkbrain-amd64:${{ github.event.inputs.tag || env.IMAGE_TAG }}
-          marcoguerod/tmkbrain-arm64:${{ github.event.inputs.tag || env.IMAGE_TAG }}
+          marcoguerod/tmkbrain:${{ github.event.inputs.tag || env.IMAGE_TAG }}
 
     - name: Logout from Docker
       if: steps.check-condition.outputs.proceed == 'true'

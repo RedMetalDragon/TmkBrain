@@ -6,7 +6,7 @@ import { logger } from "../utils/logger";
 import { renderResponseLog } from "../utils/req-res-helper";
 
 function getProblemDetailsForError(
-  error: Error | ValidationError,
+  error: Error | ValidationError
 ): ProblemTypesDetails {
   const problemType = problemTypes.find((type) => {
     return error instanceof type.matchErrorClass;
@@ -18,7 +18,7 @@ function getProblemDetailsForError(
   if (typeof problem.occurrenceDetails === "function") {
     Object.assign(
       problemDetails,
-      problem.occurrenceDetails(error as ValidationError),
+      problem.occurrenceDetails(error as ValidationError)
     );
   }
 
@@ -29,7 +29,7 @@ export function problemDetailsResponseMiddleware(
   error: Error | ValidationError,
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): void {
   if (res.headersSent) {
     // already too late

@@ -1,24 +1,24 @@
 import { DataTypes } from "sequelize";
 import { dbConnect } from "../database/connection";
-import { Plan } from "./Plan";
 
-interface FeatureAttributes {
-  FeatureID?: number;
-  FeatureName: string;
+interface PlanAttributes {
+  PlanID?: number;
+  PlanName: string;
   Description: string;
-  PlanID: number;
   IsActive: boolean;
+  Price: number;
+  CreationDate: string;
 }
 
-const Feature = dbConnect.define(
-  "Feature",
+const Plan = dbConnect.define(
+  "Plan",
   {
-    FeatureID: {
+    PlanID: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    FeatureName: {
+    PlanName: {
       type: DataTypes.STRING(255),
       allowNull: false,
     },
@@ -26,28 +26,24 @@ const Feature = dbConnect.define(
       type: DataTypes.STRING(255),
       allowNull: false,
     },
-    PlanID: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: Plan,
-        key: "PlanID",
-      },
-    },
     IsActive: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
       defaultValue: true,
     },
+    Price: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    CreationDate: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
   },
   {
-    tableName: "Feature",
+    tableName: "Plan",
     timestamps: false, // Disable auto-generating createdAt and updatedAt columns
   }
 );
 
-Feature.belongsTo(Plan, { foreignKey: "PlanID", as: "plan" });
-
-Plan.hasMany(Feature, { foreignKey: "PlanID", as: "features" });
-
-export { FeatureAttributes, Feature };
+export { PlanAttributes, Plan };
