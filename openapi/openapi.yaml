@@ -1,8 +1,8 @@
 openapi: 3.0.1
 info:
-  title: Boilerplate
+  title: TMK Brain
   description: |-
-    This is a simple API boilerplate.
+    This documentation contains endpoints available for TMK Brain.
   version: 0.0.1
 servers:
   - url: http://localhost:3001/api/v1

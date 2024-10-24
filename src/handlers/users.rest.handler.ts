@@ -143,10 +143,6 @@ const UsersRestHandler = {
           `Unable to save customer account.`
         );
       }
-
-      /*
-      TODO: sending email notification via another service.
-      */
     } catch (error) {
       next(error);
     }
@@ -194,10 +190,6 @@ const UsersRestHandler = {
           `Unable to enroll employee account.`
         );
       }
-
-      /*
-      TODO: sending email notification via another service.
-      */
     } catch (error) {
       next(error);
     }
@@ -224,6 +216,38 @@ const UsersRestHandler = {
         expires_in: JWT_EXPIRES_IN.numeric,
         token_type: "Bearer",
       });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getEmployeeData(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { employee_id } = req.params;
+
+      // Validate if employee_id is numeric
+      if (!isNumeric(employee_id)) {
+        throw new createHttpError.InternalServerError(
+          `Please provide numeric employee ID.`
+        );
+      }
+      
+      // TODO: use usersService instead
+      const employeeData = await UsersController.getEmployeeData(
+        Number(employee_id)
+      );
+
+      if (employeeData !== null) {
+        res.status(200).json(employeeData);
+      } else {
+        throw new createHttpError.InternalServerError(
+          `Employee ID does not exist in our record.`
+        );
+      }
     } catch (error) {
       next(error);
     }
@@ -357,37 +381,6 @@ const UsersRestHandler = {
       const employees = await UsersController.getEmployees();
 
       res.status(200).json(employees);
-    } catch (error) {
-      next(error);
-    }
-  },
-
-  async getEmployeeData(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const { employee_id } = req.params;
-
-      // Validate if schedule_id is numeric
-      if (!isNumeric(employee_id)) {
-        throw new createHttpError.InternalServerError(
-          `Please provide numeric employee ID.`
-        );
-      }
-
-      const employeeData = await UsersController.getEmployeeData(
-        Number(employee_id)
-      );
-
-      if (employeeData !== null) {
-        res.status(200).json(employeeData);
-      } else {
-        throw new createHttpError.InternalServerError(
-          `Employee ID does not exist in our record.`
-        );
-      }
     } catch (error) {
       next(error);
     }

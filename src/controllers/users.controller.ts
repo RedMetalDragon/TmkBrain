@@ -4,9 +4,9 @@ import { Auth } from "../models/old/Auth";
 import { Feature, FeatureAttributes } from "../models/old/Feature";
 import { Customer } from "../models/old/Customer";
 import { Employee, EmployeeAttributes } from "../models/old/Employee";
-import { Division } from "../models/old/Division";
-import { Department } from "../models/old/Department";
-import { JobTitle } from "../models/old/JobTitle";
+import { Division } from "../models/Division";
+import { Department } from "../models/Department";
+import { JobTitle } from "../models/JobTitle";
 import { EmployeeLog } from "../models/old/EmployeeLog";
 import { getCurrentDateTime } from "../handlers/helpers";
 
