@@ -5,6 +5,9 @@ import { PaymentService } from "./payment.service";
 import { PlanService } from "./plans.service";
 import { AuthService } from "./auth.service";
 import { CreateCustomerBody, EnrollEmployeeBody } from "../handlers";
+import { Department } from "../models/Department";
+import { Division } from "../models/Division";
+import { JobTitle } from "../models/JobTitle";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const UsersService = {
@@ -22,7 +25,7 @@ const UsersService = {
         MiddleName: customerData.middle_name,
         Email: customerData.email_address,
         Address1: customerData.address,
-        CustomerStripeID: customerData.stripe_id,
+        StripeID: customerData.stripe_id,
         IsRootAccount: true,
       };
 
@@ -103,6 +106,85 @@ const UsersService = {
     } catch (error) {
       return error as Error;
     }
+  },
+
+  async getEmployeeData(employeeID: number): Promise<Record<any, any> | null> {
+    return await Employee.findOne({
+      where: {
+        EmployeeID: employeeID,
+      },
+      include: [
+        {
+          model: Division,
+          as: "division",
+          attributes: ["DivisionName"],
+        },
+        {
+          model: Department,
+          as: "department",
+          attributes: ["DepartmentName"],
+        },
+        {
+          model: JobTitle,
+          as: "jobTitle",
+          attributes: ["JobTitleName"],
+        },
+        {
+          model: Employee,
+          as: "manager",
+          attributes: ["FirstName", "LastName", "MiddleName"],
+        },
+      ],
+    }).then((employee) => {
+      if (employee === null) {
+        return null;
+      }
+
+      const mappedEmployee = {
+        employee_id: (employee as unknown as EmployeeAttributes).EmployeeID,
+        first_name: (employee as unknown as EmployeeAttributes).FirstName,
+        middle_name: (employee as unknown as EmployeeAttributes).MiddleName,
+        last_name: (employee as unknown as EmployeeAttributes).LastName,
+        birthday: (employee as unknown as EmployeeAttributes).DateOfBirth,
+        email_address: (employee as unknown as EmployeeAttributes).Email,
+        address_1: (employee as unknown as EmployeeAttributes).Address1 ?? "",
+        address_2: (employee as unknown as EmployeeAttributes).Address2 ?? "",
+        city: (employee as unknown as EmployeeAttributes).City ?? "",
+        state: (employee as unknown as EmployeeAttributes).State ?? "",
+        zip_code: (employee as unknown as EmployeeAttributes).ZipCode ?? "",
+        country: (employee as unknown as EmployeeAttributes).Country ?? "",
+        joining_date:
+          (employee as unknown as EmployeeAttributes).JoiningDate ?? "",
+        status: (employee as unknown as EmployeeAttributes).Status ?? "",
+        division:
+          (employee as unknown as EmployeeAttributes).Division?.get(
+            "DivisionName"
+          ) ?? "Not yet assigned yet",
+        department:
+          (employee as unknown as EmployeeAttributes).Department?.get(
+            "DepartmentName"
+          ) ?? "Not yet assigned yet",
+        job_title:
+          (employee as unknown as EmployeeAttributes).JobTitle?.get(
+            "JobTitleName"
+          ) ?? "Not yet assigned yet",
+        manager: (employee as unknown as EmployeeAttributes).Manager
+          ? {
+              first_name: (
+                employee as unknown as EmployeeAttributes
+              ).Manager.get("FirstName"),
+              middle_name: (
+                employee as unknown as EmployeeAttributes
+              ).Manager.get("MiddleName"),
+              last_name: (
+                employee as unknown as EmployeeAttributes
+              ).Manager.get("LastName"),
+            }
+          : {},
+      };
+
+      return mappedEmployee;
+    });
   },
 
   // TODO: refactor to getUser({attribute})

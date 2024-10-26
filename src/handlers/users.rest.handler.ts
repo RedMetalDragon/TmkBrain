@@ -235,9 +235,8 @@ const UsersRestHandler = {
           `Please provide numeric employee ID.`
         );
       }
-      
-      // TODO: use usersService instead
-      const employeeData = await UsersController.getEmployeeData(
+
+      const employeeData = await UsersService.getEmployeeData(
         Number(employee_id)
       );
 
@@ -312,7 +311,7 @@ const UsersRestHandler = {
         );
       }
 
-      const employeeData = await UsersController.getEmployeeData(
+      const employeeData = await UsersService.getEmployeeData(
         Number(employee_id)
       );
 
@@ -354,7 +353,7 @@ const UsersRestHandler = {
         );
       }
 
-      const employeeData = await UsersController.getEmployeeData(
+      const employeeData = await UsersService.getEmployeeData(
         Number(employee_id)
       );
 

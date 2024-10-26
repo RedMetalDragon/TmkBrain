@@ -1,6 +1,9 @@
 import { DataTypes } from "sequelize";
 import { dbConnect } from "../database/connection";
 import { Payment } from "./Payment";
+import { Division } from "./Division";
+import { Department } from "./Department";
+import { JobTitle } from "./JobTitle";
 
 interface EmployeeAttributes {
   EmployeeID?: number;
@@ -23,6 +26,10 @@ interface EmployeeAttributes {
   Status?: string;
   StripeID: string;
   IsRootAccount: boolean;
+  Division: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+  Department: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+  JobTitle: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+  Manager: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 const Employee = dbConnect.define(
@@ -116,5 +123,20 @@ const Employee = dbConnect.define(
 
 Employee.hasMany(Payment, { foreignKey: "EmployeeID", as: "payments" });
 Payment.belongsTo(Employee, { foreignKey: "EmployeeID", as: "paid_by" });
+
+Employee.belongsTo(Division, { foreignKey: "DivisionID", as: "division" });
+Division.hasMany(Employee, { foreignKey: "DivisionID", as: "employees" });
+
+Employee.belongsTo(Department, {
+  foreignKey: "DepartmentID",
+  as: "department",
+});
+Department.hasMany(Employee, { foreignKey: "DepartmentID", as: "employees" });
+
+Employee.hasOne(JobTitle, { foreignKey: "JobTitleID", as: "jobTitle" });
+JobTitle.hasMany(Employee, { foreignKey: "JobTitleID", as: "employees" });
+
+Employee.hasOne(Employee, { foreignKey: "ManagerID", as: "manager" });
+Employee.hasMany(Employee, { foreignKey: "ManagerID", as: "subordinates" });
 
 export { Employee, EmployeeAttributes };
