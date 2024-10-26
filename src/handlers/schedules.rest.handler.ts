@@ -16,6 +16,7 @@ import {
   validateUniqueDates,
 } from "./helpers";
 import { DEFAULT_SCHEDULE } from "../constants";
+import { UsersService } from "../services/users.service";
 
 interface EmployeeSchedule {
   employee_id: number;
@@ -206,7 +207,7 @@ const SchedulesRestHandler = {
       const { employee_id, schedule_id, workdays } = req.body;
 
       // Validations: Employee id should be existing
-      const employeeData = await UsersController.getEmployeeData(
+      const employeeData = await UsersService.getEmployeeData(
         Number(employee_id)
       );
 
@@ -424,7 +425,7 @@ const SchedulesRestHandler = {
       }
 
       // Validations: Employee id should be existing
-      const employeeData = await UsersController.getEmployeeData(
+      const employeeData = await UsersService.getEmployeeData(
         Number(employee_id)
       );
 
@@ -536,7 +537,7 @@ const SchedulesRestHandler = {
       }
 
       // Validations: Employee id should be existing
-      const employeeData = await UsersController.getEmployeeData(
+      const employeeData = await UsersService.getEmployeeData(
         Number(employee_id)
       );
 
@@ -601,7 +602,7 @@ const SchedulesRestHandler = {
       }
 
       // Validations: Employee id should be existing
-      const employeeData = await UsersController.getEmployeeData(
+      const employeeData = await UsersService.getEmployeeData(
         Number(employee_id)
       );
 

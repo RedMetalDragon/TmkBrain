@@ -1,8 +1,8 @@
 openapi: 3.0.1
 info:
-  title: Boilerplate
+  title: TMK Brain
   description: |-
-    This is a simple API boilerplate.
+    This documentation contains endpoints available for TMK Brain.
   version: 0.0.1
 servers:
   - url: http://localhost:3001/api/v1
@@ -140,6 +140,27 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
         "500":
           $ref: "#/components/responses/ErrorLogin"
+          
+  /users/{employee_id}:
+    get:
+      tags:
+        - Users
+      description: Get employee data
+      parameters:
+        - $ref: '#/components/parameters/EmployeeIdPathParam'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/Employee'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/ErrorGetEmployee"
 
   /plans:
     get:
@@ -157,6 +178,15 @@ paths:
                   - $ref: '#/components/schemas/Plans'
           
 components:
+  parameters:
+    EmployeeIdPathParam:
+      name: employee_id
+      in: path
+      required: true
+      schema:
+        type: number
+      description: The ID of the employee
+      
   schemas:
     CreateCustomerAccount:
       required: [email_address, stripe_id, plan_id, password, first_name, last_name, middle_name, address, paid_amount]
@@ -195,6 +225,76 @@ components:
         birthday:
           type: string
           description: should be in YYYY-MM-DD format
+    
+    Employee:
+      type: object
+      properties:
+        employee_id:
+          type: integer
+          example: 3
+        first_name:
+          type: string
+          example: "Josiah"
+        middle_name:
+          type: string
+          example: "Perez"
+        last_name:
+          type: string
+          example: "Cavitana"
+        birthday:
+          type: string
+          format: date
+          example: "1998-04-15"
+        email_address:
+          type: string
+          format: email
+          example: "jaypcavitana3@gmail.com"
+        address_1:
+          type: string
+          example: "Test"
+        address_2:
+          type: string
+          example: "Test"
+        city:
+          type: string
+          example: "Test"
+        state:
+          type: string
+          example: "Test"
+        zip_code:
+          type: string
+          example: "1600"
+        country:
+          type: string
+          example: "Philippines"
+        joining_date:
+          type: string
+          format: date
+          example: "2024-01-01"
+        status:
+          type: string
+          example: "Regular"
+        division:
+          type: string
+          example: "IT"
+        department:
+          type: string
+          example: "IT"
+        job_title:
+          type: string
+          example: "Software Engineer"
+        manager:
+          type: object
+          properties:
+            first_name:
+              type: string
+              example: "Marco"
+            middle_name:
+              type: string
+              example: "Guevara"
+            last_name:
+              type: string
+              example: "Guevara"
     
     Login:
       required: [email_address, password]
@@ -309,6 +409,23 @@ components:
                 enum:
                   - Unknown error occurred
 
+    ErrorGetEmployee:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the
+        request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Please provide numeric employee ID.
+                  - Employee ID does not exist in our record.
+                  
     ErrorLogin:
       description: >-
         Interval Server Error -- There was a problem with the system itself the
