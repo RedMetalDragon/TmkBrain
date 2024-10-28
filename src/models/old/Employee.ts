@@ -1,9 +1,9 @@
 import { DataTypes } from "sequelize";
 import { dbConnect } from "../../database/connection";
 import { Attendance } from "./Attendance";
-import { Department } from "./Department";
-import { Division } from "./Division";
-import { JobTitle } from "./JobTitle";
+import { Department } from "../Department";
+import { Division } from "../Division";
+import { JobTitle } from "../JobTitle";
 import { Schedule } from "./Schedules";
 
 interface EmployeeAttributes {

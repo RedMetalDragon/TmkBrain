@@ -28,6 +28,9 @@ router.post("/users/login", UsersRestHandler.login);
 // Get plans
 router.get("/plans", PlansRestHandler.getPlans);
 
+// Employee data
+router.get("/users/:employee_id", UsersRestHandler.getEmployeeData);
+
 // TODO: refactor below endpoints ...
 
 // Dashboard
@@ -49,9 +52,6 @@ router.get("/employees/attendance", UsersRestHandler.getAttendance);
 
 // List of employees
 router.get("/users", UsersRestHandler.getEmployees);
-
-// Employee data
-router.get("/users/:employee_id", UsersRestHandler.getEmployeeData);
 
 // Schedule CRUD
 router.post("/schedule", SchedulesRestHandler.createSchedule);
