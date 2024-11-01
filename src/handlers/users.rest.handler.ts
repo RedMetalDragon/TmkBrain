@@ -3,7 +3,7 @@ import { UsersController } from "../controllers";
 
 import { JWT_EXPIRES_IN } from "../constants";
 import createHttpError from "http-errors";
-import { isNumeric, isValidDate } from "./helpers";
+import { isValidDate } from "./helpers";
 import { AttendanceController } from "../controllers/attendance.controller";
 import { UsersService } from "../services/users.service";
 import {
@@ -47,7 +47,7 @@ export type LoginBody = {
 const CreateCustomerBodySchema = Joi.object({
   first_name: Joi.string().required(),
   last_name: Joi.string().required(),
-  middle_name: Joi.string().allow(null, ''),
+  middle_name: Joi.string().allow(null, ""),
   email_address: Joi.string().email().required(),
   address: Joi.string().required(),
   stripe_id: Joi.string().required(),
@@ -59,7 +59,7 @@ const CreateCustomerBodySchema = Joi.object({
 const EnrollEmployeeBodySchema = Joi.object({
   first_name: Joi.string().required(),
   last_name: Joi.string().required(),
-  middle_name: Joi.string().allow(null, ''),
+  middle_name: Joi.string().allow(null, ""),
   email_address: Joi.string().email().required(),
   birthday: Joi.string()
     .regex(/^\d{4}-\d{2}-\d{2}$/)
@@ -75,6 +75,10 @@ const LoginBodySchema = Joi.object({
   password: Joi.string().required(),
 });
 
+const ValidateEmailBodySchema = Joi.object({
+  email_address: Joi.string().email().required(),
+});
+
 const UsersRestHandler = {
   async validateEmail(
     req: Request,
@@ -83,6 +87,9 @@ const UsersRestHandler = {
   ): Promise<void> {
     try {
       const { email_address }: ValidateEmailBody = req.body;
+
+      // Validating inputs
+      ValidationService.validateSchema(ValidateEmailBodySchema, req.body);
 
       const emailAddressExist = await UsersService.doesEmailAddressExist(
         email_address
@@ -111,13 +118,7 @@ const UsersRestHandler = {
       }: CreateCustomerBody = req.body;
 
       // Validating inputs
-      const { error } = CreateCustomerBodySchema.validate(req.body);
-
-      if (error) {
-        throw new createHttpError.InternalServerError(
-          `Please check request schema. Please refer to the openAPI documentation for the right endpoint usage. - ${error}`
-        );
-      }
+      ValidationService.validateSchema(CreateCustomerBodySchema, req.body);
 
       await ValidationService.validateEmailAddress(email_address);
       await ValidationService.validateStripeId(stripe_id);
@@ -157,13 +158,7 @@ const UsersRestHandler = {
       const { email_address }: EnrollEmployeeBody = req.body;
 
       // Validating inputs
-      const { error } = EnrollEmployeeBodySchema.validate(req.body);
-
-      if (error) {
-        throw new createHttpError.InternalServerError(
-          `Please check request schema. Please refer to the openAPI documentation for the right endpoint usage. - ${error}`
-        );
-      }
+      ValidationService.validateSchema(EnrollEmployeeBodySchema, req.body);
 
       await ValidationService.validateEmailAddress(email_address);
 
@@ -200,13 +195,7 @@ const UsersRestHandler = {
       const { email_address }: LoginBody = req.body;
 
       // Validating inputs
-      const { error } = LoginBodySchema.validate(req.body);
-
-      if (error) {
-        throw new createHttpError.InternalServerError(
-          `Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.`
-        );
-      }
+      ValidationService.validateSchema(LoginBodySchema, req.body);
 
       await AuthService.authenticate(req.body);
       const jwt = await AuthService.generateJWT(email_address);
@@ -230,11 +219,7 @@ const UsersRestHandler = {
       const { employee_id } = req.params;
 
       // Validate if employee_id is numeric
-      if (!isNumeric(employee_id)) {
-        throw new createHttpError.InternalServerError(
-          `Please provide numeric employee ID.`
-        );
-      }
+      ValidationService.validateEmployeeID(employee_id);
 
       const employeeData = await UsersService.getEmployeeData(
         Number(employee_id)
@@ -305,11 +290,7 @@ const UsersRestHandler = {
       const { employee_id } = req.params;
 
       // Validate if schedule_id is numeric
-      if (!isNumeric(employee_id)) {
-        throw new createHttpError.InternalServerError(
-          `Please provide numeric employee ID.`
-        );
-      }
+      ValidationService.validateEmployeeID(employee_id);
 
       const employeeData = await UsersService.getEmployeeData(
         Number(employee_id)
@@ -347,11 +328,7 @@ const UsersRestHandler = {
       const { employee_id } = req.params;
 
       // Validate if schedule_id is numeric
-      if (!isNumeric(employee_id)) {
-        throw new createHttpError.InternalServerError(
-          `Please provide numeric employee ID.`
-        );
-      }
+      ValidationService.validateEmployeeID(employee_id);
 
       const employeeData = await UsersService.getEmployeeData(
         Number(employee_id)

@@ -1,6 +1,6 @@
 import { Model, Op } from "sequelize";
 import { CronHistory } from "../models/old/CronHistory";
-import { Attendance } from "../models/old/Attendance";
+import { Attendance } from "../models/Attendance";
 import { Employee } from "../models/old/Employee";
 import { UNDEFINED_STRING } from "../constants";
 

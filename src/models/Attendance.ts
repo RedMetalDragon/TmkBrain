@@ -1,19 +1,18 @@
 import { DataTypes } from "sequelize";
-import { dbConnect } from "../../database/connection";
+import { dbConnect } from "../database/connection";
 import { Employee } from "./Employee";
 
 interface AttendanceAttributes {
   AttendanceID: number;
-  Date: string;
   TimeIn: string;
-  TimeOut: string;
-  HoursRendered: number;
+  TimeOut?: string;
+  HoursRendered?: number;
   EmployeeID: number;
-  Tardiness: number;
-  OverTime: number;
-  UnderTime: number;
-  IsAbsent: boolean;
-  IsIncompleteLog: boolean;
+  Tardiness?: number;
+  OverTime?: number;
+  UnderTime?: number;
+  IsAbsent?: boolean;
+  IsIncompleteLog?: boolean;
 }
 
 const Attendance = dbConnect.define(
@@ -24,16 +23,12 @@ const Attendance = dbConnect.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    Date: {
-      type: DataTypes.DATE,
+    TimeIn: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    TimeIn: {
-      type: DataTypes.TIME,
-      allowNull: true,
-    },
     TimeOut: {
-      type: DataTypes.TIME,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     HoursRendered: {
@@ -54,11 +49,11 @@ const Attendance = dbConnect.define(
     },
     IsAbsent: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
     },
     IsIncompleteLog: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
     },
     EmployeeID: {
       type: DataTypes.INTEGER,

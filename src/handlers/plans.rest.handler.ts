@@ -12,26 +12,7 @@ const PlansRestHandler = {
     try {
       const plans = await PlanService.getPlan({});
 
-      res.status(200).json(
-        plans.map((plan) => {
-          return {
-            plan_id: (plan as unknown as PlanAttributes).PlanID,
-            plan_name: (plan as unknown as PlanAttributes).PlanName,
-            description: (plan as unknown as PlanAttributes).Description,
-            price: (plan as unknown as PlanAttributes).Price,
-            //eslint-disable-next-line @typescript-eslint/no-explicit-any
-            features: (plan as any).features.map((feature) => {
-              return {
-                feature_id: (feature as unknown as FeatureAttributes).FeatureID,
-                feature_name: (feature as unknown as FeatureAttributes)
-                  .FeatureName,
-                description: (feature as unknown as FeatureAttributes)
-                  .Description,
-              };
-            }),
-          };
-        })
-      );
+      res.status(200).json(plans);
     } catch (error) {
       next(error);
     }
