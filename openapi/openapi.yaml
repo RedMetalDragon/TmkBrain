@@ -189,7 +189,7 @@ components:
       
   schemas:
     CreateCustomerAccount:
-      required: [email_address, stripe_id, plan_id, password, first_name, last_name, middle_name, address, paid_amount]
+      required: [email_address, stripe_id, plan_id, password, first_name, last_name, address, paid_amount]
       properties:
         email_address:
           type: string
@@ -212,7 +212,7 @@ components:
           type: number
           
     EnrollEmployeeAccount:
-      required: [email_address, first_name, last_name, middle_name, birthday]
+      required: [email_address, first_name, last_name, birthday]
       properties:
         email_address:
           type: string
