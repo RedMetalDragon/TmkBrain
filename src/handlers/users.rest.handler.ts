@@ -47,7 +47,7 @@ export type LoginBody = {
 const CreateCustomerBodySchema = Joi.object({
   first_name: Joi.string().required(),
   last_name: Joi.string().required(),
-  middle_name: Joi.string().required(),
+  middle_name: Joi.string().allow(null, ''),
   email_address: Joi.string().email().required(),
   address: Joi.string().required(),
   stripe_id: Joi.string().required(),
@@ -59,7 +59,7 @@ const CreateCustomerBodySchema = Joi.object({
 const EnrollEmployeeBodySchema = Joi.object({
   first_name: Joi.string().required(),
   last_name: Joi.string().required(),
-  middle_name: Joi.string().required(),
+  middle_name: Joi.string().allow(null, ''),
   email_address: Joi.string().email().required(),
   birthday: Joi.string()
     .regex(/^\d{4}-\d{2}-\d{2}$/)
