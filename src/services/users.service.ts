@@ -140,45 +140,33 @@ const UsersService = {
         return null;
       }
 
+      const _employee = employee as unknown as EmployeeAttributes;
       const mappedEmployee = {
-        employee_id: (employee as unknown as EmployeeAttributes).EmployeeID,
-        first_name: (employee as unknown as EmployeeAttributes).FirstName,
-        middle_name: (employee as unknown as EmployeeAttributes).MiddleName,
-        last_name: (employee as unknown as EmployeeAttributes).LastName,
-        birthday: (employee as unknown as EmployeeAttributes).DateOfBirth,
-        email_address: (employee as unknown as EmployeeAttributes).Email,
-        address_1: (employee as unknown as EmployeeAttributes).Address1 ?? "",
-        address_2: (employee as unknown as EmployeeAttributes).Address2 ?? "",
-        city: (employee as unknown as EmployeeAttributes).City ?? "",
-        state: (employee as unknown as EmployeeAttributes).State ?? "",
-        zip_code: (employee as unknown as EmployeeAttributes).ZipCode ?? "",
-        country: (employee as unknown as EmployeeAttributes).Country ?? "",
-        joining_date:
-          (employee as unknown as EmployeeAttributes).JoiningDate ?? "",
-        status: (employee as unknown as EmployeeAttributes).Status ?? "",
+        employee_id: _employee.EmployeeID,
+        first_name: _employee.FirstName,
+        middle_name: _employee.MiddleName,
+        last_name: _employee.LastName,
+        birthday: _employee.DateOfBirth,
+        email_address: _employee.Email,
+        address_1: _employee.Address1 ?? "",
+        address_2: _employee.Address2 ?? "",
+        city: _employee.City ?? "",
+        state: _employee.State ?? "",
+        zip_code: _employee.ZipCode ?? "",
+        country: _employee.Country ?? "",
+        joining_date: _employee.JoiningDate ?? "",
+        status: _employee.Status ?? "",
         division:
-          (employee as unknown as EmployeeAttributes).Division?.get(
-            "DivisionName"
-          ) ?? "Not yet assigned yet",
+          _employee.Division?.get("DivisionName") ?? "Not yet assigned yet",
         department:
-          (employee as unknown as EmployeeAttributes).Department?.get(
-            "DepartmentName"
-          ) ?? "Not yet assigned yet",
+          _employee.Department?.get("DepartmentName") ?? "Not yet assigned yet",
         job_title:
-          (employee as unknown as EmployeeAttributes).JobTitle?.get(
-            "JobTitleName"
-          ) ?? "Not yet assigned yet",
-        manager: (employee as unknown as EmployeeAttributes).Manager
+          _employee.JobTitle?.get("JobTitleName") ?? "Not yet assigned yet",
+        manager: _employee.Manager
           ? {
-              first_name: (
-                employee as unknown as EmployeeAttributes
-              ).Manager.get("FirstName"),
-              middle_name: (
-                employee as unknown as EmployeeAttributes
-              ).Manager.get("MiddleName"),
-              last_name: (
-                employee as unknown as EmployeeAttributes
-              ).Manager.get("LastName"),
+              first_name: _employee.Manager.get("FirstName"),
+              middle_name: _employee.Manager.get("MiddleName"),
+              last_name: _employee.Manager.get("LastName"),
             }
           : {},
       };
