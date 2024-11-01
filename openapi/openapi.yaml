@@ -176,6 +176,91 @@ paths:
                 type: object
                 allOf:
                   - $ref: '#/components/schemas/Plans'
+                  
+  /users/{employee_id}/attendance:
+    get:
+      tags:
+        - Attendace
+      description: Get employee attendance
+      parameters:
+        - $ref: '#/components/parameters/EmployeeIdPathParam'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AttendanceRecord'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/ErrorGetAttendance"
+          
+  /users/{employee_id}/login:
+    post:
+      tags:
+        - Attendace
+      description: Employee punch in
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/PunchInOut'
+      parameters:
+        - $ref: '#/components/parameters/EmployeeIdPathParam'
+      responses:
+        "200": 
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum: 
+                    - Successfully saved log in time.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/ErrorEmployeeLogin"
+          
+  /users/{employee_id}/logout:
+    post:
+      tags:
+        - Attendace
+      description: Employee punch out
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/PunchInOut'
+      parameters:
+        - $ref: '#/components/parameters/EmployeeIdPathParam'
+      responses:
+        "200": 
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum: 
+                    - Successfully saved log out time. Total hours rendered for the day is N hours.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/ErrorEmployeeLogout"
           
 components:
   parameters:
@@ -188,6 +273,24 @@ components:
       description: The ID of the employee
       
   schemas:
+    AttendanceRecord:
+      type: object
+      properties:
+        attendance_id:
+          type: integer
+          example: 1
+        time_in:
+          type: string
+          format: date-time
+          example: "2024-11-01T08:00:00.000Z"
+        time_out:
+          type: string
+          format: date-time
+          example: "2024-11-01T17:00:00.000Z"
+        hours_rendered:
+          type: integer
+          example: 9
+          
     CreateCustomerAccount:
       required: [email_address, stripe_id, plan_id, password, first_name, last_name, address, paid_amount]
       properties:
@@ -323,6 +426,13 @@ components:
               type: string
             description:
               type: string
+              
+    PunchInOut:
+      required: [timestamp]
+      properties:
+        timestamp: 
+          type: string
+          description: timestamp in ISO format (e.g. 2024-11-01T08:00:00.000Z)
     
     ValidateEmail:
       required: [email_address]
@@ -409,6 +519,58 @@ components:
                 enum:
                   - Unknown error occurred
 
+    ErrorEmployeeLogin:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the
+        request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
+                  - Please provide numeric employee ID.
+                  - Unable to save punch in.
+                  
+    ErrorEmployeeLogout:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the
+        request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
+                  - Please provide numeric employee ID.
+                  - Unable to save punch out.
+                  
+    ErrorGetAttendance:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the
+        request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Please provide numeric employee ID.
+                  
     ErrorGetEmployee:
       description: >-
         Interval Server Error -- There was a problem with the system itself the
