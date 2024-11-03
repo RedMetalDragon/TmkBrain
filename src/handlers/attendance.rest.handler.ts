@@ -9,6 +9,19 @@ import {
   hoursDifference,
   isWeekend,
 } from "./helpers";
+import Joi from "joi/lib";
+import { ValidationService } from "../services/validation.service";
+import { AttendanceService } from "../services/attendance.service";
+import createHttpError from "http-errors";
+
+type PunchInOutBody = {
+  timestamp: string;
+};
+
+// Schema validations
+const PunchInOutBodySchema = Joi.object({
+  timestamp: Joi.date().iso().required(),
+});
 
 interface TimeInAndOut {
   time_in: string;
@@ -19,6 +32,100 @@ interface TimeInAndOut {
 
 /* eslint-disable  @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-explicit-any */
 const AttendanceRestHandler = {
+  async employeeLogin(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { timestamp }: PunchInOutBody = req.body;
+      const { employee_id } = req.params;
+
+      // Validating inputs
+      ValidationService.validateSchema(PunchInOutBodySchema, req.body);
+
+      // Validate if employee_id is numeric
+      ValidationService.validateEmployeeID(employee_id);
+
+      // Save time-in
+      const savedPunchIn = await AttendanceService.savePunchIn(
+        timestamp,
+        Number(employee_id)
+      );
+
+      if (savedPunchIn instanceof Error) {
+        throw new createHttpError.InternalServerError(
+          `Unable to save punch in. - ${savedPunchIn}`
+        );
+      } else {
+        res.status(200).json({
+          message: "Successfully saved log in time.",
+        });
+      }
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async employeeLogout(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { timestamp }: PunchInOutBody = req.body;
+      const { employee_id } = req.params;
+
+      // Validating inputs
+      ValidationService.validateSchema(PunchInOutBodySchema, req.body);
+
+      // Validate if employee_id is numeric
+      ValidationService.validateEmployeeID(employee_id);
+
+      // Save time-out
+      const hrsRendered = await AttendanceService.savePunchOut(
+        timestamp,
+        Number(employee_id)
+      );
+
+      if (hrsRendered instanceof Error) {
+        throw new createHttpError.InternalServerError(
+          `Unable to save punch out. - ${hrsRendered}`
+        );
+      } else {
+        res.status(200).json({
+          message: `Successfully saved log out time. Total hours rendered for the day is ${hrsRendered} hours.`,
+        });
+      }
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async employeeAttendance(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { employee_id } = req.params;
+
+      // Validate if employee_id is numeric
+      ValidationService.validateEmployeeID(employee_id);
+
+      // Get attendance
+      const attendance = await AttendanceService.getEmployeeAttendace(
+        Number(employee_id)
+      );
+
+      res.status(200).json(attendance);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  // TODO: refactor below functions ...
+
   async computeAttendance(
     req: Request,
     res: Response,
