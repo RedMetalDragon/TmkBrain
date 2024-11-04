@@ -5,9 +5,8 @@ import { isNumeric } from "../handlers/helpers";
 import { ObjectSchema } from "joi/lib";
 
 const ValidationService = {
-  validateSchema(schema: ObjectSchema, body: object) {
+  validateSchema(schema: ObjectSchema, body: Record<string, unknown>): void {
     const { error } = schema.validate(body);
-
     if (error) {
       throw new createHttpError.InternalServerError(
         `Please check request schema. Refer to the OpenAPI documentation for the correct endpoint usage. - ${error}`
