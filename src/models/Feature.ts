@@ -24,7 +24,7 @@ const Feature = dbConnect.define(
     },
     Description: {
       type: DataTypes.STRING(255),
-      allowNull: false,
+      allowNull: true,
     },
     PlanID: {
       type: DataTypes.INTEGER,
@@ -48,6 +48,6 @@ const Feature = dbConnect.define(
 
 Feature.belongsTo(Plan, { foreignKey: "PlanID", as: "plan" });
 
-Plan.hasMany(Feature, { foreignKey: "PlanID", as: "features" });
+Plan.hasMany(Feature, { foreignKey: "PlanID", as: "plan_features" });
 
 export { FeatureAttributes, Feature };
