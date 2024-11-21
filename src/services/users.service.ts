@@ -27,6 +27,7 @@ const UsersService = {
         Address1: customerData.address,
         StripeID: customerData.stripe_id,
         IsRootAccount: true,
+        RoleID: 1, // default to Root Role
       };
 
       const customer = await this.saveEmployee(createCustomer, transaction);
@@ -75,6 +76,7 @@ const UsersService = {
         MiddleName: employeeData.middle_name,
         Email: employeeData.email_address,
         DateOfBirth: employeeData.birthday,
+        RoleID: 3, // default to Employee Role
       };
 
       const employee = await this.saveEmployee(createEmployee, transaction);
@@ -156,12 +158,12 @@ const UsersService = {
         country: _employee.Country ?? "",
         joining_date: _employee.JoiningDate ?? "",
         status: _employee.Status ?? "",
-        division:
-          _employee.Division?.get("DivisionName") ?? "Not yet assigned yet",
+        role_id: _employee.RoleID ?? "",
+        division: _employee.Division?.get("DivisionName") ?? "Not assigned yet",
         department:
-          _employee.Department?.get("DepartmentName") ?? "Not yet assigned yet",
+          _employee.Department?.get("DepartmentName") ?? "Not assigned yet",
         job_title:
-          _employee.JobTitle?.get("JobTitleName") ?? "Not yet assigned yet",
+          _employee.JobTitle?.get("JobTitleName") ?? "Not assigned yet",
         manager: _employee.Manager
           ? {
               first_name: _employee.Manager.get("FirstName"),

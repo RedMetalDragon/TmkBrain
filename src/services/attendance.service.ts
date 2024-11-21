@@ -40,7 +40,7 @@ const AttendanceService = {
   async savePunchOut(
     timestamp: string,
     employeeId: number
-  ): Promise<Number | Error> {
+  ): Promise<number | Error> {
     try {
       // Fetch the last attendance record with TimeOut as null for the employee
       const lastAttendance = await Attendance.findOne({

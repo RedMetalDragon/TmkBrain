@@ -5,7 +5,7 @@ import { isNumeric } from "../handlers/helpers";
 import { ObjectSchema } from "joi/lib";
 
 const ValidationService = {
-  validateSchema(schema: ObjectSchema, body: object) {
+  validateSchema(schema: ObjectSchema, body: Record<string, unknown>): void {
     const { error } = schema.validate(body);
 
     if (error) {
@@ -47,7 +47,7 @@ const ValidationService = {
 
   async validatePlan(planId: number): Promise<void> {
     const plans = await PlanService.getPlan({ planId });
-    if (plans !== null) {
+    if (plans === null) {
       throw new createHttpError.InternalServerError(`Plan ID does not exist.`);
     }
   },

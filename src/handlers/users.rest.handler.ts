@@ -13,6 +13,8 @@ import {
 import Joi from "joi";
 import { AuthService } from "../services/auth.service";
 import { ValidationService } from "../services/validation.service";
+import { AuthAttributes } from "../models/Auth";
+import { PermissionService } from "../services/permissions.service";
 
 type ValidateEmailBody = {
   email_address: string;
@@ -197,11 +199,19 @@ const UsersRestHandler = {
       // Validating inputs
       ValidationService.validateSchema(LoginBodySchema, req.body);
 
-      await AuthService.authenticate(req.body);
+      const userAuth = await AuthService.authenticate(req.body);
       const jwt = await AuthService.generateJWT(email_address);
+
+      const employeeID = (userAuth as unknown as AuthAttributes).EmployeeID;
+      const employeeData = await UsersService.getEmployeeData(employeeID);
+      const roleID = employeeData!.role_id;
+
+      const permissions = await PermissionService.getUserPermissions(roleID);
 
       res.status(200).json({
         access_token: jwt,
+        user_id: employeeID,
+        permissions: permissions,
         expires_in: JWT_EXPIRES_IN.numeric,
         token_type: "Bearer",
       });

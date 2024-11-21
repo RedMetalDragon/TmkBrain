@@ -20,7 +20,7 @@ const AuthService = {
     }
   },
 
-  async authenticate(loginBody: LoginBody): Promise<void> {
+  async authenticate(loginBody: LoginBody): Promise<Model<any, any>> {
     const userAuth = await this.getUserAuth(loginBody.email_address);
 
     if (userAuth !== null) {
@@ -35,6 +35,8 @@ const AuthService = {
         `Email address does not exist in our records.`
       );
     }
+
+    return userAuth;
   },
 
   async getUserAuth(emailAddress: string): Promise<Model<any, any> | null> {
