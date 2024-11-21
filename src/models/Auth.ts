@@ -3,7 +3,7 @@ import { dbConnect } from "../database/connection";
 
 interface AuthAttributes {
   AuthID?: number;
-  CustomerID: number;
+  EmployeeID: number;
   Email: string;
   Salt: string;
   PasswordHash?: string;

@@ -129,6 +129,22 @@ paths:
                 properties:
                   access_token:
                     type: string
+                  user_id:
+                    type: number
+                  permissions:
+                    type: array
+                    items:
+                      type: string
+                    example:
+                      - "punch_in_out"
+                      - "attendance"
+                      - "manage_attendance"
+                      - "manage_payroll"
+                      - "payslips"
+                      - "user_profile"
+                      - "manage_users"
+                      - "file_management"
+                      - "ai_chat"
                   expires_in:
                     type: number
                     description: in seconds

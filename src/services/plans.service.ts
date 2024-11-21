@@ -25,7 +25,7 @@ const PlanService = {
       include: [
         {
           model: Feature,
-          as: "features",
+          as: "plan_features",
           where: {
             IsActive: true,
           },
@@ -41,7 +41,7 @@ const PlanService = {
         description: _plan.Description,
         price: _plan.Price,
         //eslint-disable-next-line @typescript-eslint/no-explicit-any
-        features: (plan as any).features.map((feature) => {
+        features: (plan as any).plan_features.map((feature) => {
           return {
             feature_id: (feature as unknown as FeatureAttributes).FeatureID,
             feature_name: (feature as unknown as FeatureAttributes).FeatureName,

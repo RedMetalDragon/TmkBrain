@@ -5,7 +5,7 @@ import {
   validateTime,
 } from "../utils/date-time-validation";
 import createHttpError from "http-errors";
-import { SchedulesController, UsersController } from "../controllers";
+import { SchedulesController } from "../controllers";
 import {
   findDuplicates,
   getMonthDates,

@@ -1,7 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { PlanService } from "../services/plans.service";
-import { PlanAttributes } from "../models/Plan";
-import { FeatureAttributes } from "../models/Feature";
 
 const PlansRestHandler = {
   async getPlans(
