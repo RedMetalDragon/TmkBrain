@@ -3,6 +3,7 @@ import { UsersService } from "./users.service";
 import { PlanService } from "./plans.service";
 import { isNumeric } from "../handlers/helpers";
 import { ObjectSchema } from "joi/lib";
+import { DepartmentService } from "./departments.service";
 
 const ValidationService = {
   validateSchema(schema: ObjectSchema, body: Record<string, unknown>): void {
@@ -19,6 +20,14 @@ const ValidationService = {
     if (!isNumeric(employee_id)) {
       throw new createHttpError.InternalServerError(
         `Please provide numeric employee ID.`
+      );
+    }
+  },
+
+  validateJobTitleID(jobTitleId: string): void {
+    if (!isNumeric(jobTitleId)) {
+      throw new createHttpError.BadRequest(
+        "Invalid job_title_id. Please provide a numeric job title ID."
       );
     }
   },
@@ -49,6 +58,19 @@ const ValidationService = {
     const plans = await PlanService.getPlan({ planId });
     if (plans === null) {
       throw new createHttpError.InternalServerError(`Plan ID does not exist.`);
+    }
+  },
+
+  async validateDepartment(departmentId?: number): Promise<void> {
+    if (departmentId !== undefined) {
+      const department = await DepartmentService.getDepartment({
+        departmentId,
+      });
+      if (department.length === 0) {
+        throw new createHttpError.InternalServerError(
+          `Department ID does not exist.`
+        );
+      }
     }
   },
 };
