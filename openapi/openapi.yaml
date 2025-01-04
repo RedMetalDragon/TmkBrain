@@ -428,6 +428,149 @@ paths:
         '500':
           $ref: "#/components/responses/ErrorGetDeleteJobTitle"
           
+  /departments:
+    post:
+      tags:
+        - Department
+      summary: Create a new department
+      description: Adds a new department
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Department'
+      responses:
+        '201':
+          description: Department created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Department'
+                  - type: object
+                    properties:
+                      department_id:
+                        type: number
+                        description: Unique identifier for the department
+        '500':
+          $ref: "#/components/responses/ErrorCreateDepartment"
+          
+    get:
+      tags:
+        - Department
+      summary: Get all departments
+      description: Returns a list of all departments.
+      responses:
+        '200':
+          description: Successfully retrieved departments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/Department'
+                    - type: object
+                      properties:
+                        department_id:
+                          type: number
+                          description: Unique identifier for the department
+                        
+  /departments/{department_id}:
+    get:
+      tags:
+        - Department
+      summary: Get a department by ID
+      description: Returns the details of a specific department by ID.
+      parameters:
+        - name: department_id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Successfully retrieve the department 
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Department'
+                  - type: object
+                    properties:
+                      department_id:
+                        type: number
+                        description: Unique identifier for the department
+        '404': 
+          $ref: "#/components/responses/NotFoundDepartment"
+        '500':
+          $ref: "#/components/responses/ErrorGetDeleteDepartment"
+      
+    patch:
+      tags:
+        - Department
+      summary: Update a department
+      description: Updates the details of an existing department by ID.
+      parameters:
+        - name: department_id
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Department'
+      responses:
+        '200':
+          description: Department updated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Department'
+                  - type: object
+                    properties:
+                      department_id:
+                        type: number
+                        description: Unique identifier for the department
+        '404': 
+          $ref: "#/components/responses/NotFoundDepartment"
+        '500':
+          $ref: "#/components/responses/ErrorUpdateDepartment"
+      
+    delete:
+      tags:
+        - Department
+      summary: Delete a department
+      description: Deletes an existing department by ID.
+      parameters:
+        - name: department_id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Department deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum: 
+                      - Department deleted successfully
+        '404': 
+          $ref: "#/components/responses/NotFoundDepartment"
+        '500':
+          $ref: "#/components/responses/ErrorGetDeleteDepartment"
+
 components:
   parameters:
     EmployeeIdPathParam:
@@ -478,6 +621,15 @@ components:
         address:
           type: string
         paid_amount:
+          type: number
+    
+    Department:
+      properties:
+        department_name:
+          type: string
+        description:
+          type: string
+        division_id:
           type: number
           
     EnrollEmployeeAccount:
@@ -678,10 +830,25 @@ components:
                 enum:
                   - Unknown error occurred
 
+    ErrorCreateDepartment:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
+                  - Divison ID does not exist.
+                  
     ErrorCreateJobTitle:
       description: >-
-        Interval Server Error -- There was a problem with the system itself the
-        request cannot be completed.
+        Interval Server Error -- There was a problem with the system itself the request cannot be completed.
       content:
         application/json:
           schema:
@@ -764,10 +931,24 @@ components:
                   - Please provide numeric employee ID.
                   - Employee ID does not exist in our record.
                   
+    ErrorGetDeleteDepartment:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Invalid department_id. Please provide a numeric department ID.
+                  
     ErrorGetDeleteJobTitle:
       description: >-
-        Interval Server Error -- There was a problem with the system itself the
-        request cannot be completed.
+        Interval Server Error -- There was a problem with the system itself the request cannot be completed.
       content:
         application/json:
           schema:
@@ -818,10 +999,26 @@ components:
                   - Unable to save customer account.
                   - Unable to enroll employee account.
                   
+    ErrorUpdateDepartment:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Invalid department_id. Please provide a numeric department ID.
+                  - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
+                  - Division ID does not exist.
+      
     ErrorUpdateJobTitle:
       description: >-
-        Interval Server Error -- There was a problem with the system itself the
-        request cannot be completed.
+        Interval Server Error -- There was a problem with the system itself the request cannot be completed.
       content:
         application/json:
           schema:
@@ -835,6 +1032,18 @@ components:
                   - Invalid job_title_id. Please provide a numeric job title ID.
                   - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
                   - Department ID does not exist.
+                  
+    NotFoundDepartment:
+      description: Department not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                enum: 
+                  - Department not found
                   
     NotFoundJobTitle:
       description: Job title not found

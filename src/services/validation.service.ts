@@ -4,6 +4,7 @@ import { PlanService } from "./plans.service";
 import { isNumeric } from "../handlers/helpers";
 import { ObjectSchema } from "joi/lib";
 import { DepartmentService } from "./departments.service";
+import { DivisionService } from "./divisions.service";
 
 const ValidationService = {
   validateSchema(schema: ObjectSchema, body: Record<string, unknown>): void {
@@ -28,6 +29,14 @@ const ValidationService = {
     if (!isNumeric(jobTitleId)) {
       throw new createHttpError.BadRequest(
         "Invalid job_title_id. Please provide a numeric job title ID."
+      );
+    }
+  },
+
+  validateDepartmentID(departmentId: string): void {
+    if (!isNumeric(departmentId)) {
+      throw new createHttpError.BadRequest(
+        "Invalid department_id. Please provide a numeric department ID."
       );
     }
   },
@@ -63,12 +72,23 @@ const ValidationService = {
 
   async validateDepartment(departmentId?: number): Promise<void> {
     if (departmentId !== undefined) {
-      const department = await DepartmentService.getDepartment({
-        departmentId,
+      const department = await DepartmentService.getDepartments({
+        department_id: departmentId,
       });
       if (department.length === 0) {
         throw new createHttpError.InternalServerError(
           `Department ID does not exist.`
+        );
+      }
+    }
+  },
+
+  async validateDivision(divisionId?: number): Promise<void> {
+    if (divisionId !== undefined) {
+      const division = await DivisionService.getDivision({ divisionId });
+      if (division.length === 0) {
+        throw new createHttpError.InternalServerError(
+          `Division ID does not exist.`
         );
       }
     }
