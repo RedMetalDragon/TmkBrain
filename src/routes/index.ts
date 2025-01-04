@@ -7,6 +7,8 @@ import {
   AttendanceRestHandler,
 } from "../handlers";
 import { PlansRestHandler } from "../handlers/plans.rest.handler";
+import { JobTitlesRestHandler } from "../handlers/job-titles.rest.handler";
+import { DepartmentHandler } from "../handlers/departments.rest.handler";
 
 const router = Router();
 
@@ -37,6 +39,23 @@ router.post("/users/:employee_id/logout", AttendanceRestHandler.employeeLogout);
 router.get(
   "/users/:employee_id/attendance",
   AttendanceRestHandler.employeeAttendance
+);
+
+// CRUD for job-title
+router.post("/job-titles", JobTitlesRestHandler.createJobTitle);
+router.get("/job-titles", JobTitlesRestHandler.getJobTitles);
+router.get("/job-titles/:job_title_id", JobTitlesRestHandler.getJobTitleById);
+router.patch("/job-titles/:job_title_id", JobTitlesRestHandler.updateJobTitle);
+router.delete("/job-titles/:job_title_id", JobTitlesRestHandler.deleteJobTitle);
+
+// CRUD for department
+router.post("/departments", DepartmentHandler.createDepartment);
+router.get("/departments", DepartmentHandler.getDepartments);
+router.get("/departments/:department_id", DepartmentHandler.getDepartmentById);
+router.patch("/departments/:department_id", DepartmentHandler.updateDepartment);
+router.delete(
+  "/departments/:department_id",
+  DepartmentHandler.deleteDepartment
 );
 
 // TODO: refactor below endpoints ...

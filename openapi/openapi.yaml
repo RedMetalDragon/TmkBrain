@@ -152,8 +152,6 @@ paths:
                     type: string
                     enum: 
                     - Bearer
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
         "500":
           $ref: "#/components/responses/ErrorLogin"
           
@@ -173,8 +171,6 @@ paths:
                 type: object
                 allOf:
                   - $ref: '#/components/schemas/Employee'
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
         "500":
           $ref: "#/components/responses/ErrorGetEmployee"
 
@@ -196,7 +192,7 @@ paths:
   /users/{employee_id}/attendance:
     get:
       tags:
-        - Attendace
+        - Attendance
       description: Get employee attendance
       parameters:
         - $ref: '#/components/parameters/EmployeeIdPathParam'
@@ -209,15 +205,13 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/AttendanceRecord'
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
         "500":
           $ref: "#/components/responses/ErrorGetAttendance"
           
   /users/{employee_id}/login:
     post:
       tags:
-        - Attendace
+        - Attendance
       description: Employee punch in
       requestBody:
         required: true
@@ -241,15 +235,13 @@ paths:
                     type: string
                     enum: 
                     - Successfully saved log in time.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
         "500":
           $ref: "#/components/responses/ErrorEmployeeLogin"
           
   /users/{employee_id}/logout:
     post:
       tags:
-        - Attendace
+        - Attendance
       description: Employee punch out
       requestBody:
         required: true
@@ -273,11 +265,312 @@ paths:
                     type: string
                     enum: 
                     - Successfully saved log out time. Total hours rendered for the day is N hours.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
         "500":
           $ref: "#/components/responses/ErrorEmployeeLogout"
           
+  /job-titles:
+    post:
+      tags:
+        - Job Title
+      summary: Create a new job title
+      description: Adds a new job title
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobTitle'
+      responses:
+        '201':
+          description: Job title created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/JobTitle'
+                  - type: object
+                    properties:
+                      job_title_id:
+                        type: number
+                        description: Unique identifier for the job title
+                      is_active:
+                        type: boolean
+                        description: Indicates if the job title is active
+        "500":
+          $ref: "#/components/responses/ErrorCreateJobTitle"
+          
+    get:
+      tags:
+        - Job Title
+      summary: Get all job titles
+      description: Returns a list of all job titles.
+      responses:
+        '200':
+          description: Successfully retrieved job titles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                  - $ref: '#/components/schemas/JobTitle'
+                  - type: object
+                    properties:
+                      job_title_id:
+                        type: number
+                        description: Unique identifier for the job title
+                      is_active:
+                        type: boolean
+                        description: Indicates if the job title is active
+                        
+  /job-titles/{job_title_id}:
+    get:
+      tags:
+        - Job Title
+      summary: Get a job title by ID
+      description: Returns the details of a specific job title by ID.
+      parameters:
+        - name: job_title_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieve the job title 
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/JobTitle'
+                  - type: object
+                    properties:
+                      job_title_id:
+                        type: number
+                        description: Unique identifier for the job title
+                      is_active:
+                        type: boolean
+                        description: Indicates if the job title is active
+        '404': 
+          $ref: "#/components/responses/NotFoundJobTitle"
+        "500":
+          $ref: "#/components/responses/ErrorGetDeleteJobTitle"
+    
+    patch:
+      tags:
+        - Job Title
+      summary: Update a job title
+      description: Updates the details of an existing job title by ID.
+      parameters:
+        - name: job_title_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/JobTitle'
+                - type: object
+                  properties:
+                    is_active:
+                      type: boolean
+                      description: Indicates if the job title is active
+      responses:
+        '200':
+          description: Job title updated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/JobTitle'
+                  - type: object
+                    properties:
+                      job_title_id:
+                        type: number
+                        description: Unique identifier for the job title
+                      is_active:
+                        type: boolean
+                        description: Indicates if the job title is active
+        '404': 
+          $ref: "#/components/responses/NotFoundJobTitle"
+        '500':
+          $ref: "#/components/responses/ErrorUpdateJobTitle"
+    
+    delete:
+      tags:
+        - Job Title
+      summary: Delete a job title
+      description: Deletes an existing job title by ID.
+      parameters:
+        - name: job_title_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Job title deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum: 
+                    - Job title deleted successfully
+        '404': 
+          $ref: "#/components/responses/NotFoundJobTitle"
+        '500':
+          $ref: "#/components/responses/ErrorGetDeleteJobTitle"
+          
+  /departments:
+    post:
+      tags:
+        - Department
+      summary: Create a new department
+      description: Adds a new department
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Department'
+      responses:
+        '201':
+          description: Department created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Department'
+                  - type: object
+                    properties:
+                      department_id:
+                        type: number
+                        description: Unique identifier for the department
+        '500':
+          $ref: "#/components/responses/ErrorCreateDepartment"
+          
+    get:
+      tags:
+        - Department
+      summary: Get all departments
+      description: Returns a list of all departments.
+      responses:
+        '200':
+          description: Successfully retrieved departments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/Department'
+                    - type: object
+                      properties:
+                        department_id:
+                          type: number
+                          description: Unique identifier for the department
+                        
+  /departments/{department_id}:
+    get:
+      tags:
+        - Department
+      summary: Get a department by ID
+      description: Returns the details of a specific department by ID.
+      parameters:
+        - name: department_id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Successfully retrieve the department 
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Department'
+                  - type: object
+                    properties:
+                      department_id:
+                        type: number
+                        description: Unique identifier for the department
+        '404': 
+          $ref: "#/components/responses/NotFoundDepartment"
+        '500':
+          $ref: "#/components/responses/ErrorGetDeleteDepartment"
+      
+    patch:
+      tags:
+        - Department
+      summary: Update a department
+      description: Updates the details of an existing department by ID.
+      parameters:
+        - name: department_id
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Department'
+      responses:
+        '200':
+          description: Department updated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Department'
+                  - type: object
+                    properties:
+                      department_id:
+                        type: number
+                        description: Unique identifier for the department
+        '404': 
+          $ref: "#/components/responses/NotFoundDepartment"
+        '500':
+          $ref: "#/components/responses/ErrorUpdateDepartment"
+      
+    delete:
+      tags:
+        - Department
+      summary: Delete a department
+      description: Deletes an existing department by ID.
+      parameters:
+        - name: department_id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Department deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum: 
+                      - Department deleted successfully
+        '404': 
+          $ref: "#/components/responses/NotFoundDepartment"
+        '500':
+          $ref: "#/components/responses/ErrorGetDeleteDepartment"
+
 components:
   parameters:
     EmployeeIdPathParam:
@@ -328,6 +621,15 @@ components:
         address:
           type: string
         paid_amount:
+          type: number
+    
+    Department:
+      properties:
+        department_name:
+          type: string
+        description:
+          type: string
+        division_id:
           type: number
           
     EnrollEmployeeAccount:
@@ -415,6 +717,15 @@ components:
               type: string
               example: "Guevara"
     
+    JobTitle:
+      properties:
+        job_title_name:
+          type: string
+        description:
+          type: string
+        department_id:
+          type: number
+          
     Login:
       required: [email_address, password]
       properties:
@@ -470,22 +781,6 @@ components:
               status:
                 type: integer
                 description: HTTP status code
-
-    UnauthorizedError:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                enum: 
-                - 1001
-                type: number
-              message:
-                type: string
-                enum:
-                  - Wrong email or password.
     
     HealthCheckResponse:
       description: >-
@@ -535,6 +830,38 @@ components:
                 enum:
                   - Unknown error occurred
 
+    ErrorCreateDepartment:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
+                  - Divison ID does not exist.
+                  
+    ErrorCreateJobTitle:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
+                  - Department ID does not exist.
+    
     ErrorEmployeeLogin:
       description: >-
         Interval Server Error -- There was a problem with the system itself the
@@ -604,6 +931,36 @@ components:
                   - Please provide numeric employee ID.
                   - Employee ID does not exist in our record.
                   
+    ErrorGetDeleteDepartment:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Invalid department_id. Please provide a numeric department ID.
+                  
+    ErrorGetDeleteJobTitle:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Invalid job_title_id. Please provide a numeric job title ID.
+    
     ErrorLogin:
       description: >-
         Interval Server Error -- There was a problem with the system itself the
@@ -641,3 +998,61 @@ components:
                   - Plan ID does not exist.
                   - Unable to save customer account.
                   - Unable to enroll employee account.
+                  
+    ErrorUpdateDepartment:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Invalid department_id. Please provide a numeric department ID.
+                  - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
+                  - Division ID does not exist.
+      
+    ErrorUpdateJobTitle:
+      description: >-
+        Interval Server Error -- There was a problem with the system itself the request cannot be completed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+                enum:
+                  - Invalid job_title_id. Please provide a numeric job title ID.
+                  - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
+                  - Department ID does not exist.
+                  
+    NotFoundDepartment:
+      description: Department not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                enum: 
+                  - Department not found
+                  
+    NotFoundJobTitle:
+      description: Job title not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                enum: 
+                  - Job title not found
