@@ -102,6 +102,34 @@ const AttendanceRestHandler = {
     }
   },
 
+  /**
+   * Handles the request to get the last action made by an employee (either punch-in or punch-out).
+   *
+   * @param {Request} req - The Express request object, containing the employee ID in the URL parameters.
+   * @param {Response} res - The Express response object, used to send the response back to the client.
+   * @param {NextFunction} next - The Express next middleware function, used to pass control to the next middleware.
+   * @returns {Promise<void>} - A promise that resolves to void.
+   */
+  async employeeStatus(
+      req: Request,
+      res: Response,
+      next: NextFunction
+  ): Promise<void> {
+    try {
+        const { employee_id } = req.params;
+
+        // Validate if employee_id is numeric
+        ValidationService.validateEmployeeID(employee_id);
+
+        // Get attendance
+        const status = await AttendanceService.getlastActionMade(Number(employee_id));
+        res.status(200).json({ lastAction: status });
+    }
+    catch (error) {
+        next(error);
+    }
+  },
+
   async employeeAttendance(
     req: Request,
     res: Response,

@@ -22,3 +22,6 @@ export const DEFAULT_SCHEDULE = {
     time_out: "05:00 pm",
   },
 };
+
+export const PUNCH_IN_ACTION = "PUNCH_IN";
+export const PUNCH_OUT_ACTION = "PUNCH_OUT";
