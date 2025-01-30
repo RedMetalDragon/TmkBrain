@@ -18,7 +18,7 @@ paths:
           $ref: "#/components/responses/HealthCheckResponse"
         "500":
           $ref: "#/components/responses/InternalServerError"
-          
+
   /users/validate-email:
     post:
       tags:
@@ -33,7 +33,7 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/ValidateEmail'
       responses:
-        "200": 
+        "200":
           description: Successful response
           content:
             application/json:
@@ -42,13 +42,13 @@ paths:
                 properties:
                   email_addess:
                     type: string
-                    enum: 
-                    - emailaddress@gmail.com
+                    enum:
+                      - emailaddress@gmail.com
                   existing:
                     type: boolean
-                    enum: 
-                    - true
-                    - false
+                    enum:
+                      - true
+                      - false
   
   /users/register:
     post:
@@ -64,7 +64,7 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/CreateCustomerAccount'
       responses:
-        "200": 
+        "200":
           description: Successful response
           content:
             application/json:
@@ -73,11 +73,11 @@ paths:
                 properties:
                   message:
                     type: string
-                    enum: 
-                    - Successfully created customer account.
+                    enum:
+                      - Successfully created customer account.
         "500":
           $ref: "#/components/responses/ErrorRegister"
-          
+
   /users/enroll:
     post:
       tags:
@@ -92,7 +92,7 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/EnrollEmployeeAccount'
       responses:
-        "200": 
+        "200":
           description: Successful response
           content:
             application/json:
@@ -101,8 +101,8 @@ paths:
                 properties:
                   message:
                     type: string
-                    enum: 
-                    - Successfully enrolled employee account.
+                    enum:
+                      - Successfully enrolled employee account.
         "500":
           $ref: "#/components/responses/ErrorRegister"
 
@@ -120,7 +120,7 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/Login'
       responses:
-        "200": 
+        "200":
           description: Successful response
           content:
             application/json:
@@ -150,11 +150,11 @@ paths:
                     description: in seconds
                   token_type:
                     type: string
-                    enum: 
-                    - Bearer
+                    enum:
+                      - Bearer
         "500":
           $ref: "#/components/responses/ErrorLogin"
-          
+
   /users/{employee_id}:
     get:
       tags:
@@ -180,7 +180,7 @@ paths:
         - Plans
       description: Returns the plans available for subscription
       responses:
-        "200": 
+        "200":
           description: Successful response
           content:
             application/json:
@@ -188,7 +188,7 @@ paths:
                 type: object
                 allOf:
                   - $ref: '#/components/schemas/Plans'
-                  
+
   /users/{employee_id}/attendance:
     get:
       tags:
@@ -207,7 +207,7 @@ paths:
                   $ref: '#/components/schemas/AttendanceRecord'
         "500":
           $ref: "#/components/responses/ErrorGetAttendance"
-          
+
   /users/{employee_id}/login:
     post:
       tags:
@@ -224,7 +224,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/EmployeeIdPathParam'
       responses:
-        "200": 
+        "200":
           description: Successful response
           content:
             application/json:
@@ -233,11 +233,33 @@ paths:
                 properties:
                   message:
                     type: string
-                    enum: 
-                    - Successfully saved log in time.
+                    enum:
+                      - Successfully saved log in time.
         "500":
           $ref: "#/components/responses/ErrorEmployeeLogin"
-          
+  /users/{employee_id}/punch-status:
+    get:
+      tags:
+        - Attendance
+      description: Get the last punch action made by an employee
+      parameters:
+        - $ref: '#/components/parameters/EmployeeIdPathParam'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  lastAction:
+                    type: string
+                    description: The last punch action made by the employee
+                    enum:
+                      - PUNCH_IN_ACTION
+                      - PUNCH_OUT_ACTION
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   /users/{employee_id}/logout:
     post:
       tags:
@@ -254,7 +276,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/EmployeeIdPathParam'
       responses:
-        "200": 
+        "200":
           description: Successful response
           content:
             application/json:
@@ -263,11 +285,11 @@ paths:
                 properties:
                   message:
                     type: string
-                    enum: 
-                    - Successfully saved log out time. Total hours rendered for the day is N hours.
+                    enum:
+                      - Successfully saved log out time. Total hours rendered for the day is N hours.
         "500":
           $ref: "#/components/responses/ErrorEmployeeLogout"
-          
+
   /job-titles:
     post:
       tags:
@@ -298,7 +320,7 @@ paths:
                         description: Indicates if the job title is active
         "500":
           $ref: "#/components/responses/ErrorCreateJobTitle"
-          
+
     get:
       tags:
         - Job Title
@@ -313,16 +335,16 @@ paths:
                 type: array
                 items:
                   allOf:
-                  - $ref: '#/components/schemas/JobTitle'
-                  - type: object
-                    properties:
-                      job_title_id:
-                        type: number
-                        description: Unique identifier for the job title
-                      is_active:
-                        type: boolean
-                        description: Indicates if the job title is active
-                        
+                    - $ref: '#/components/schemas/JobTitle'
+                    - type: object
+                      properties:
+                        job_title_id:
+                          type: number
+                          description: Unique identifier for the job title
+                        is_active:
+                          type: boolean
+                          description: Indicates if the job title is active
+
   /job-titles/{job_title_id}:
     get:
       tags:
@@ -337,7 +359,7 @@ paths:
             type: string
       responses:
         '200':
-          description: Successfully retrieve the job title 
+          description: Successfully retrieve the job title
           content:
             application/json:
               schema:
@@ -351,7 +373,7 @@ paths:
                       is_active:
                         type: boolean
                         description: Indicates if the job title is active
-        '404': 
+        '404':
           $ref: "#/components/responses/NotFoundJobTitle"
         "500":
           $ref: "#/components/responses/ErrorGetDeleteJobTitle"
@@ -395,7 +417,7 @@ paths:
                       is_active:
                         type: boolean
                         description: Indicates if the job title is active
-        '404': 
+        '404':
           $ref: "#/components/responses/NotFoundJobTitle"
         '500':
           $ref: "#/components/responses/ErrorUpdateJobTitle"
@@ -421,13 +443,13 @@ paths:
                 properties:
                   message:
                     type: string
-                    enum: 
-                    - Job title deleted successfully
-        '404': 
+                    enum:
+                      - Job title deleted successfully
+        '404':
           $ref: "#/components/responses/NotFoundJobTitle"
         '500':
           $ref: "#/components/responses/ErrorGetDeleteJobTitle"
-          
+
   /departments:
     post:
       tags:
@@ -455,7 +477,7 @@ paths:
                         description: Unique identifier for the department
         '500':
           $ref: "#/components/responses/ErrorCreateDepartment"
-          
+
     get:
       tags:
         - Department
@@ -476,7 +498,7 @@ paths:
                         department_id:
                           type: number
                           description: Unique identifier for the department
-                        
+
   /departments/{department_id}:
     get:
       tags:
@@ -491,7 +513,7 @@ paths:
             type: number
       responses:
         '200':
-          description: Successfully retrieve the department 
+          description: Successfully retrieve the department
           content:
             application/json:
               schema:
@@ -502,11 +524,11 @@ paths:
                       department_id:
                         type: number
                         description: Unique identifier for the department
-        '404': 
+        '404':
           $ref: "#/components/responses/NotFoundDepartment"
         '500':
           $ref: "#/components/responses/ErrorGetDeleteDepartment"
-      
+
     patch:
       tags:
         - Department
@@ -538,11 +560,11 @@ paths:
                       department_id:
                         type: number
                         description: Unique identifier for the department
-        '404': 
+        '404':
           $ref: "#/components/responses/NotFoundDepartment"
         '500':
           $ref: "#/components/responses/ErrorUpdateDepartment"
-      
+
     delete:
       tags:
         - Department
@@ -564,9 +586,9 @@ paths:
                 properties:
                   message:
                     type: string
-                    enum: 
+                    enum:
                       - Department deleted successfully
-        '404': 
+        '404':
           $ref: "#/components/responses/NotFoundDepartment"
         '500':
           $ref: "#/components/responses/ErrorGetDeleteDepartment"
@@ -580,7 +602,7 @@ components:
       schema:
         type: number
       description: The ID of the employee
-      
+
   schemas:
     AttendanceRecord:
       type: object
@@ -599,9 +621,9 @@ components:
         hours_rendered:
           type: integer
           example: 9
-          
+
     CreateCustomerAccount:
-      required: [email_address, stripe_id, plan_id, password, first_name, last_name, address, paid_amount]
+      required: [ email_address, stripe_id, plan_id, password, first_name, last_name, address, paid_amount ]
       properties:
         email_address:
           type: string
@@ -631,9 +653,9 @@ components:
           type: string
         division_id:
           type: number
-          
+
     EnrollEmployeeAccount:
-      required: [email_address, first_name, last_name, birthday]
+      required: [ email_address, first_name, last_name, birthday ]
       properties:
         email_address:
           type: string
@@ -725,11 +747,11 @@ components:
           type: string
         department_id:
           type: number
-          
+
     Login:
-      required: [email_address, password]
+      required: [ email_address, password ]
       properties:
-        email_address: 
+        email_address:
           type: string
         password:
           type: string
@@ -753,16 +775,16 @@ components:
               type: string
             description:
               type: string
-              
+
     PunchInOut:
-      required: [timestamp]
+      required: [ timestamp ]
       properties:
-        timestamp: 
+        timestamp:
           type: string
           description: timestamp in ISO format (e.g. 2024-11-01T08:00:00.000Z)
     
     ValidateEmail:
-      required: [email_address]
+      required: [ email_address ]
       properties:
         email_address:
           type: string
@@ -845,7 +867,7 @@ components:
                 enum:
                   - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
                   - Divison ID does not exist.
-                  
+
     ErrorCreateJobTitle:
       description: >-
         Interval Server Error -- There was a problem with the system itself the request cannot be completed.
@@ -879,7 +901,7 @@ components:
                   - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
                   - Please provide numeric employee ID.
                   - Unable to save punch in.
-                  
+
     ErrorEmployeeLogout:
       description: >-
         Interval Server Error -- There was a problem with the system itself the
@@ -897,7 +919,7 @@ components:
                   - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
                   - Please provide numeric employee ID.
                   - Unable to save punch out.
-                  
+
     ErrorGetAttendance:
       description: >-
         Interval Server Error -- There was a problem with the system itself the
@@ -913,7 +935,7 @@ components:
                 type: string
                 enum:
                   - Please provide numeric employee ID.
-                  
+
     ErrorGetEmployee:
       description: >-
         Interval Server Error -- There was a problem with the system itself the
@@ -930,7 +952,7 @@ components:
                 enum:
                   - Please provide numeric employee ID.
                   - Employee ID does not exist in our record.
-                  
+
     ErrorGetDeleteDepartment:
       description: >-
         Interval Server Error -- There was a problem with the system itself the request cannot be completed.
@@ -945,7 +967,7 @@ components:
                 type: string
                 enum:
                   - Invalid department_id. Please provide a numeric department ID.
-                  
+
     ErrorGetDeleteJobTitle:
       description: >-
         Interval Server Error -- There was a problem with the system itself the request cannot be completed.
@@ -998,7 +1020,7 @@ components:
                   - Plan ID does not exist.
                   - Unable to save customer account.
                   - Unable to enroll employee account.
-                  
+
     ErrorUpdateDepartment:
       description: >-
         Interval Server Error -- There was a problem with the system itself the request cannot be completed.
@@ -1015,7 +1037,7 @@ components:
                   - Invalid department_id. Please provide a numeric department ID.
                   - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
                   - Division ID does not exist.
-      
+
     ErrorUpdateJobTitle:
       description: >-
         Interval Server Error -- There was a problem with the system itself the request cannot be completed.
@@ -1032,7 +1054,7 @@ components:
                   - Invalid job_title_id. Please provide a numeric job title ID.
                   - Please check request schema. Please refer to the openAPI documentation for the right endpoint usage.
                   - Department ID does not exist.
-                  
+
     NotFoundDepartment:
       description: Department not found
       content:
@@ -1042,9 +1064,9 @@ components:
             properties:
               error:
                 type: string
-                enum: 
+                enum:
                   - Department not found
-                  
+
     NotFoundJobTitle:
       description: Job title not found
       content:
@@ -1054,5 +1076,5 @@ components:
             properties:
               error:
                 type: string
-                enum: 
+                enum:
                   - Job title not found
