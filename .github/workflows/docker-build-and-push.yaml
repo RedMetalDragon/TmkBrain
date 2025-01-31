@@ -90,6 +90,9 @@ jobs:
         push: true
         tags: |
           marcoguerod/tmkbrain:${{ github.event.inputs.tag || env.IMAGE_TAG }}
+        build-args: |
+          SECRET_KEY=${{ secrets.SECRET_KEY }}
+          JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}
 
     - name: Logout from Docker
       if: steps.check-condition.outputs.proceed == 'true'

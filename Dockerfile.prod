@@ -13,6 +13,14 @@ RUN npm install && npm rebuild bcrypt --build-from-source
 # Copy the rest of the application source code
 COPY . .
 
+# Accept build arguments
+ARG SECRET_KEY
+ARG JWT_EXPIRES_IN
+
+# Set them as environment variables
+ENV SECRET_KEY=$SECRET_KEY
+ENV JWT_EXPIRES_IN=$JWT_EXPIRES_IN
+
 # Assuming you have a build script in package.json that compiles TypeScript to JavaScript
 # and outputs to the 'dist' directory, including any additional steps like copying OpenAPI specs
 RUN npm run build

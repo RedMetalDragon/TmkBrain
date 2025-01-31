@@ -4,8 +4,9 @@ import { LoginBody } from "../handlers";
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { SECRET_KEY, JWT_EXPIRES_IN } from "../constants";
 
+const SECRET_KEY = process.env.SECRET_KEY;
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h"; // Default to 1 hour if not set
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const AuthService = {
   async saveAuth(
@@ -50,8 +51,12 @@ const AuthService = {
   },
 
   async generateJWT(emailAddress: string): Promise<string> {
+
+    if (!SECRET_KEY) {
+      throw new Error("SECRET_KEY is not defined. Ensure it's set in the environment.");
+    }
     const token = jwt.sign({ email_address: emailAddress }, SECRET_KEY, {
-      expiresIn: JWT_EXPIRES_IN.string,
+      expiresIn: JWT_EXPIRES_IN,
     });
 
     return token;
