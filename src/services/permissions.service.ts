@@ -17,7 +17,10 @@ const PermissionService = {
 
     console.log(permissions);
 
+
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const features = permissions.reduce<string[]>((acc, permission) => {
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
       const names = (permission as any).features.map(
         (feature) => feature.FeatureName
       );
