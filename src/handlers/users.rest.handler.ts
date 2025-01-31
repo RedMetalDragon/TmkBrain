@@ -204,7 +204,7 @@ const UsersRestHandler = {
 
       const employeeID = (userAuth as unknown as AuthAttributes).EmployeeID;
       const employeeData = await UsersService.getEmployeeData(employeeID);
-      const roleID = employeeData!.role_id;
+      const roleID = employeeData?.role_id;
 
       const permissions = await PermissionService.getUserPermissions(roleID);
 
