@@ -36,7 +36,10 @@ router.get("/users/:employee_id", UsersRestHandler.getEmployeeData);
 // Employee attendance - login, logout, attendance
 router.post("/users/:employee_id/login", AttendanceRestHandler.employeeLogin);
 router.post("/users/:employee_id/logout", AttendanceRestHandler.employeeLogout);
-router.get("/users/:employee_id/punch-status", AttendanceRestHandler.employeeStatus);
+router.get(
+  "/users/:employee_id/punch-status",
+  AttendanceRestHandler.employeeStatus
+);
 router.get(
   "/users/:employee_id/attendance",
   AttendanceRestHandler.employeeAttendance

@@ -5,6 +5,7 @@ import { isNumeric } from "../handlers/helpers";
 import { ObjectSchema } from "joi/lib";
 import { DepartmentService } from "./departments.service";
 import { DivisionService } from "./divisions.service";
+import { CompanyService } from "./company.service";
 
 const ValidationService = {
   validateSchema(schema: ObjectSchema, body: Record<string, unknown>): void {
@@ -48,6 +49,15 @@ const ValidationService = {
     if (emailAddressExist) {
       throw new createHttpError.InternalServerError(
         `Email address already exists.`
+      );
+    }
+  },
+
+  async validateCompany(companyId: number): Promise<void> {
+    const companyExist = await CompanyService.doesCompanyExist(companyId);
+    if (!companyExist) {
+      throw new createHttpError.InternalServerError(
+        `Company ID does not exist.`
       );
     }
   },

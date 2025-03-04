@@ -644,6 +644,8 @@ components:
           type: string
         paid_amount:
           type: number
+        company_name:
+          type: string
     
     Department:
       properties:
@@ -668,6 +670,8 @@ components:
         birthday:
           type: string
           description: should be in YYYY-MM-DD format
+        company_id:
+          type: number
     
     Employee:
       type: object
@@ -1018,6 +1022,7 @@ components:
                   - Email address already exists.
                   - Customer Stripe ID already exists.
                   - Plan ID does not exist.
+                  - Company ID does not exist.
                   - Unable to save customer account.
                   - Unable to enroll employee account.
 
