@@ -8,6 +8,8 @@ import { CreateCustomerBody, EnrollEmployeeBody } from "../handlers";
 import { Department } from "../models/Department";
 import { Division } from "../models/Division";
 import { JobTitle } from "../models/JobTitle";
+import { CompanyService } from "./company.service";
+import { CompanyAttributes } from "../models/Company";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const UsersService = {
@@ -19,6 +21,15 @@ const UsersService = {
     const transaction = await dbConnect.transaction();
 
     try {
+      const createCompany = {
+        CompanyName: customerData.company_name,
+      };
+
+      const company = await CompanyService.saveCompany(
+        createCompany,
+        transaction
+      );
+
       const createCustomer = {
         FirstName: customerData.first_name,
         LastName: customerData.last_name,
@@ -28,6 +39,7 @@ const UsersService = {
         StripeID: customerData.stripe_id,
         IsRootAccount: true,
         RoleID: 1, // default to Root Role
+        CompanyID: (company as unknown as CompanyAttributes).CompanyID,
       };
 
       const customer = await this.saveEmployee(createCustomer, transaction);
@@ -77,6 +89,7 @@ const UsersService = {
         Email: employeeData.email_address,
         DateOfBirth: employeeData.birthday,
         RoleID: 3, // default to Employee Role
+        CompanyID: employeeData.company_id,
       };
 
       const employee = await this.saveEmployee(createEmployee, transaction);

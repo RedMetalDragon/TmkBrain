@@ -111,22 +111,23 @@ const AttendanceRestHandler = {
    * @returns {Promise<void>} - A promise that resolves to void.
    */
   async employeeStatus(
-      req: Request,
-      res: Response,
-      next: NextFunction
+    req: Request,
+    res: Response,
+    next: NextFunction
   ): Promise<void> {
     try {
-        const { employee_id } = req.params;
+      const { employee_id } = req.params;
 
-        // Validate if employee_id is numeric
-        ValidationService.validateEmployeeID(employee_id);
+      // Validate if employee_id is numeric
+      ValidationService.validateEmployeeID(employee_id);
 
-        // Get attendance
-        const status = await AttendanceService.getlastActionMade(Number(employee_id));
-        res.status(200).json({ lastAction: status });
-    }
-    catch (error) {
-        next(error);
+      // Get attendance
+      const status = await AttendanceService.getlastActionMade(
+        Number(employee_id)
+      );
+      res.status(200).json({ lastAction: status });
+    } catch (error) {
+      next(error);
     }
   },
 

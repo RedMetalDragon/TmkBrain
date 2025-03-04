@@ -30,6 +30,7 @@ export type CreateCustomerBody = {
   password: string;
   paid_amount: number;
   plan_id: number;
+  company_name: string;
 };
 
 export type EnrollEmployeeBody = {
@@ -38,6 +39,7 @@ export type EnrollEmployeeBody = {
   middle_name: string;
   email_address: string;
   birthday: string;
+  company_id: number;
 };
 
 export type LoginBody = {
@@ -56,6 +58,7 @@ const CreateCustomerBodySchema = Joi.object({
   password: Joi.string().required(),
   paid_amount: Joi.number().required(),
   plan_id: Joi.number().required(),
+  company_name: Joi.string().required(),
 });
 
 const EnrollEmployeeBodySchema = Joi.object({
@@ -63,6 +66,7 @@ const EnrollEmployeeBodySchema = Joi.object({
   last_name: Joi.string().required(),
   middle_name: Joi.string().allow(null, ""),
   email_address: Joi.string().email().required(),
+  company_id: Joi.number().required(),
   birthday: Joi.string()
     .regex(/^\d{4}-\d{2}-\d{2}$/)
     .required()
@@ -157,12 +161,13 @@ const UsersRestHandler = {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { email_address }: EnrollEmployeeBody = req.body;
+      const { email_address, company_id }: EnrollEmployeeBody = req.body;
 
       // Validating inputs
       ValidationService.validateSchema(EnrollEmployeeBodySchema, req.body);
 
       await ValidationService.validateEmailAddress(email_address);
+      await ValidationService.validateCompany(Number(company_id));
 
       // Processing inputs
       // Generate temporary password

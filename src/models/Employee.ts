@@ -5,6 +5,7 @@ import { Division } from "./Division";
 import { Department } from "./Department";
 import { JobTitle } from "./JobTitle";
 import { Role } from "./Role";
+import { Company } from "./Company";
 
 interface EmployeeAttributes {
   EmployeeID?: number;
@@ -32,6 +33,7 @@ interface EmployeeAttributes {
   JobTitle: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   Manager: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   RoleID?: number;
+  CompanyID?: number;
 }
 
 const Employee = dbConnect.define(
@@ -122,6 +124,14 @@ const Employee = dbConnect.define(
       references: {
         model: Role,
         key: "RoleID",
+      },
+    },
+    CompanyID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: Company,
+        key: "CompanyID",
       },
     },
   },
