@@ -51,7 +51,7 @@ const AuthService = {
 
   async generateJWT(emailAddress: string): Promise<string> {
     const token = jwt.sign({ email_address: emailAddress }, SECRET_KEY, {
-      expiresIn: JWT_EXPIRES_IN.string,
+      expiresIn: JWT_EXPIRES_IN.numeric,
     });
 
     return token;
