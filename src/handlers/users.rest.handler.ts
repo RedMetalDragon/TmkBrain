@@ -15,6 +15,8 @@ import { AuthService } from "../services/auth.service";
 import { ValidationService } from "../services/validation.service";
 import { AuthAttributes } from "../models/Auth";
 import { PermissionService } from "../services/permissions.service";
+import { CompanyService } from "../services/company.service";
+import { v4 as uuidv4 } from 'uuid';
 
 type ValidateEmailBody = {
   email_address: string;
@@ -121,6 +123,7 @@ const UsersRestHandler = {
         stripe_id,
         plan_id,
         password,
+        company_name,
       }: CreateCustomerBody = req.body;
 
       // Validating inputs
@@ -134,14 +137,21 @@ const UsersRestHandler = {
       // Hashing customer password
       const [salt, hashedPassword] = generateSaltPassword(password);
 
+      const bucketName = `${company_name.toLowerCase()}-${uuidv4()}`;
+
       // Saving info in database
       if (
         (await UsersService.createCustomerTransaction(
           req.body,
           salt,
-          hashedPassword
+          hashedPassword,
+          bucketName
         )) === true
       ) {
+
+        // create company bucket
+        await CompanyService.createCompanyBucket(bucketName);
+
         res.status(200).json({
           message: "Successfully created customer account.",
         });

@@ -16,13 +16,15 @@ const UsersService = {
   async createCustomerTransaction(
     customerData: CreateCustomerBody,
     salt: string,
-    hashedPassword: string
+    hashedPassword: string,
+    bucketName: string
   ): Promise<boolean | Error> {
     const transaction = await dbConnect.transaction();
 
     try {
       const createCompany = {
         CompanyName: customerData.company_name,
+        S3BucketName: bucketName,
       };
 
       const company = await CompanyService.saveCompany(
