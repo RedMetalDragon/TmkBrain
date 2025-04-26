@@ -18,7 +18,7 @@ const UsersService = {
     salt: string,
     hashedPassword: string,
     bucketName: string
-  ): Promise<boolean | Error> {
+  ): Promise<number | Error> {
     const transaction = await dbConnect.transaction();
 
     try {
@@ -69,7 +69,7 @@ const UsersService = {
       await AuthService.saveAuth(createAuth, transaction);
       await transaction.commit();
 
-      return true;
+      return employeeId!;
     } catch (error) {
       await transaction.rollback();
       return error as Error;
@@ -80,7 +80,7 @@ const UsersService = {
     employeeData: EnrollEmployeeBody,
     salt: string,
     hashedPassword: string
-  ): Promise<boolean | Error> {
+  ): Promise<number | Error> {
     const transaction = await dbConnect.transaction();
 
     try {
@@ -107,7 +107,7 @@ const UsersService = {
       await AuthService.saveAuth(createAuth, transaction);
       await transaction.commit();
 
-      return true;
+      return employeeId!;
     } catch (error) {
       await transaction.rollback();
       return error as Error;
@@ -120,6 +120,19 @@ const UsersService = {
   ): Promise<Model<any, any> | Error> {
     try {
       return await Employee.create(customer, { transaction });
+    } catch (error) {
+      return error as Error;
+    }
+  },
+
+  async updateEmployee(
+    userInfo: Record<string, unknown>,
+    employeeId: number
+  ): Promise<[number] | Error> {
+    try {
+      return await Employee.update(userInfo, {
+        where: { EmployeeID: employeeId },
+      });
     } catch (error) {
       return error as Error;
     }
