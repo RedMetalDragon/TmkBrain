@@ -16,7 +16,7 @@ import { ValidationService } from "../services/validation.service";
 import { AuthAttributes } from "../models/Auth";
 import { PermissionService } from "../services/permissions.service";
 import { CompanyService } from "../services/company.service";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 type ValidateEmailBody = {
   email_address: string;
@@ -139,18 +139,30 @@ const UsersRestHandler = {
 
       const bucketName = `${company_name.toLowerCase()}-${uuidv4()}`;
 
-      // Saving info in database
-      if (
-        (await UsersService.createCustomerTransaction(
-          req.body,
-          salt,
-          hashedPassword,
-          bucketName
-        )) === true
-      ) {
+      const employeeId = await UsersService.createCustomerTransaction(
+        req.body,
+        salt,
+        hashedPassword,
+        bucketName
+      );
 
+      // Saving info in database
+      if (typeof employeeId === "number") {
         // create company bucket
         await CompanyService.createCompanyBucket(bucketName);
+        await CompanyService.createEmployeeFolder(
+          bucketName,
+          String(employeeId)
+        );
+
+        // update employee record with s3BucketFolder
+        const s3BucketFolder = `${bucketName}/${String(employeeId)}`;
+
+        const updateUserInfo = {
+          S3BucketFolder: s3BucketFolder,
+        };
+
+        await UsersService.updateEmployee(updateUserInfo, employeeId);
 
         res.status(200).json({
           message: "Successfully created customer account.",
@@ -186,14 +198,33 @@ const UsersRestHandler = {
       // Hash customer password
       const [salt, hashedPassword] = generateSaltPassword(randomPassword);
 
+      const employeeId = await UsersService.enrollEmployeeTransaction(
+        req.body,
+        salt,
+        hashedPassword
+      );
+
       // Save info in database
-      if (
-        (await UsersService.enrollEmployeeTransaction(
-          req.body,
-          salt,
-          hashedPassword
-        )) === true
-      ) {
+      if (typeof employeeId === "number") {
+        // Get company bucketName
+        const { bucketName } = await CompanyService.getCompany(company_id);
+
+        // create company bucket
+        await CompanyService.createCompanyBucket(String(bucketName));
+        await CompanyService.createEmployeeFolder(
+          String(bucketName),
+          String(employeeId)
+        );
+
+        // update employee record with s3BucketFolder
+        const s3BucketFolder = `${bucketName}/${String(employeeId)}`;
+
+        const updateUserInfo = {
+          S3BucketFolder: s3BucketFolder,
+        };
+
+        await UsersService.updateEmployee(updateUserInfo, employeeId);
+
         res.status(200).json({
           message: "Successfully enrolled employee account.",
         });

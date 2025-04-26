@@ -34,6 +34,7 @@ interface EmployeeAttributes {
   Manager: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   RoleID?: number;
   CompanyID?: number;
+  S3BucketFolder?: string;
 }
 
 const Employee = dbConnect.define(
@@ -133,6 +134,10 @@ const Employee = dbConnect.define(
         model: Company,
         key: "CompanyID",
       },
+    },
+    S3BucketFolder: {
+      type: DataTypes.STRING(500),
+      allowNull: true,
     },
   },
   {
